@@ -56,6 +56,8 @@ class SweepManager(object):
                  batch_size_train, batch_size_test,
                  OptimizerClass, optimizer_kwargs,
                  NewErrorLossClass, StrictImitationLossClass, lambda_c_stepsize=0.25,
+                 new_error_loss_kwargs=None,
+                 strict_imitation_loss_kwargs=None,
                  device="cpu"):
         self.folder_name = folder_name
         self.number_of_epochs = number_of_epochs
@@ -70,6 +72,8 @@ class SweepManager(object):
         self.NewErrorLossClass = NewErrorLossClass
         self.StrictImitationLossClass = StrictImitationLossClass
         self.lambda_c_stepsize = lambda_c_stepsize
+        self.new_error_loss_kwargs = new_error_loss_kwargs
+        self.strict_imitation_loss_kwargs = strict_imitation_loss_kwargs
         self.device = device
         self.last_sweep_status = 0.0
         self.percent_complete_queue = Queue()
@@ -83,6 +87,8 @@ class SweepManager(object):
             kwargs={
                 "lambda_c_stepsize": self.lambda_c_stepsize,
                 "percent_complete_queue": self.percent_complete_queue,
+                "new_error_loss_kwargs": self.new_error_loss_kwargs,
+                "strict_imitation_loss_kwargs": self.strict_imitation_loss_kwargs,
                 "device": self.device
             })
 
@@ -96,6 +102,8 @@ class SweepManager(object):
             self.OptimizerClass, self.optimizer_kwargs,
             self.NewErrorLossClass, self.StrictImitationLossClass,
             lambda_c_stepsize=self.lambda_c_stepsize, percent_complete_queue=self.percent_complete_queue,
+            new_error_loss_kwargs=self.new_error_loss_kwargs,
+            strict_imitation_loss_kwargs=self.strict_imitation_loss_kwargs,
             device=self.device)
 
     def get_sweep_status(self):

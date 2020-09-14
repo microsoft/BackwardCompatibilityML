@@ -116,7 +116,8 @@ class CompatibilityAnalysis(object):
                  batch_size_train, batch_size_test, lambda_c_stepsize=0.25,
                  OptimizerClass=None, optimizer_kwargs=None,
                  NewErrorLossClass=None, StrictImitationLossClass=None,
-                 port=None, device="cpu"):
+                 port=None, new_error_loss_kwargs=None,
+                 strict_imitation_loss_kwargs=None, device="cpu"):
         self.flask_service = FlaskHelper(ip="0.0.0.0", port=port)
 
         if OptimizerClass is None:
@@ -143,7 +144,10 @@ class CompatibilityAnalysis(object):
             OptimizerClass,
             optimizer_kwargs,
             NewErrorLossClass, StrictImitationLossClass,
-            lambda_c_stepsize=lambda_c_stepsize, device=device)
+            lambda_c_stepsize=lambda_c_stepsize,
+            new_error_loss_kwargs=new_error_loss_kwargs,
+            strict_imitation_loss_kwargs=strict_imitation_loss_kwargs,
+            device=device)
 
         resource_package = __name__
         javascript_path = '/'.join(('resources', 'widget-build.js'))
