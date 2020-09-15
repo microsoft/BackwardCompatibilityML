@@ -1,6 +1,7 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -132,13 +133,12 @@ class BCCrossEntropyLoss(nn.Module):
         return new_error_loss
 
 
-class BCKLDivergenceLoss(nn.Module):
+class BCBinaryCrossEntropyLoss(nn.Module):
     """
-    Backward Compatibility Kullback–Leibler Divergence Loss
+    Backward Compatibility Cross Entropy Loss
 
     This class implements the backward compatibility loss function
-    with the underlying loss function being the Kullback–Leibler
-    Divergence loss.
+    with the underlying loss function being the Cross Entropy loss.
 
     Example usage:
         h1 = MyModel()
@@ -147,7 +147,7 @@ class BCKLDivergenceLoss(nn.Module):
 
         lambda_c = 0.5 (regularization parameter)
         h2 = MyNewModel() (this may be the same model type as MyModel)
-        bcloss = BCKLDivergenceLoss(h1, h2, lambda_c)
+        bcloss = BCBinaryCrossEntropyLoss(h1, h2, lambda_c)
 
         for x, y in training_data:
             loss = bcloss(x, y)
@@ -164,6 +164,77 @@ class BCKLDivergenceLoss(nn.Module):
             parameter that determines how much we want to penalize model h2
             for being incompatible with h1. Lower values panalize less and
             higher values penalize more.
+    """
+
+    def __init__(self, h1, h2, lambda_c, discriminan_pivot=0.5, **kwargs):
+        super(BCBinaryCrossEntropyLoss, self).__init__()
+        self.h1 = h1
+        self.h2 = h2
+        self.loss = F.binary_cross_entropy
+        self.lambda_c = lambda_c
+        self.discriminan_pivot = discriminan_pivot
+
+    def dissonance(self, h2_support_output_sigmoid, target_labels):
+        cross_entropy_loss = F.binary_cross_entropy(h2_support_output_sigmoid, target_labels)
+        return cross_entropy_loss
+
+    def forward(self, x, y, reduction="mean"):
+        with torch.no_grad():
+            h1_output_sigmoid = self.h1(x)
+
+        h1_output_labels = torch.tensor((h1_output_sigmoid >= self.discriminan_pivot), dtype=torch.int)
+
+        h1_diff = (h1_output_labels - y).float()
+        h1_correct = (h1_diff == 0)
+        x_support = x[h1_correct]
+        y_support = y[h1_correct]
+        h2_output_sigmoid = self.h2(x)
+
+        dissonance = 0.0
+        if (h1_diff == 0.0).sum(dim=0).item() > 0:
+            h2_support_output_sigmoid = self.h2(x_support)
+            dissonance = self.dissonance(h2_support_output_sigmoid, y_support)
+
+        base_loss = self.loss(h2_output_sigmoid, y, reduction=reduction)
+        new_error_loss = base_loss + self.lambda_c * dissonance
+        return new_error_loss
+
+
+class BCKLDivergenceLoss(nn.Module):
+    """
+    Backward Compatibility Kullback–Leibler Divergence Loss
+
+    This class implements the backward compatibility loss function
+    with the underlying loss function being the Kullback–Leibler
+    Divergence loss.
+
+    Example usage:
+        h1 = MyModel()
+        ... train h1 ...
+        h1.eval() (it is important that h1 be put in evaluation mode)
+
+        lambda_c = 0.5 (regularization parameter)
+        h2 = MyNewModel() (this may be the same model type as MyModel)
+        bcloss = BCKLDivergenceLoss(
+            h1, h2, lambda_c, num_classes=num_classes)
+
+        for x, y in training_data:
+            loss = bcloss(x, y)
+            loss.backward()
+
+        Note that we pass in the input and the target directly to the
+        bcloss function instance. It calculates the outputs of h1 and h2
+        internally.
+
+    Args:
+        h1: Our reference model which we would like to be compatible with.
+        h2: Our new model which will be the updated model.
+        lambda_c: A float between 0.0 and 1.0, which is a regularization
+            parameter that determines how much we want to penalize model h2
+            for being incompatible with h1. Lower values panalize less and
+            higher values penalize more.
+        num_classes: An integer denoting the number of classes that we are
+            attempting to classify the input into.
     """
 
     def __init__(self, h1, h2, lambda_c, num_classes=None, **kwargs):
