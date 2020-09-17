@@ -1,7 +1,6 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
-import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -182,7 +181,9 @@ class BCBinaryCrossEntropyLoss(nn.Module):
         with torch.no_grad():
             h1_output_sigmoid = self.h1(x)
 
-        h1_output_labels = torch.tensor((h1_output_sigmoid >= self.discriminan_pivot), dtype=torch.int)
+        h1_output_labels = torch.tensor(
+            (h1_output_sigmoid >= self.discriminan_pivot),
+            dtype=torch.int).view(y.size(0))
 
         h1_diff = (h1_output_labels - y).float()
         h1_correct = (h1_diff == 0)

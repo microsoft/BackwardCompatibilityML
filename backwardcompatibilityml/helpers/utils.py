@@ -131,3 +131,7 @@ def labels_to_probabilities(batch_class_labels, num_classes=None, batch_size=Non
     probabilities = probabilities.view(batch_size, num_classes)
     probabilities[torch.arange(probabilities.size(0)), batch_class_labels] = 1.0
     return probabilities
+
+
+def sigmoid_to_labels(batch_sigmoids, discriminant_pivot=0.5):
+    return torch.tensor((batch_sigmoids >= discriminant_pivot), dtype=torch.int)

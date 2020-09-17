@@ -181,15 +181,25 @@ class StrictImitationBinaryCrossEntropyLoss(nn.Module):
         self.discriminant_pivot = discriminant_pivot
 
     def dissonance(self, h1_output_sigmoid, h2_output_sigmoid):
-        h1_output_labels = torch.tensor((h1_output_sigmoid >= self.discriminan_pivot), dtype=torch.int)
-        cross_entropy_loss = F.binary_cross_entropy(h2_output_sigmoid, h1_output_labels)
-        return cross_entropy_loss
+        # Todo: (Xavier) Document that the reason we calculate the
+        # dissonance using Negative Log Likelihood is due to the fact
+        # that the Pytorch Binary Cross Entropy loss function accepts
+        # parameters (input, target) where input is a sigmoid and target
+        # is a class label. So that if implemented using Binary Cross
+        # Entropy Loss, we would be calculating the same dissonance as
+        # the New Error loss.
+        nll = torch.sum(
+            -1 * h1_output_sigmoid * h2_output_sigmoid.log() + (
+                -1 * (1 - h1_output_sigmoid) * (1 - h2_output_sigmoid).log())
+        )
+        return nll
 
     def forward(self, x, y, reduction="mean"):
         with torch.no_grad():
             h1_output_sigmoid = self.h1(x)
 
-        h1_output_labels = torch.tensor((h1_output_sigmoid >= self.discriminan_pivot), dtype=torch.int)
+        h1_output_labels = torch.tensor((h1_output_sigmoid >= self.discriminant_pivot), dtype=torch.int).view(
+            y.size(0))
         h1_diff = (h1_output_labels - y).float()
         h1_correct = (h1_diff == 0)
         x_support = x[h1_correct]
