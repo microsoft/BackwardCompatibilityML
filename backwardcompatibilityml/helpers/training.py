@@ -563,7 +563,7 @@ def train_new_error(h1, h2, number_of_epochs,
                     training_set, test_set, batch_size_train, batch_size_test,
                     OptimizerClass, optimizer_kwargs,
                     NewErrorLossClass,
-                    lambda_c, device="cpu"):
+                    lambda_c, new_error_loss_kwargs=None, device="cpu"):
     """
     Args:
         h1: Reference Pytorch model.
@@ -587,7 +587,7 @@ def train_new_error(h1, h2, number_of_epochs,
             to set this to "cuda". This makes sure that the input and target
             tensors are transferred to the GPU during training.
     """
-    bc_loss = NewErrorLossClass(h1, h2, lambda_c)
+    bc_loss = NewErrorLossClass(h1, h2, lambda_c, **new_error_loss_kwargs)
     new_optimizer = OptimizerClass(h2.parameters(), **optimizer_kwargs)
     _, _, _, _ = train_compatibility(
         number_of_epochs, h2, new_optimizer, bc_loss, training_set, test_set,
@@ -598,7 +598,7 @@ def train_strict_imitation(h1, h2, number_of_epochs,
                            training_set, test_set, batch_size_train, batch_size_test,
                            OptimizerClass, optimizer_kwargs,
                            StrictImitationLossClass,
-                           lambda_c, device="cpu"):
+                           lambda_c, strict_imitation_loss_kwargs=None, device="cpu"):
     """
     Args:
         h1: Reference Pytorch model.
@@ -622,7 +622,7 @@ def train_strict_imitation(h1, h2, number_of_epochs,
             to set this to "cuda". This makes sure that the input and target
             tensors are transferred to the GPU during training.
     """
-    si_loss = StrictImitationLossClass(h1, h2, lambda_c)
+    si_loss = StrictImitationLossClass(h1, h2, lambda_c, **strict_imitation_loss_kwargs)
     new_optimizer = OptimizerClass(h2.parameters(), **optimizer_kwargs)
     _, _, _, _ = train_compatibility(
         number_of_epochs, h2, new_optimizer, si_loss, training_set, test_set,
@@ -635,6 +635,8 @@ def compatibility_sweep(sweeps_folder_path, number_of_epochs, h1, h2,
                         NewErrorLossClass, StrictImitationLossClass,
                         performance_metric=None,
                         lambda_c_stepsize=0.25, percent_complete_queue=None,
+                        new_error_loss_kwargs=None,
+                        strict_imitation_loss_kwargs=None,
                         device="cpu"):
     """
     This function trains a new model using the backward compatibility loss function
@@ -677,6 +679,13 @@ def compatibility_sweep(sweeps_folder_path, number_of_epochs, h1, h2,
     number_of_trainings = 4 * len(np.arange(0.0, 1.0 + (lambda_c_stepsize / 2), lambda_c_stepsize))
     if percent_complete_queue is not None:
         percent_complete_queue.put(0.0)
+
+    if new_error_loss_kwargs is None:
+        new_error_loss_kwargs = dict()
+
+    if strict_imitation_loss_kwargs is None:
+        strict_imitation_loss_kwargs = dict()
+
     sweep_summary = []
     datapoint_index = 0
     for lambda_c in np.arange(0.0, 1.0 + (lambda_c_stepsize / 2), lambda_c_stepsize):
@@ -685,6 +694,7 @@ def compatibility_sweep(sweeps_folder_path, number_of_epochs, h1, h2,
             h1, h2_new_error, number_of_epochs,
             training_set, test_set, batch_size_train, batch_size_test,
             OptimizerClass, optimizer_kwargs, NewErrorLossClass, lambda_c,
+            new_error_loss_kwargs=new_error_loss_kwargs,
             device=device)
         h2_new_error.eval()
         torch.save(h2_new_error.state_dict(), f"{sweeps_folder_path}/{lambda_c}-model-new-error.state")
@@ -744,6 +754,7 @@ def compatibility_sweep(sweeps_folder_path, number_of_epochs, h1, h2,
             h1, h2_strict_imitation, number_of_epochs,
             training_set, test_set, batch_size_train, batch_size_test,
             OptimizerClass, optimizer_kwargs, StrictImitationLossClass, lambda_c,
+            strict_imitation_loss_kwargs=strict_imitation_loss_kwargs,
             device=device)
         h2_strict_imitation.eval()
         torch.save(h2_strict_imitation.state_dict(), f"{sweeps_folder_path}/{lambda_c}-model-strict-imitation.state")
