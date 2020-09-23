@@ -4,6 +4,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import PerformanceCompatibility from "./PerformanceCompatibility.tsx";
+import Legend from "./Legend.tsx";
 import IntersectionBetweenModelErrors from "./IntersectionBetweenModelErrors.tsx";
 import IncompatiblePointDistribution from "./IncompatiblePointDistribution.tsx";
 import RawValues from "./RawValues.tsx";
@@ -89,6 +90,12 @@ function Container({
               toggleTesting={toggleTesting}
               toggleNewError={toggleNewError}
               toggleStrictImitation={toggleStrictImitation}
+            />
+            <Legend
+              testing={testing}
+              training={training}
+              newError={newError}
+              strictImitation={strictImitation}
             />
           </div>
           <div className="row">
