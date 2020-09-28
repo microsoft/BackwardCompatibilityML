@@ -4,6 +4,7 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import * as d3 from "d3";
+import { bisect } from "./optimization.tsx";
 
 
 type IntersectionBetweenModelErrorsState = {
@@ -102,12 +103,33 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
         Aab = ab * x;
       }
 
-      let d = (Ra + Rb) / 1.5;
-      if (ab == a || ab == b) {
-        d = Math.abs(Ra - Rb) / 1.5;
-      } else if (ab == 0) {
-        d = Ra + Rb + 10;
+      function areaIntersection(r1, r2, dist) {
+        var r = Math.min(r1, r2);
+        var R = Math.max(r1, r2);
+        if (dist == 0) {
+          return (3.14 * Math.pow(r, 2));
+        } else if (dist >= (R + r)) {
+          return 0;
+        }
+
+        var sectorAreas = Math.pow(r, 2) * Math.acos((Math.pow(dist, 2) +
+          Math.pow(r, 2) - Math.pow(R, 2)) / (2 * dist * r)) +
+          Math.pow(R, 2) * Math.acos((Math.pow(dist, 2) + Math.pow(R, 2) - Math.pow(r, 2)) / (2 * dist * R));
+
+        var triangleAreas = 1/2 * Math.sqrt((-dist + r + R) * (dist + r - R) * (dist - r + R) * (dist + r + R));
+        var intersectionArea = sectorAreas - triangleAreas;
+
+        return intersectionArea;
       }
+
+      var r = Math.min(Ra, Rb);
+      var R = Math.max(Ra, Rb);
+
+      function aIntersection(dist) {
+        return (areaIntersection(Ra, Rb, dist) - Aab);
+      }
+
+      let d = bisect(aIntersection, (r + R - 0.00001), (R - r + 0.00001));
 
       var circleRad = 50;
       var xCenter = w/4 + margin.left;
@@ -118,7 +140,10 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
               "translate(" +
               xCenter + "," +
               yCenter + ")")
-          .attr("fill", "rgba(170, 170, 255, 0.8)");
+          .attr("fill", "rgba(170, 170, 255, 0.8)")
+          .attr("fill-opacity", 50)
+          .attr("stroke", "black")
+          .attr("stroke-width", "1px");
 
       var xCenter2 = xCenter + d;
       svg.append("circle")
@@ -127,7 +152,10 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
               "translate(" +
               xCenter2 + "," +
               yCenter + ")")
-          .attr("fill", "rgba(206, 160, 205, 0.8)");
+          .attr("fill", "rgba(206, 160, 205, 0.8)")
+          .attr("fill-opacity", 50)
+          .attr("stroke", "black")
+          .attr("stroke-width", "1px");
     }
 
   }
