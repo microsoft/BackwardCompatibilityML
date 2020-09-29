@@ -35,9 +35,19 @@ label {
 }
 
 .plot {
+  position: relative;
   display: inline-block;
   margin-left: 20px;
   margin-right:20px;
+}
+
+.tooltip {
+  background-color: black;
+  color: white;
+  border-radius: 3px;
+  position: absolute;
+  padding-left: 2px;
+  padding-right: 2px;
 }
 
 .table {

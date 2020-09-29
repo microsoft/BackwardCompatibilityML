@@ -99,7 +99,6 @@ function Container({
             />
           </div>
           <div className="row">
-            {(selectedDataPoint != null)? (<div>lambda_c: {selectedDataPoint.lambda_c}</div>): (<div />)}
             <PerformanceCompatibility
               data={data}
               training={training}
