@@ -125,6 +125,13 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
         ])
       .range([h,0])
 
+    // d3.select(`#lambdactooltip-${_this.props.compatibilityScoreType}`).remove();
+    // var tooltip = body.append("div")
+    //   .attr("class", "lambdactooltip")
+    //   .attr("id", `lambdactooltip-${_this.props.compatibilityScoreType}`)
+    //   .style("position", "absolute");
+    var tooltip = d3.select(`#lambdactooltip-${_this.props.compatibilityScoreType}`);
+
     // SVG
     d3.select(`#${this.props.compatibilityScoreType}`).remove();
     var svg = body.append('svg')
@@ -223,6 +230,9 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
               .duration(500)
               .attr('r',8)
               .attr('stroke-width',3);
+
+            tooltip.text(d["lambda_c"].toFixed(2))
+              .style("opacity", 0.8);
           })
           .on('mouseout', function () {
             d3.select(this)
@@ -230,8 +240,19 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
               .duration(500)
               .attr('r',4)
               .attr('stroke-width',1);
+
+            tooltip.style("opacity", 0);
+            tooltip.text("");
           })
-          .on('click', (d, i) => {_this.props.getModelEvaluationData(d["datapoint_index"]);});
+          .on("mousemove", function() {
+            var scatterPlot = document.getElementById(`scatterplot-${_this.props.compatibilityScoreType}`);
+            var coords = d3.mouse(scatterPlot);
+            tooltip.style("left", `${coords[0] - (margin.left + margin.right)/2}px`)
+              .style("top", `${coords[1] - (margin.top + margin.bottom)/2}px`);
+          })
+          .on('click', (d, i) => {
+            _this.props.getModelEvaluationData(d["datapoint_index"]);
+          });
     }
 
     drawCircles();
@@ -239,7 +260,9 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
 
   render() {
     return (
-      <div className="plot" ref={this.node} />
+      <div className="plot" ref={this.node} id={`scatterplot-${this.props.compatibilityScoreType}`}>
+        <div className="tooltip" id={`lambdactooltip-${this.props.compatibilityScoreType}`} />
+      </div>
     );
   }
 }
