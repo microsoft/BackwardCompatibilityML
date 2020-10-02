@@ -11,7 +11,8 @@ type PerformanceCompatibilityState = {
   testing: boolean,
   training: boolean,
   newError: boolean,
-  strictImitation: boolean
+  strictImitation: boolean,
+  selectedDataPoint: any
 }
 
 type PerformanceCompatibilityProps = {
@@ -20,6 +21,7 @@ type PerformanceCompatibilityProps = {
   training: boolean,
   newError: boolean,
   strictImitation: boolean,
+  selectedDataPoint: any,
   compatibilityScoreType: string,
   selectDataPoint: (d: any) => void,
   getModelEvaluationData: (evaluationId: number) => void
@@ -30,11 +32,12 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
     super(props);
 
     this.state = {
-      data: this.props.data,
-      testing: this.props.testing,
-      training: this.props.training,
-      newError: this.props.newError,
-      strictImitation: this.props.strictImitation
+      data: props.data,
+      testing: props.testing,
+      training: props.training,
+      newError: props.newError,
+      strictImitation: props.strictImitation,
+      selectedDataPoint: props.selectedDataPoint
     };
 
     this.node = React.createRef<HTMLDivElement>();
@@ -70,7 +73,8 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
     var h = 250 - margin.top - margin.bottom
     var w = 250 - margin.left - margin.right
 
-    var formatPercent = d3.format('.3f');
+    var formatPercentX = d3.format('.3f');
+    var formatPercentY = d3.format('.2f');
     var colorMap = {
       "training": {
         "new-error": "rgba(170, 170, 255, 0.8)",
@@ -143,13 +147,13 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
     // X-axis
     var xAxis = d3.axisBottom()
       .scale(xScale)
-      .tickFormat(formatPercent)
+      .tickFormat(formatPercentX)
       .ticks(5);
 
     // Y-axis
     var yAxis = d3.axisLeft()
       .scale(yScale)
-      .tickFormat(formatPercent)
+      .tickFormat(formatPercentY)
       .ticks(5);
 
     // X-axis
@@ -210,9 +214,23 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
         .append('circle')
           .attr('cx',function (d) { return xScale(d[_this.props.compatibilityScoreType]) })
           .attr('cy',function (d) { return yScale(d['performance']) })
-          .attr('r','4')
+          .attr('r', function(d) {
+            var datapointIndex = (_this.props.selectedDataPoint != null)? _this.props.selectedDataPoint.datapoint_index: null;
+            if (d.datapoint_index == datapointIndex) {
+              return 8;
+            } else {
+              return 4;
+            }
+          })
           .attr('stroke','black')
-          .attr('stroke-width',1)
+          .attr('stroke-width', function(d) {
+            var datapointIndex = (_this.props.selectedDataPoint != null)? _this.props.selectedDataPoint.datapoint_index: null;
+            if (d.datapoint_index == datapointIndex) {
+              return 3;
+            } else {
+              return 1;
+            }
+          })
           .attr('fill',function (d,i) {
             if (d["training"] && d["new-error"]) {
               return colorMap["training"]["new-error"];
@@ -231,15 +249,18 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
               .attr('r',8)
               .attr('stroke-width',3);
 
-            tooltip.text(d["lambda_c"].toFixed(2))
+            tooltip.text(`lambda ${d["lambda_c"].toFixed(2)}`)
               .style("opacity", 0.8);
           })
-          .on('mouseout', function () {
-            d3.select(this)
-              .transition()
-              .duration(500)
-              .attr('r',4)
-              .attr('stroke-width',1);
+          .on('mouseout', function (d) {
+            var datapointIndex = (_this.props.selectedDataPoint != null)? _this.props.selectedDataPoint.datapoint_index: null;
+            if (d.datapoint_index != datapointIndex) {
+              d3.select(this)
+                .transition()
+                .duration(500)
+                .attr('r',4)
+                .attr('stroke-width',1);
+             }
 
             tooltip.style("opacity", 0);
             tooltip.text("");
@@ -247,7 +268,7 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
           .on("mousemove", function() {
             var scatterPlot = document.getElementById(`scatterplot-${_this.props.compatibilityScoreType}`);
             var coords = d3.mouse(scatterPlot);
-            tooltip.style("left", `${coords[0] - (margin.left + margin.right)/2}px`)
+            tooltip.style("left", `${coords[0] - (margin.left + margin.right)/2 - 40}px`)
               .style("top", `${coords[1] - (margin.top + margin.bottom)/2}px`);
           })
           .on('click', (d, i) => {

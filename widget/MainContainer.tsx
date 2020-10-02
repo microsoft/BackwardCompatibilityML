@@ -11,6 +11,7 @@ import RawValues from "./RawValues.tsx";
 import ErrorInstancesTable from "./ErrorInstancesTable.tsx";
 import DataSelector from "./DataSelector.tsx"
 import SweepManager from "./SweepManager.tsx";
+import SelectedModelDetails from "./SelectedModelDetails.tsx";
 import { bindActionCreators } from "redux";
 import { connect } from 'react-redux';
 import {
@@ -108,6 +109,7 @@ function Container({
               compatibilityScoreType="btc"
               selectDataPoint={selectDataPoint}
               getModelEvaluationData={getModelEvaluationData}
+              selectedDataPoint={selectedDataPoint}
             />
             <PerformanceCompatibility
               data={data}
@@ -118,8 +120,10 @@ function Container({
               compatibilityScoreType="bec"
               selectDataPoint={selectDataPoint}
               getModelEvaluationData={getModelEvaluationData}
+              selectedDataPoint={selectedDataPoint}
             />
           </div>
+          {(selectedDataPoint != null)? <SelectedModelDetails btc={selectedDataPoint.btc} bec={selectedDataPoint.bec} performance={selectedDataPoint.h2_performance} lambda_c={selectedDataPoint.lambda_c} />: null}
           <div className="row">
             <IntersectionBetweenModelErrors selectedDataPoint={selectedDataPoint} />
             <IncompatiblePointDistribution selectedDataPoint={selectedDataPoint} />

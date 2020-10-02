@@ -21,12 +21,12 @@
 }
  
 .bar {
-  fill: rgba(113, 113, 255, 0.8);
+  fill: rgba(170, 170, 198, 0.8);
 }
  
-.bar:hover {
+/*.bar:hover {
   fill: rgba(226, 75, 158, 0.8);
-}
+}*/
  
 label {
   position: absolute;
