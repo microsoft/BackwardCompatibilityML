@@ -61,6 +61,11 @@ label {
   margin-right: 50px;
 }
 
+.data-selector {
+  width: 600px;
+  text-align: left;
+}
+
 .data-selector .control-subgroup {
   display: inline-block;
   margin-right: 20px;
@@ -72,11 +77,13 @@ label {
 }
 
 .dropdown-check-list {
+  font-size: 10px;
   position: relative;
   display: inline-block;
 }
 
 .dropdown-check-list .anchor {
+  font-weight: bold;
   position: relative;
   cursor: pointer;
   display: inline-block;
