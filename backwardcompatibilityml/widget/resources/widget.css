@@ -129,3 +129,34 @@ label {
 .dropdown-check-list.visible .items {
   display: block;
 }
+
+.model-details {
+  width: 600px;
+  border-style: solid;
+  border-width: 1px;
+}
+
+.model-details-row {
+  width: 100%;
+  display: inline-block;
+  text-align: center;
+}
+
+.model-details-info {
+  display: inline-block;
+  width: 100px;
+}
+
+.model-details-info-data {
+  display: inline-block;
+  font-weight: bold;
+  font-size: 10px;
+  margin-right: 4px;
+}
+
+.model-details-info-type {
+  display: inline-block;
+  font-style: italic;
+  font-size: 10px;
+  font-weight: normal;
+}
