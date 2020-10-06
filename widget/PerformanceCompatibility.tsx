@@ -194,10 +194,10 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
         .attr("fill", "black");
 
     svg.append("line")
-      .attr("x1", 0)
-      .attr("y1", this.props.h1Performance)
-      .attr("x2",w)
-      .attr("y2", this.props.h1Performance)
+      .attr("x1", xScale(d3.min(allDataPoints,function (d) { return d[_this.props.compatibilityScoreType] }) - 0.005))
+      .attr("y1", yScale(this.props.h1Performance))
+      .attr("x2", xScale(d3.max(allDataPoints,function (d) { return d[_this.props.compatibilityScoreType] })))
+      .attr("y2", yScale(this.props.h1Performance))
       .attr("stroke", "black")
       .attr("stroke-width", "1px")
       .attr("stroke-dasharray", "5,5");
