@@ -132,7 +132,7 @@ class TestLossFunctions(object):
 
         sweep_summary_file = open("tests/sweeps/sweep_summary.json", "r")
         sweep_summary = json.loads(sweep_summary_file.read())
-        testing_data_new_error = list(filter(lambda row: row["new-error"] and row["testing"], sweep_summary))
+        testing_data_new_error = list(filter(lambda row: row["new-error"] and row["testing"], sweep_summary["data"]))
         lambda_c_values = list(map(lambda row: row["lambda_c"], testing_data_new_error))
         assert(len(lambda_c_values) == len(np.arange(0.0, 1.0 + (0.05 / 2), 0.05)))
 

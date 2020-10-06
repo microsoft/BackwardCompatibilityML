@@ -60,7 +60,7 @@ function Container({
       return (
         <div>Loading...</div>
       );
-    } else if (error == null && data.length == 0 && sweepStatus == null) {
+    } else if (error == null && data.data.length == 0 && sweepStatus == null) {
       return (
         <div className="container">
             <div className="row">
@@ -101,7 +101,8 @@ function Container({
           </div>
           <div className="row">
             <PerformanceCompatibility
-              data={data}
+              data={data.data}
+              h1Performance={data.h1_performance}
               training={training}
               testing={testing}
               newError={newError}
@@ -112,7 +113,8 @@ function Container({
               selectedDataPoint={selectedDataPoint}
             />
             <PerformanceCompatibility
-              data={data}
+              data={data.data}
+              h1Performance={data.h1_performance}
               training={training}
               testing={testing}
               newError={newError}
@@ -129,10 +131,10 @@ function Container({
             <IncompatiblePointDistribution selectedDataPoint={selectedDataPoint} />
           </div>
           <div className="row">
-            <RawValues data={data} />
+            <RawValues data={data.data} />
           </div>
           <div className="row">
-            <ErrorInstancesTable data={data} />
+            <ErrorInstancesTable data={data.data} />
           </div>
       </div>
     );

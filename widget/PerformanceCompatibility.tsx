@@ -8,6 +8,7 @@ import * as d3 from "d3";
 
 type PerformanceCompatibilityState = {
   data: any,
+  h1Performance: any,
   testing: boolean,
   training: boolean,
   newError: boolean,
@@ -17,6 +18,7 @@ type PerformanceCompatibilityState = {
 
 type PerformanceCompatibilityProps = {
   data: any,
+  h1Performance: any,
   testing: boolean,
   training: boolean,
   newError: boolean,
@@ -33,6 +35,7 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
 
     this.state = {
       data: props.data,
+      h1Performance: props.h1Performance,
       testing: props.testing,
       training: props.training,
       newError: props.newError,
@@ -189,6 +192,15 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
         .attr("font-family", "sans-serif")
         .attr("font-size", "20px")
         .attr("fill", "black");
+
+    svg.append("line")
+      .attr("x1", 0)
+      .attr("y1", this.props.h1Performance)
+      .attr("x2",w)
+      .attr("y2", this.props.h1Performance)
+      .attr("stroke", "black")
+      .attr("stroke-width", "1px")
+      .attr("stroke-dasharray", "5,5");
 
     function drawCircles() {
       // var allDataPoints = [];
