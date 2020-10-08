@@ -260,6 +260,7 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
               .duration(500)
               .attr('r',8)
               .attr('stroke-width',3);
+
             tooltip.text(`lambda ${d["lambda_c"].toFixed(2)}`)
               .style("opacity", 0.8);
           })
