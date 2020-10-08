@@ -826,7 +826,7 @@ def compatibility_sweep(sweeps_folder_path, number_of_epochs, h1, h2,
 
     sweep_summary = {
         "data": sweep_summary_data,
-        "h1_performance": model_accuracy(h1, test_set)
+        "h1_performance": model_accuracy(h1, test_set, device=device)
     }
 
     sweep_summary_data = json.dumps(sweep_summary)
