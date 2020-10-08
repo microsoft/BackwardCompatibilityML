@@ -21,12 +21,12 @@
 }
  
 .bar {
-  fill: rgba(113, 113, 255, 0.8);
+  fill: rgba(170, 170, 198, 0.8);
 }
  
-.bar:hover {
+/*.bar:hover {
   fill: rgba(226, 75, 158, 0.8);
-}
+}*/
  
 label {
   position: absolute;
@@ -61,6 +61,11 @@ label {
   margin-right: 50px;
 }
 
+.data-selector {
+  width: 600px;
+  text-align: left;
+}
+
 .data-selector .control-subgroup {
   display: inline-block;
   margin-right: 20px;
@@ -69,4 +74,96 @@ label {
 .data-selector .control {
   display: inline-block;
   margin-right: 5px;
+}
+
+.dropdown-check-list {
+  font-size: 10px;
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-check-list .anchor {
+  font-weight: bold;
+  position: relative;
+  cursor: pointer;
+  display: inline-block;
+  padding: 5px 50px 5px 10px;
+  border: 1px solid #ccc;
+}
+
+.dropdown-check-list .anchor:after {
+  position: absolute;
+  content: "";
+  border-left: 2px solid black;
+  border-top: 2px solid black;
+  padding: 5px;
+  right: 10px;
+  top: 20%;
+  -moz-transform: rotate(-135deg);
+  -ms-transform: rotate(-135deg);
+  -o-transform: rotate(-135deg);
+  -webkit-transform: rotate(-135deg);
+  transform: rotate(-135deg);
+}
+
+.dropdown-check-list .anchor:active:after {
+  right: 8px;
+  top: 21%;
+}
+
+.dropdown-check-list ul {
+  position: absolute;
+}
+
+.dropdown-check-list ul.items {
+  padding: 2px;
+  display: none;
+  margin: 0;
+  border: 1px solid #ccc;
+  border-top: none;
+  background: white;
+  z-index: 100;
+}
+
+.dropdown-check-list ul.items li {
+  list-style: none;
+}
+
+.dropdown-check-list.visible .anchor {
+  color: #0094ff;
+}
+
+.dropdown-check-list.visible .items {
+  display: block;
+}
+
+.model-details {
+  width: 600px;
+  border-style: solid;
+  border-width: 1px;
+}
+
+.model-details-row {
+  width: 100%;
+  display: inline-block;
+  text-align: center;
+}
+
+.model-details-info {
+  display: inline-block;
+  width: 100px;
+}
+
+.model-details-info-data {
+  display: inline-block;
+  font-weight: bold;
+  font-size: 10px;
+  margin-right: 4px;
+}
+
+.model-details-info-type {
+  display: inline-block;
+  font-style: italic;
+  font-size: 10px;
+  font-weight: normal;
 }

@@ -114,11 +114,15 @@ class SweepManager(object):
         return self.last_sweep_status
 
     def get_sweep_summary(self):
-        sweep_summary = []
+        sweep_summary = {
+            "h1_performance": None,
+            "data": []
+        }
 
         if os.path.exists(f"{self.folder_name}/sweep_summary.json"):
             with open(f"{self.folder_name}/sweep_summary.json", "r") as sweep_summary_file:
-                sweep_summary = json.loads(sweep_summary_file.read())
+                loaded_sweep_summary = json.loads(sweep_summary_file.read())
+                sweep_summary.update(loaded_sweep_summary)
 
         return sweep_summary
 

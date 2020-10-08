@@ -432,6 +432,28 @@ def compatibility_scores(h1, h2, dataset, device="cpu"):
     return btc_dataset, bec_dataset
 
 
+def model_accuracy(model, dataset, device="cpu"):
+    number_of_batches = len(dataset)
+    model_performance = 0
+    with torch.no_grad():
+        for data, target in dataset:
+            if device != "cpu":
+                data = data.to(device)
+                target = target.to(device)
+            _, _, output_logsoftmax = model(data)
+            output_labels = torch.argmax(output_logsoftmax, 1)
+            if device != "cpu":
+                output_labels = output_labels.cpu()
+                target = target.cpu()
+            performance = accuracy_score(output_labels.numpy(), target.numpy())
+            model_performance += performance
+            # _clean_from_gpu([data, target])
+
+        model_performance /= number_of_batches
+
+    return model_performance
+
+
 def evaluate_model_performance_and_compatibility_on_dataset(h1, h2, dataset, performance_metric=None,
                                                             device="cpu"):
     """
@@ -686,7 +708,7 @@ def compatibility_sweep(sweeps_folder_path, number_of_epochs, h1, h2,
     if strict_imitation_loss_kwargs is None:
         strict_imitation_loss_kwargs = dict()
 
-    sweep_summary = []
+    sweep_summary_data = []
     datapoint_index = 0
     for lambda_c in np.arange(0.0, 1.0 + (lambda_c_stepsize / 2), lambda_c_stepsize):
         h2_new_error = copy.deepcopy(h2)
@@ -707,7 +729,7 @@ def compatibility_sweep(sweeps_folder_path, number_of_epochs, h1, h2,
         training_set_performance_and_compatibility["training"] = True
         training_set_performance_and_compatibility["testing"] = False
         training_set_performance_and_compatibility["datapoint_index"] = datapoint_index
-        sweep_summary.append({
+        sweep_summary_data.append({
             "datapoint_index": datapoint_index,
             "lambda_c": lambda_c,
             "training": True,
@@ -732,7 +754,7 @@ def compatibility_sweep(sweeps_folder_path, number_of_epochs, h1, h2,
         testing_set_performance_and_compatibility["training"] = False
         testing_set_performance_and_compatibility["testing"] = True
         testing_set_performance_and_compatibility["datapoint_index"] = datapoint_index
-        sweep_summary.append({
+        sweep_summary_data.append({
             "datapoint_index": datapoint_index,
             "lambda_c": lambda_c,
             "training": False,
@@ -767,7 +789,7 @@ def compatibility_sweep(sweeps_folder_path, number_of_epochs, h1, h2,
         training_set_performance_and_compatibility["training"] = True
         training_set_performance_and_compatibility["testing"] = False
         training_set_performance_and_compatibility["datapoint_index"] = datapoint_index
-        sweep_summary.append({
+        sweep_summary_data.append({
             "datapoint_index": datapoint_index,
             "lambda_c": lambda_c,
             "training": True,
@@ -792,7 +814,7 @@ def compatibility_sweep(sweeps_folder_path, number_of_epochs, h1, h2,
         testing_set_performance_and_compatibility["training"] = False
         testing_set_performance_and_compatibility["testing"] = True
         testing_set_performance_and_compatibility["datapoint_index"] = datapoint_index
-        sweep_summary.append({
+        sweep_summary_data.append({
             "datapoint_index": datapoint_index,
             "lambda_c": lambda_c,
             "training": False,
@@ -811,6 +833,11 @@ def compatibility_sweep(sweeps_folder_path, number_of_epochs, h1, h2,
 
         if percent_complete_queue is not None:
             percent_complete_queue.put((datapoint_index) / number_of_trainings)
+
+    sweep_summary = {
+        "data": sweep_summary_data,
+        "h1_performance": model_accuracy(h1, test_set)
+    }
 
     sweep_summary_data = json.dumps(sweep_summary)
     sweep_summary_data_file = open(f"{sweeps_folder_path}/sweep_summary.json", "w")
