@@ -89,6 +89,17 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
       var b = errorPartition[1];
       var ab = errorPartition[2];
 
+      var totalErrors = a + b - ab
+      var aProportion = 0.0
+      var bProportion = 0.0
+      var abProportion = 0.0
+
+      if (totalErrors > 0) {
+        aProportion = a / totalErrors;
+        bProportion = b / totalErrors;
+        abProportion = ab / totalErrors;
+      }
+
       var data = [
         {"name": "Ra", "area": a},
         {"name": "Rb", "area": b},
@@ -236,7 +247,7 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
           .attr("stroke", "black")
           .attr("stroke-width", "1px")
           .on("mouseover", function() {
-            tooltip.text(a.toFixed(2))
+            tooltip.text(`${a} (${(aProportion * 100).toFixed(0)}%)`)
               .style("opacity", 0.8);
 
             bringToTop("Ra");
@@ -264,7 +275,7 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
           .attr("stroke", "black")
           .attr("stroke-width", "1px")
           .on("mouseover", function() {
-            tooltip.text(b.toFixed(2))
+            tooltip.text(`${b} (${(bProportion * 100).toFixed(0)}%)`)
               .style("opacity", 0.8);
 
             bringToTop("Rb");
@@ -293,7 +304,7 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
         .attr("stroke-width", "1px")
         .attr("fill", "rgba(241, 241, 127, 0.8)")
           .on("mouseover", function() {
-            tooltip.text(ab.toFixed(2))
+            tooltip.text(`${ab} (${(abProportion * 100).toFixed(0)}%)`)
               .style("opacity", 0.8);
 
             bringToTop("intersectionRaRb");

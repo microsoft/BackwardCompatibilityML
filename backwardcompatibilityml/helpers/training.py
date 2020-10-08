@@ -313,10 +313,10 @@ def get_error_instance_indices(model, batched_evaluation_data, batched_evaluatio
         return model_diff.nonzero().view(-1).tolist()
 
 
-def get_normalized_model_error_overlap(h1, h2, batched_evaluation_data, batched_evaluation_target,
-                                       device="cpu"):
+def get_model_error_overlap(h1, h2, batched_evaluation_data, batched_evaluation_target,
+                            device="cpu"):
     """
-    Return the fraction of errors of each model and the fraction of errors common to both models,
+    Return the number of errors of each model and the number of errors common to both models,
     all with respect to the total number of errors of each model.
 
     Args:
@@ -330,12 +330,10 @@ def get_normalized_model_error_overlap(h1, h2, batched_evaluation_data, batched_
             to set this to "cuda". This makes sure that the input and target
             tensors are transferred to the GPU during training.
     Returns:
-        |  If there are any errors at all it returns a triple of the form 
-            proportion_of_error_due_to_h1, 
-            proportion_of_error_due_to_h2, 
-            proportion_of_error_due_to_h1_and_h2
-        |  If there are no errors at all it returns the triple 
-            0, 0, 0
+        A triple of the form:
+            number_of_errors_due_to_h1,
+            number_of_errors_due_to_h2,
+            number_of_errors_due_to_h1_and_h2
     """
     h1_error_indices = get_error_instance_indices(
         h1, batched_evaluation_data, batched_evaluation_target, device=device)
@@ -344,12 +342,8 @@ def get_normalized_model_error_overlap(h1, h2, batched_evaluation_data, batched_
     h1_size = len(h1_error_indices)
     h2_size = len(h2_error_indices)
     h1_and_h2_size = len(set(h1_error_indices).intersection(set(h2_error_indices)))
-    total = h1_size + h2_size - h1_and_h2_size
 
-    if total > 0:
-        return (h1_size / total), (h2_size / total), (h1_and_h2_size / total)
-
-    return 0, 0, 0
+    return h1_size, h2_size, h1_and_h2_size
 
 
 def get_error_fraction_by_class(model, batched_evaluation_data, batched_evaluation_target,
@@ -474,29 +468,25 @@ def evaluate_model_performance_and_compatibility_on_dataset(h1, h2, dataset, per
         the error compatibility score of h2 with respect to h1.
     """
     number_of_batches = len(dataset)
-    h1_dataset_error_fraction = 0
-    h2_dataset_error_fraction = 0
-    h1_and_h2_dataset_error_fraction = 0
+    h1_dataset_error_count = 0
+    h2_dataset_error_count = 0
+    h1_and_h2_dataset_error_count = 0
     h2_dataset_error_fraction_by_class = {}
     classes = set()
     for data, target in dataset:
         classes = classes.union(target.tolist())
-        h1_error_fraction, h2_error_fraction, h1_and_h2_error_fraction =\
-            get_normalized_model_error_overlap(h1, h2, data, target, device=device)
+        h1_error_count_batch, h2_error_count_batch, h1_and_h2_error_count_batch =\
+            get_model_error_overlap(h1, h2, data, target, device=device)
         h2_error_fraction_by_class =\
             get_error_fraction_by_class(h2, data, target, device=device)
-        h1_dataset_error_fraction += h1_error_fraction
-        h2_dataset_error_fraction += h2_error_fraction
-        h1_and_h2_dataset_error_fraction += h1_and_h2_error_fraction
+        h1_dataset_error_count += h1_error_count_batch
+        h2_dataset_error_count += h2_error_count_batch
+        h1_and_h2_dataset_error_count += h1_and_h2_error_count_batch
         for class_label, error_fraction in h2_error_fraction_by_class.items():
             if class_label in h2_dataset_error_fraction_by_class:
                 h2_dataset_error_fraction_by_class[class_label] += error_fraction
             else:
                 h2_dataset_error_fraction_by_class[class_label] = error_fraction
-
-    h1_dataset_error_fraction /= number_of_batches
-    h2_dataset_error_fraction /= number_of_batches
-    h1_and_h2_dataset_error_fraction /= number_of_batches
 
     for class_label, error_fraction in h2_dataset_error_fraction_by_class.items():
         h2_dataset_error_fraction_by_class[class_label] /= number_of_batches
@@ -532,9 +522,9 @@ def evaluate_model_performance_and_compatibility_on_dataset(h1, h2, dataset, per
 
     return {
         "models_error_overlap": [
-            h1_dataset_error_fraction,
-            h2_dataset_error_fraction,
-            h1_and_h2_dataset_error_fraction
+            h1_dataset_error_count,
+            h2_dataset_error_count,
+            h1_and_h2_dataset_error_count
         ],
 
         "h2_error_fraction_by_class": h2_ds_error_fraction_by_class,
