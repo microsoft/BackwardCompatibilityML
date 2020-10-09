@@ -48,7 +48,7 @@ class IncompatiblePointDistribution extends Component<IncompatiblePointDistribut
 
     var margin = { top: 15, right: 15, bottom: 50, left: 55 }
     var h = 250 - margin.top - margin.bottom
-    var w = 250 - margin.left - margin.right
+    var w = 250;
 
     // SVG
     d3.select("#incompatiblepointdistribution").remove();
@@ -64,7 +64,14 @@ class IncompatiblePointDistribution extends Component<IncompatiblePointDistribut
        .text("Distribution of Incompatible Points")
 
     if (this.props.selectedDataPoint != null) {
-      var dataRows = this.props.selectedDataPoint.h2_error_fraction_by_class;
+      // Sort the data into the dataRows based on the ordering of the sorted classes
+      var dataRows = [];
+      for (var i=0; i < this.props.selectedDataPoint.sorted_classes.length; i++) {
+        var instanceClass = this.props.selectedDataPoint.sorted_classes[i];
+        var dataRow = this.props.selectedDataPoint.h2_error_fraction_by_class.filter(
+          dataDict => (dataDict["class"] == instanceClass)).pop();
+        dataRows.push(dataRow);
+      }
 
       var xScale = d3.scaleBand().range([0, w]).padding(0.4),
           yScale = d3.scaleLinear().range([h, 0]);
