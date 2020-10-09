@@ -49,7 +49,7 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
 
     var margin = { top: 15, right: 15, bottom: 50, left: 55 }
     var h = 250 - margin.top - margin.bottom
-    var w = 250 - margin.left - margin.right
+    var w = 320 - margin.left - margin.right
 
     var tooltip = d3.select("#venntooltip");
 
@@ -60,7 +60,7 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
         .attr('height',h + margin.top + margin.bottom)
         .attr('width',w + margin.left + margin.right)
       .append('g')
-        .attr('transform',`translate(0,${margin.top + 15})`)
+        .attr('transform',`translate(55,${margin.top + 15})`)
 
     svg.append('text')
       .attr('id','xAxisLabel')
@@ -76,7 +76,7 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
     svg.append("rect")
       .attr("x", 0)
       .attr("y", 0)
-      .attr("width", w + margin.left + margin.right)
+      .attr("width", 240)
       .attr("height", h)
       .attr("fill", "rgba(255, 255, 255, 0.8)")
       .attr("stroke", "black")
@@ -333,7 +333,7 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
 
   render() {
     return (
-      <div className="plot" ref={this.node} id="venndiagramplot">
+      <div className="plot plot-venn" ref={this.node} id="venndiagramplot">
         <div className="tooltip" id="venntooltip" />
       </div>
     );

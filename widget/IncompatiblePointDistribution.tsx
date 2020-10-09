@@ -118,7 +118,7 @@ class IncompatiblePointDistribution extends Component<IncompatiblePointDistribut
 
   render() {
     return (
-      <div className="plot" ref={this.node} />
+      <div className="plot plot-distribution" ref={this.node} />
     );
   }
 }
