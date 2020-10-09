@@ -37,8 +37,6 @@ label {
 .plot {
   position: relative;
   display: inline-block;
-/*  margin-left: 20px;
-  margin-right:20px;*/
 }
 
 .plot svg {
