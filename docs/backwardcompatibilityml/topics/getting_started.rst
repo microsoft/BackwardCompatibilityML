@@ -33,10 +33,16 @@ You may want to `install Anaconda <https://www.anaconda.com/distribution/>`_
 
     **3. Install the Backward Compatibility ML library:**
 
-        .. code-block:: bash
+        On Linux:
+            .. code-block:: bash
+            
+                pip install backwardcompatibilityml
 
-            pip install -U backwardcompatibilityml
+        On Windows:
+            .. code-block:: bash
 
+                pip install backwardcompatibilityml -f https://download.pytorch.org/whl/torch_stable.html
+            
     **4. Import the `backwardcompatibilityml` package in your code. For example:**
 
         .. code-block:: python
@@ -64,11 +70,26 @@ To download and run the examples, follow these steps:
 
             git clone https://github.com/microsoft/BackwardCompatibilityML.git
 
-**2. Start your Jupyter Notebooks server and load an example notebook under the `examples` folder:**
-      
+**2. Install the requirements for the examples:**
+
         .. code-block:: bash
 
             cd BackwardCompatibilityML
+
+        On Linux:
+            .. code-block:: bash
+            
+                pip install -r example-requirements.txt
+
+        On Windows:
+            .. code-block:: bash
+
+                pip install -r example-requirements.txt -f https://download.pytorch.org/whl/torch_stable.html
+            
+**3. Start your Jupyter Notebooks server and load an example notebook under the `examples` folder:**
+      
+        .. code-block:: bash
+
             cd examples
             jupyter notebook
 

@@ -119,3 +119,19 @@ def remove_memory_hooks(hook_handles):
     """
     for hook_handle in hook_handles:
         hook_handle.remove()
+
+
+def get_class_probabilities(batch_label_tensor):
+    bin_count = torch.bincount(batch_label_tensor)
+    return torch.tensor(bin_count, dtype=torch.float32) / torch.sum(bin_count)
+
+
+def labels_to_probabilities(batch_class_labels, num_classes=None, batch_size=None):
+    probabilities = torch.zeros(num_classes * batch_size, dtype=torch.float32)
+    probabilities = probabilities.view(batch_size, num_classes)
+    probabilities[torch.arange(probabilities.size(0)), batch_class_labels] = 1.0
+    return probabilities
+
+
+def sigmoid_to_labels(batch_sigmoids, discriminant_pivot=0.5):
+    return torch.tensor((batch_sigmoids >= discriminant_pivot), dtype=torch.int)

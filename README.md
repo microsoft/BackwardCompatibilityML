@@ -45,6 +45,55 @@ To run tests, make sure that you are in the project root folder and do:
 
 Check [CONTRIBUTING](CONTRIBUTING.md) page.
 
+# Research and Acknowledgements 
+This project materializes and implements ideas from ongoing research on Backward Compatibility in Machine Learning and Model Comparison. Here is a list of development and research contributors:
+
+**Current Project Leads**: [Xavier Fernandes](https://www.linkedin.com/in/praphat-xavier-fernandes-86574814/), [Juan Lema](http://juanlema.com), [Besmira Nushi](https://besmiranushi.com/)
+
+**Research Contributors**: [Gagan Bansal](https://homes.cs.washington.edu/~bansalg/), [Megha Srivastava](https://web.stanford.edu/~meghas/), [Besmira Nushi](https://besmiranushi.com/
+), [Ece Kamar](https://www.ecekamar.com/), [Eric Horvitz](http://www.erichorvitz.com/), [Dan Weld](https://www.cs.washington.edu/people/faculty/weld), [Shital Shah](https://shitalshah.com/)
+
+**References**
+
+_"Updates in Human-AI Teams: Understanding and Addressing the Performance/Compatibility Tradeoff."_ Gagan Bansal, Besmira Nushi, Ece Kamar, Daniel S Weld, Walter S Lasecki, Eric Horvitz; AAAI 2019. [Pdf](https://www.microsoft.com/en-us/research/publication/updates-in-human-ai-teams-understanding-and-addressing-the-performance-compatibility-tradeoff/)
+
+<pre>
+@inproceedings{bansal2019updates,
+  title={Updates in human-ai teams: Understanding and addressing the performance/compatibility tradeoff},
+  author={Bansal, Gagan and Nushi, Besmira and Kamar, Ece and Weld, Daniel S and Lasecki, Walter S and Horvitz, Eric},
+  booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume={33},
+  pages={2429--2437},
+  year={2019}
+}
+</pre>
+
+_"An Empirical Analysis of Backward Compatibility in Machine Learning Systems."_ Megha Srivastava, Besmira Nushi, Ece Kamar, Shital Shah, Eric Horvitz; KDD 2020. [Pdf](https://www.microsoft.com/en-us/research/publication/an-empirical-analysis-of-backward-compatibility-in-machine-learning-systems/)
+
+<pre>
+@inproceedings{srivastava2020empirical,
+  title={An Empirical Analysis of Backward Compatibility in Machine Learning Systems},
+  author={Srivastava, Megha and Nushi, Besmira and Kamar, Ece and Shah, Shital and Horvitz, Eric},
+  booktitle={Proceedings of the 26th ACM SIGKDD International Conference on Knowledge Discovery \& Data Mining},
+  pages={3272--3280},
+  year={2020}
+}
+</pre>
+
+_"Towards Accountable AI: Hybrid Human-Machine Analyses for Characterizing System Failure."_ Besmira Nushi, Ece Kamar, Eric Horvitz; HCOMP 2018. [Pdf](https://www.microsoft.com/en-us/research/publication/towards-accountable-ai-hybrid-human-machine-analyses-for-characterizing-system-failure/)
+
+<pre>
+@article{nushi2018towards,
+  title={Towards accountable ai: Hybrid human-machine analyses for characterizing system failure},
+  author={Nushi, Besmira and Kamar, Ece and Horvitz, Eric},
+  journal={ Proceedings of the Sixth AAAI Conference on Human Computation and
+               Crowdsourcing},
+  pages = {126--135},
+  year={2018}
+}
+</pre>
+
+
 # Microsoft Open Source Code of Conduct
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).

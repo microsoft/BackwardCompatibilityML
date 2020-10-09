@@ -4,12 +4,14 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import PerformanceCompatibility from "./PerformanceCompatibility.tsx";
+import Legend from "./Legend.tsx";
 import IntersectionBetweenModelErrors from "./IntersectionBetweenModelErrors.tsx";
 import IncompatiblePointDistribution from "./IncompatiblePointDistribution.tsx";
 import RawValues from "./RawValues.tsx";
 import ErrorInstancesTable from "./ErrorInstancesTable.tsx";
 import DataSelector from "./DataSelector.tsx"
 import SweepManager from "./SweepManager.tsx";
+import SelectedModelDetails from "./SelectedModelDetails.tsx";
 import { bindActionCreators } from "redux";
 import { connect } from 'react-redux';
 import {
@@ -58,7 +60,7 @@ function Container({
       return (
         <div>Loading...</div>
       );
-    } else if (error == null && data.length == 0 && sweepStatus == null) {
+    } else if (error == null && data.data.length == 0 && sweepStatus == null) {
       return (
         <div className="container">
             <div className="row">
@@ -90,11 +92,17 @@ function Container({
               toggleNewError={toggleNewError}
               toggleStrictImitation={toggleStrictImitation}
             />
+            <Legend
+              testing={testing}
+              training={training}
+              newError={newError}
+              strictImitation={strictImitation}
+            />
           </div>
           <div className="row">
-            {(selectedDataPoint != null)? (<div>lambda_c: {selectedDataPoint.lambda_c}</div>): (<div />)}
             <PerformanceCompatibility
-              data={data}
+              data={data.data}
+              h1Performance={data.h1_performance}
               training={training}
               testing={testing}
               newError={newError}
@@ -102,9 +110,11 @@ function Container({
               compatibilityScoreType="btc"
               selectDataPoint={selectDataPoint}
               getModelEvaluationData={getModelEvaluationData}
+              selectedDataPoint={selectedDataPoint}
             />
             <PerformanceCompatibility
-              data={data}
+              data={data.data}
+              h1Performance={data.h1_performance}
               training={training}
               testing={testing}
               newError={newError}
@@ -112,17 +122,19 @@ function Container({
               compatibilityScoreType="bec"
               selectDataPoint={selectDataPoint}
               getModelEvaluationData={getModelEvaluationData}
+              selectedDataPoint={selectedDataPoint}
             />
           </div>
+          {(selectedDataPoint != null)? <SelectedModelDetails btc={selectedDataPoint.btc} bec={selectedDataPoint.bec} performance={selectedDataPoint.h2_performance} lambda_c={selectedDataPoint.lambda_c} />: null}
           <div className="row">
             <IntersectionBetweenModelErrors selectedDataPoint={selectedDataPoint} />
             <IncompatiblePointDistribution selectedDataPoint={selectedDataPoint} />
           </div>
           <div className="row">
-            <RawValues data={data} />
+            <RawValues data={data.data} />
           </div>
           <div className="row">
-            <ErrorInstancesTable data={data} />
+            <ErrorInstancesTable data={data.data} />
           </div>
       </div>
     );

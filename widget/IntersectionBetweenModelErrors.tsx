@@ -4,6 +4,7 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import * as d3 from "d3";
+import { bisect } from "./optimization.tsx";
 
 
 type IntersectionBetweenModelErrorsState = {
@@ -50,6 +51,8 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
     var h = 250 - margin.top - margin.bottom
     var w = 250 - margin.left - margin.right
 
+    var tooltip = d3.select("#venntooltip");
+
     // SVG
     d3.select("#venndiagram").remove();
     var svg = body.append('svg')
@@ -86,6 +89,12 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
       var b = errorPartition[1];
       var ab = errorPartition[2];
 
+      var data = [
+        {"name": "Ra", "area": a},
+        {"name": "Rb", "area": b},
+        {"name": "intersectionRaRb", "area": ab}
+      ]
+
       let Ra;
       let Rb;
       let Aab;
@@ -102,39 +111,220 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
         Aab = ab * x;
       }
 
-      let d = (Ra + Rb) / 1.5;
-      if (ab == a || ab == b) {
-        d = Math.abs(Ra - Rb) / 1.5;
-      } else if (ab == 0) {
-        d = Ra + Rb + 10;
+      function areaIntersection(r1, r2, dist) {
+        var r = Math.min(r1, r2);
+        var R = Math.max(r1, r2);
+        if (dist == 0) {
+          return (3.14 * Math.pow(r, 2));
+        } else if (dist >= (R + r)) {
+          return 0;
+        }
+
+        var sectorAreas = Math.pow(r, 2) * Math.acos((Math.pow(dist, 2) +
+          Math.pow(r, 2) - Math.pow(R, 2)) / (2 * dist * r)) +
+          Math.pow(R, 2) * Math.acos((Math.pow(dist, 2) + Math.pow(R, 2) - Math.pow(r, 2)) / (2 * dist * R));
+
+        var triangleAreas = 1/2 * Math.sqrt((-dist + r + R) * (dist + r - R) * (dist - r + R) * (dist + r + R));
+        var intersectionArea = sectorAreas - triangleAreas;
+
+        return intersectionArea;
       }
+
+      var r = Math.min(Ra, Rb);
+      var R = Math.max(Ra, Rb);
+
+      function aIntersection(dist) {
+        return (areaIntersection(Ra, Rb, dist) - Aab);
+      }
+
+      let d = bisect(aIntersection, (r + R - 0.00001), (R - r + 0.00001));
 
       var circleRad = 50;
       var xCenter = w/4 + margin.left;
       var yCenter = h/2
-      svg.append("circle")
+      var xCenter2 = xCenter + d;
+
+      var green = "rgba(175, 227, 141, 0.8)";
+      var red = "rgba(206, 160, 205, 0.8)";
+      var yellow = "rgba(241, 241, 127, 0.8)";
+
+      var areas = svg.append("g").attr("id", "areas");
+      var legendEntries = [
+        {"label": "Progress", "color": green},
+        {"label": "Regress", "color": red},
+        {"label": "Common", "color": yellow},
+      ];
+
+      function bringToTop(name) {
+        areas.selectAll("g")
+          .sort(function(a, b) {
+            if (a.name == "intersectionRaRb") {
+              return 1;
+            } else if (b.name == "intersectionRaRb") {
+              return -1;
+            } else if (a.name == name) {
+              return 1;
+            } else {
+              return -1;
+            }
+          });
+      }
+
+      var vennLegend = svg.append("g").attr("id", "vennlegend");
+
+      vennLegend.append("rect")
+        .attr("id", "progress")
+        .attr("width", "10px")
+        .attr("height", "10px")
+        .attr("x", "10px")
+        .attr("y", "5px");
+
+      vennLegend.append("rect")
+        .attr("id", "regress")
+        .attr("width", "10px")
+        .attr("height", "10px")
+        .attr("x", "90px")
+        .attr("y", "5px");
+
+      vennLegend.append("rect")
+        .attr("id", "commonerror")
+        .attr("width", "10px")
+        .attr("height", "10px")
+        .attr("x", "170px")
+        .attr("y", "5px");
+
+      vennLegend.append("text")
+        .attr("x", "25px")
+        .attr("y", "12px")
+        .attr("font-size", "10px")
+        .attr("text-anchor", "left")
+        .style("alignment-baseline", "middle");
+
+      vennLegend.append("text")
+        .attr("x", "105px")
+        .attr("y", "12px")
+        .attr("font-size", "10px")
+        .attr("text-anchor", "left")
+        .style("alignment-baseline", "middle");
+
+      vennLegend.append("text")
+        .attr("x", "185px")
+        .attr("y", "12px")
+        .attr("font-size", "10px")
+        .attr("text-anchor", "left")
+        .style("alignment-baseline", "middle");
+
+      vennLegend.selectAll("rect")
+        .data(legendEntries)
+        .attr("fill", function(d) {
+          return d["color"];
+        });
+
+      vennLegend.selectAll("text")
+        .data(legendEntries)
+        .text(function(d) {
+          return d["label"];
+        });
+
+      areas.append("circle")
           .attr("r", Ra)
           .attr('transform',
               "translate(" +
               xCenter + "," +
               yCenter + ")")
-          .attr("fill", "rgba(170, 170, 255, 0.8)");
+          .attr("fill", "rgba(175, 227, 141, 0.8)")
+          .attr("stroke", "black")
+          .attr("stroke-width", "1px")
+          .on("mouseover", function() {
+            tooltip.text(a.toFixed(2))
+              .style("opacity", 0.8);
 
-      var xCenter2 = xCenter + d;
-      svg.append("circle")
+            bringToTop("Ra");
+
+            d3.select(this).attr("stroke-width", "2px");
+          })
+          .on("mousemove", function() {
+            var vennDiagramPlot = document.getElementById("venndiagramplot");
+            var coords = d3.mouse(vennDiagramPlot);
+            tooltip.style("left", `${coords[0] - (margin.left + margin.right)/2}px`)
+              .style("top", `${coords[1] - (margin.top + margin.bottom)/2}px`);
+          })
+          .on("mouseout", function() {
+            tooltip.style("opacity", 0);
+            d3.select(this).attr("stroke-width", "1px");
+          });
+
+      areas.append("circle")
           .attr("r", Rb)
           .attr('transform',
               "translate(" +
               xCenter2 + "," +
               yCenter + ")")
-          .attr("fill", "rgba(206, 160, 205, 0.8)");
+          .attr("fill", "rgba(206, 160, 205, 0.8)")
+          .attr("stroke", "black")
+          .attr("stroke-width", "1px")
+          .on("mouseover", function() {
+            tooltip.text(b.toFixed(2))
+              .style("opacity", 0.8);
+
+            bringToTop("Rb");
+
+            d3.select(this).attr("stroke-width", "2px");
+          })
+          .on("mousemove", function() {
+            var vennDiagramPlot = document.getElementById("venndiagramplot");
+            var coords = d3.mouse(vennDiagramPlot);
+            tooltip.style("left", `${coords[0] - (margin.left + margin.right)/2}px`)
+              .style("top", `${coords[1] - (margin.top + margin.bottom)/2}px`);
+          })
+          .on("mouseout", function() {
+            tooltip.style("opacity", 0);
+            d3.select(this).attr("stroke-width", "1px");
+          });
+
+      var path = areas.append("path");
+      var myPath = d3.path();
+      myPath.arc(xCenter, yCenter, Ra, -Math.acos((Math.pow(d, 2) + Math.pow(Ra, 2) - Math.pow(Rb, 2))/(2 * d *Ra)), Math.acos((Math.pow(d, 2) + Math.pow(Ra, 2) - Math.pow(Rb, 2))/(2 * d *Ra)));
+      myPath.arc(xCenter2, yCenter, Rb, Math.PI - Math.acos((Math.pow(d, 2) + Math.pow(Rb, 2) - Math.pow(Ra, 2))/(2 * d *Rb)), Math.PI + Math.acos((Math.pow(d, 2) + Math.pow(Rb, 2) - Math.pow(Ra, 2))/(2 * d *Rb)));
+      myPath.closePath();
+
+      path.attr("d", myPath)
+        .attr("stroke", "black")
+        .attr("stroke-width", "1px")
+        .attr("fill", "rgba(241, 241, 127, 0.8)")
+          .on("mouseover", function() {
+            tooltip.text(ab.toFixed(2))
+              .style("opacity", 0.8);
+
+            bringToTop("intersectionRaRb");
+
+            d3.select(this).attr("stroke-width", "2px");
+            d3.select(this).attr("stroke", "black");
+          })
+          .on("mousemove", function() {
+            var vennDiagramPlot = document.getElementById("venndiagramplot");
+            var coords = d3.mouse(vennDiagramPlot);
+            tooltip.style("left", `${coords[0] - (margin.left + margin.right)/2}px`)
+              .style("top", `${coords[1] - (margin.top + margin.bottom)/2}px`);
+          })
+          .on("mouseout", function() {
+            tooltip.style("opacity", 0);
+            d3.select(this).attr("stroke-width", "1px");
+            d3.select(this).attr("stroke", "black");
+          });
+
+      areas.selectAll("g")
+        .data(data);
+
     }
 
   }
 
   render() {
     return (
-      <div className="plot" ref={this.node} />
+      <div className="plot" ref={this.node} id="venndiagramplot">
+        <div className="tooltip" id="venntooltip" />
+      </div>
     );
   }
 }

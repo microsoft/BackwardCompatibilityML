@@ -8,18 +8,22 @@ import * as d3 from "d3";
 
 type PerformanceCompatibilityState = {
   data: any,
-  testing: boolean,
-  training: boolean,
-  newError: boolean,
-  strictImitation: boolean
-}
-
-type PerformanceCompatibilityProps = {
-  data: any,
+  h1Performance: any,
   testing: boolean,
   training: boolean,
   newError: boolean,
   strictImitation: boolean,
+  selectedDataPoint: any
+}
+
+type PerformanceCompatibilityProps = {
+  data: any,
+  h1Performance: any,
+  testing: boolean,
+  training: boolean,
+  newError: boolean,
+  strictImitation: boolean,
+  selectedDataPoint: any,
   compatibilityScoreType: string,
   selectDataPoint: (d: any) => void,
   getModelEvaluationData: (evaluationId: number) => void
@@ -30,11 +34,13 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
     super(props);
 
     this.state = {
-      data: this.props.data,
-      testing: this.props.testing,
-      training: this.props.training,
-      newError: this.props.newError,
-      strictImitation: this.props.strictImitation
+      data: props.data,
+      h1Performance: props.h1Performance,
+      testing: props.testing,
+      training: props.training,
+      newError: props.newError,
+      strictImitation: props.strictImitation,
+      selectedDataPoint: props.selectedDataPoint
     };
 
     this.node = React.createRef<HTMLDivElement>();
@@ -70,7 +76,8 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
     var h = 250 - margin.top - margin.bottom
     var w = 250 - margin.left - margin.right
 
-    var formatPercent = d3.format('.3f');
+    var formatPercentX = d3.format('.3f');
+    var formatPercentY = d3.format('.2f');
     var colorMap = {
       "training": {
         "new-error": "rgba(170, 170, 255, 0.8)",
@@ -125,6 +132,13 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
         ])
       .range([h,0])
 
+    // d3.select(`#lambdactooltip-${_this.props.compatibilityScoreType}`).remove();
+    // var tooltip = body.append("div")
+    //   .attr("class", "lambdactooltip")
+    //   .attr("id", `lambdactooltip-${_this.props.compatibilityScoreType}`)
+    //   .style("position", "absolute");
+    var tooltip = d3.select(`#lambdactooltip-${_this.props.compatibilityScoreType}`);
+
     // SVG
     d3.select(`#${this.props.compatibilityScoreType}`).remove();
     var svg = body.append('svg')
@@ -136,13 +150,13 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
     // X-axis
     var xAxis = d3.axisBottom()
       .scale(xScale)
-      .tickFormat(formatPercent)
+      .tickFormat(formatPercentX)
       .ticks(5);
 
     // Y-axis
     var yAxis = d3.axisLeft()
       .scale(yScale)
-      .tickFormat(formatPercent)
+      .tickFormat(formatPercentY)
       .ticks(5);
 
     // X-axis
@@ -179,6 +193,15 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
         .attr("font-size", "20px")
         .attr("fill", "black");
 
+    svg.append("line")
+      .attr("x1", xScale(d3.min(allDataPoints,function (d) { return d[_this.props.compatibilityScoreType] }) - 0.005))
+      .attr("y1", yScale(this.props.h1Performance))
+      .attr("x2", xScale(d3.max(allDataPoints,function (d) { return d[_this.props.compatibilityScoreType] })))
+      .attr("y2", yScale(this.props.h1Performance))
+      .attr("stroke", "black")
+      .attr("stroke-width", "1px")
+      .attr("stroke-dasharray", "5,5");
+
     function drawCircles() {
       // var allDataPoints = [];
       // if (_this.state.training && _this.state.newError) {
@@ -203,9 +226,23 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
         .append('circle')
           .attr('cx',function (d) { return xScale(d[_this.props.compatibilityScoreType]) })
           .attr('cy',function (d) { return yScale(d['performance']) })
-          .attr('r','4')
+          .attr('r', function(d) {
+            var datapointIndex = (_this.props.selectedDataPoint != null)? _this.props.selectedDataPoint.datapoint_index: null;
+            if (d.datapoint_index == datapointIndex) {
+              return 8;
+            } else {
+              return 4;
+            }
+          })
           .attr('stroke','black')
-          .attr('stroke-width',1)
+          .attr('stroke-width', function(d) {
+            var datapointIndex = (_this.props.selectedDataPoint != null)? _this.props.selectedDataPoint.datapoint_index: null;
+            if (d.datapoint_index == datapointIndex) {
+              return 3;
+            } else {
+              return 1;
+            }
+          })
           .attr('fill',function (d,i) {
             if (d["training"] && d["new-error"]) {
               return colorMap["training"]["new-error"];
@@ -223,15 +260,32 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
               .duration(500)
               .attr('r',8)
               .attr('stroke-width',3);
+
+            tooltip.text(`lambda ${d["lambda_c"].toFixed(2)}`)
+              .style("opacity", 0.8);
           })
-          .on('mouseout', function () {
-            d3.select(this)
-              .transition()
-              .duration(500)
-              .attr('r',4)
-              .attr('stroke-width',1);
+          .on('mouseout', function (d) {
+            var datapointIndex = (_this.props.selectedDataPoint != null)? _this.props.selectedDataPoint.datapoint_index: null;
+            if (d.datapoint_index != datapointIndex) {
+              d3.select(this)
+                .transition()
+                .duration(500)
+                .attr('r',4)
+                .attr('stroke-width',1);
+             }
+
+            tooltip.style("opacity", 0);
+            tooltip.text("");
           })
-          .on('click', (d, i) => {_this.props.getModelEvaluationData(d["datapoint_index"]);});
+          .on("mousemove", function() {
+            var scatterPlot = document.getElementById(`scatterplot-${_this.props.compatibilityScoreType}`);
+            var coords = d3.mouse(scatterPlot);
+            tooltip.style("left", `${coords[0] - (margin.left + margin.right)/2 - 40}px`)
+              .style("top", `${coords[1] - (margin.top + margin.bottom)/2}px`);
+          })
+          .on('click', (d, i) => {
+            _this.props.getModelEvaluationData(d["datapoint_index"]);
+          });
     }
 
     drawCircles();
@@ -239,7 +293,9 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
 
   render() {
     return (
-      <div className="plot" ref={this.node} />
+      <div className="plot" ref={this.node} id={`scatterplot-${this.props.compatibilityScoreType}`}>
+        <div className="tooltip" id={`lambdactooltip-${this.props.compatibilityScoreType}`} />
+      </div>
     );
   }
 }
