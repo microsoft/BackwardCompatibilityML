@@ -64,7 +64,7 @@ const devConfig = {
     hints: false
   },
   devServer: {
-    contentBase: './dist'
+    contentBase: path.resolve(__dirname, 'backwardcompatibilityml/widget/resources')
   },
   plugins: [  
     new webpack.ProvidePlugin({
@@ -104,8 +104,8 @@ const devConfig = {
     }
   },
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'widget-build.js'
+    path: path.resolve(__dirname, 'backwardcompatibilityml/widget/resources'),
+    filename: 'widget-build-dev.js'
   },
 };
 

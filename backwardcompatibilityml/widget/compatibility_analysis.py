@@ -149,51 +149,69 @@ class CompatibilityAnalysis(object):
             strict_imitation_loss_kwargs=strict_imitation_loss_kwargs,
             device=device)
 
-        resource_package = __name__
-        javascript_path = '/'.join(('resources', 'widget-build.js'))
-        css_path = '/'.join(('resources', 'widget.css'))
-        html_template_path = '/'.join(('resources', 'widget.html'))
-        widget_javascript = pkg_resources.resource_string(
-            resource_package, javascript_path).decode("utf-8")
-        widget_css = pkg_resources.resource_string(
-            resource_package, css_path).decode("utf-8")
-        app_html_template_string = pkg_resources.resource_string(
-            resource_package, html_template_path).decode("utf-8")
-
         api_service_environment = build_environment_params(self.flask_service.env)
         api_service_environment["port"] = self.flask_service.port
-
-        app_html_template = Template(app_html_template_string)
-        html_string = app_html_template.render(
-            widget_css=widget_css,
-            widget_javascript=widget_javascript,
-            api_service_environment=json.dumps(api_service_environment),
-            data=json.dumps(None))
+        html_string = render_widget_html('widget-build.js', api_service_environment=api_service_environment)
 
         self.html_widget = HTML(html_string)
         display(self.html_widget)
 
-        @FlaskHelper.app.route("/api/v1/start_sweep", methods=["POST"])
-        def start_sweep():
-            self.sweep_manager.start_sweep()
-            return {
-                "running": self.sweep_manager.sweep_thread.is_alive(),
-                "percent_complete": self.sweep_manager.get_sweep_status()
-            }
+        init_app_routes(FlaskHelper.app, self.sweep_manager)
 
-        @FlaskHelper.app.route("/api/v1/sweep_status", methods=["GET"])
-        def get_sweep_status():
-            return {
-                "running": self.sweep_manager.sweep_thread.is_alive(),
-                "percent_complete": self.sweep_manager.get_sweep_status()
-            }
 
-        @FlaskHelper.app.route("/api/v1/sweep_summary", methods=["GET"])
-        def get_data():
-            return Response(
-                json.dumps(self.sweep_manager.get_sweep_summary()),
-                mimetype="application/json")
+def render_widget_html(widget_js_name, api_service_environment=None):
+    resource_package = __name__
+    javascript_path = '/'.join(('resources', widget_js_name))
+    css_path = '/'.join(('resources', 'widget.css'))
+    html_template_path = '/'.join(('resources', 'widget.html'))
+    widget_javascript = pkg_resources.resource_string(
+        resource_package, javascript_path).decode("utf-8")
+    widget_css = pkg_resources.resource_string(
+        resource_package, css_path).decode("utf-8")
+    app_html_template_string = pkg_resources.resource_string(
+        resource_package, html_template_path).decode("utf-8")
 
-        @FlaskHelper.app.route("/api/v1/evaluation_data/<int:evaluation_id>")
-        def get_evaluation(evaluation_id):
-            return self.sweep_manager.get_evaluation(evaluation_id)
+    app_html_template = Template(app_html_template_string)
+    return app_html_template.render(
+        widget_css=widget_css,
+        widget_javascript=widget_javascript,
+        api_service_environment=json.dumps(api_service_environment),
+        data=json.dumps(None))
+
+
+def init_app_routes(app, sweep_manager):
+    @app.route("/api/v1/start_sweep", methods=["POST"])
+    def start_sweep():
+        sweep_manager.start_sweep()
+        return {
+            "running": sweep_manager.sweep_thread.is_alive(),
+            "percent_complete": sweep_manager.get_sweep_status()
+        }
+
+    @app.route("/api/v1/sweep_status", methods=["GET"])
+    def get_sweep_status():
+        return {
+            "running": sweep_manager.sweep_thread.is_alive(),
+            "percent_complete": sweep_manager.get_sweep_status()
+        }
+
+    @app.route("/api/v1/sweep_summary", methods=["GET"])
+    def get_data():
+        return Response(
+            json.dumps(sweep_manager.get_sweep_summary()),
+            mimetype="application/json")
+
+    @app.route("/api/v1/evaluation_data/<int:evaluation_id>")
+    def get_evaluation(evaluation_id):
+        return sweep_manager.get_evaluation(evaluation_id)
+
+
+def init_dev_server(app):
+    # Running Flask from the command line - use dev mode
+    from backwardcompatibilityml.sweep_management import get_test_sweep_manager
+    sweep_manager = get_test_sweep_manager()
+
+    html_widget = render_widget_html('widget-build-dev.js')
+    display(html_widget)
+    init_app_routes(app, sweep_manager)
+    app.run(debug=True)
