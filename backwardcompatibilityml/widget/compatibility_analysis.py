@@ -151,7 +151,7 @@ class CompatibilityAnalysis(object):
 
         api_service_environment = build_environment_params(self.flask_service.env)
         api_service_environment["port"] = self.flask_service.port
-        html_string = render_widget_html('widget-build.js', api_service_environment=api_service_environment)
+        html_string = render_widget_html('widget-build.js', api_service_environment)
 
         self.html_widget = HTML(html_string)
         display(self.html_widget)
@@ -159,7 +159,7 @@ class CompatibilityAnalysis(object):
         init_app_routes(FlaskHelper.app, self.sweep_manager)
 
 
-def render_widget_html(widget_js_name, api_service_environment=None):
+def render_widget_html(widget_js_name, api_service_environment):
     resource_package = __name__
     javascript_path = '/'.join(('resources', widget_js_name))
     css_path = '/'.join(('resources', 'widget.css'))
@@ -210,8 +210,13 @@ def init_dev_server(app):
     # Running Flask from the command line - use dev mode
     from backwardcompatibilityml.sweep_management import get_test_sweep_manager
     sweep_manager = get_test_sweep_manager()
+    api_service_environment = {
+        "environment_type": "local",
+        "base_url": "",
+        "port": 5050
+    }
 
-    html_widget = render_widget_html('widget-build-dev.js')
+    html_widget = render_widget_html('widget-build-dev.js', api_service_environment)
     display(html_widget)
     init_app_routes(app, sweep_manager)
     app.run(debug=True)

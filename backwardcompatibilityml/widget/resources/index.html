@@ -1,0 +1,38 @@
+<!--
+ Copyright (c) Microsoft Corporation.
+ Licensed under the MIT License.
+-->
+
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>BCML widget</title>
+  <link rel="stylesheet" href="widget.css">
+</head>
+
+<body>
+<div class="container">
+    <div id="widget">
+    </div>
+    <script>
+        var data = null;
+        window.API_SERVICE_ENVIRONMENT = {environment_type: "local", base_url: "", port: 5050};
+        window.WIDGET_STATE = {
+            data: data,
+            sweepStatus: null,
+            selectedDataPoint: null,
+            training: true,
+            testing: true,
+            newError: true,
+            strictImitation: true,
+            error: null,
+            loading: false
+        };
+    </script>
+    <script src="widget-build-dev.js"></script>
+</div>
+</body>
+
+</html>

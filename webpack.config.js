@@ -1,6 +1,5 @@
 const webpack = require('webpack');
 const path = require('path');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const jupyterConfig = {
   entry: ['./widget/index.tsx'],
@@ -13,9 +12,6 @@ const jupyterConfig = {
     new webpack.ProvidePlugin({
       $: "jquery",
       jQuery: "jquery"
-    }),
-    new MiniCssExtractPlugin({
-      filename: 'widget.css'
     })
   ],
   module: {
@@ -38,7 +34,7 @@ const jupyterConfig = {
         {
             test: /\.css$/,
             use: [
-              MiniCssExtractPlugin.loader,
+              'style-loader',
               'css-loader'
             ]
         }
@@ -59,21 +55,17 @@ const devConfig = {
     'react-hot-loader/patch',
     './widget/index.tsx'
   ],
+  mode: 'development',
   devtool: 'eval-source-map',
   performance: {
     hints: false
-  },
-  devServer: {
-    contentBase: path.resolve(__dirname, 'backwardcompatibilityml/widget/resources')
   },
   plugins: [  
     new webpack.ProvidePlugin({
       $: "jquery",
       jQuery: "jquery"
     }),
-    new MiniCssExtractPlugin({
-      filename: 'widget.css'
-    })
+    new webpack.HotModuleReplacementPlugin()
   ],
   module: {
     rules: [
@@ -91,7 +83,7 @@ const devConfig = {
       {
           test: /\.css$/,
           use: [
-            MiniCssExtractPlugin.loader,
+            'style-loader',
             'css-loader'
           ]
       }
@@ -105,8 +97,16 @@ const devConfig = {
   },
   output: {
     path: path.resolve(__dirname, 'backwardcompatibilityml/widget/resources'),
+    publicPath: '/backwardcompatibilityml/widget/resources/',
     filename: 'widget-build-dev.js'
+  },
+  devServer: {
+    contentBase: path.resolve(__dirname, 'backwardcompatibilityml/widget/resources'),
+    port: 3000,
+    publicPath: 'http://localhost:3000/backwardcompatibilityml/widget/resources/',
+    hotOnly: true
   },
 };
 
-module.exports = [ jupyterConfig, devConfig ]
+// webpack-dev-server will use the first exported config
+module.exports = [ devConfig, jupyterConfig ]
