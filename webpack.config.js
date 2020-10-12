@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const jupyterConfig = {
   entry: ['./widget/index.tsx'],
@@ -12,6 +13,9 @@ const jupyterConfig = {
     new webpack.ProvidePlugin({
       $: "jquery",
       jQuery: "jquery"
+    }),
+    new MiniCssExtractPlugin({
+      filename: 'widget.css'
     })
   ],
   module: {
@@ -34,7 +38,7 @@ const jupyterConfig = {
         {
             test: /\.css$/,
             use: [
-              'style-loader',
+              MiniCssExtractPlugin.loader,
               'css-loader'
             ]
         }
