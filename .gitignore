@@ -126,9 +126,6 @@ backwardcompatibilityml/widget/resources/widget-build.js
 backwardcompatibilityml/widget/resources/widget-build-dev.js
 backwardcompatibilityml/widget/resources/widget.css
 
-backwardcompatibilityml/api/sweeps/*.json
-backwardcompatibilityml/api/sweeps/*state
-
 package-lock.json
 
 .vscode/settings.json

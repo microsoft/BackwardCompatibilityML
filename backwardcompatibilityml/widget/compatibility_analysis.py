@@ -162,18 +162,14 @@ class CompatibilityAnalysis(object):
 def render_widget_html(widget_js_name, api_service_environment):
     resource_package = __name__
     javascript_path = '/'.join(('resources', widget_js_name))
-    css_path = '/'.join(('resources', 'widget.css'))
     html_template_path = '/'.join(('resources', 'widget.html'))
     widget_javascript = pkg_resources.resource_string(
         resource_package, javascript_path).decode("utf-8")
-    widget_css = pkg_resources.resource_string(
-        resource_package, css_path).decode("utf-8")
     app_html_template_string = pkg_resources.resource_string(
         resource_package, html_template_path).decode("utf-8")
 
     app_html_template = Template(app_html_template_string)
     return app_html_template.render(
-        widget_css=widget_css,
         widget_javascript=widget_javascript,
         api_service_environment=json.dumps(api_service_environment),
         data=json.dumps(None))

@@ -108,5 +108,5 @@ const devConfig = {
   },
 };
 
-// webpack-dev-server will use the first exported config
+// order is important -- webpack-dev-server will use the first exported config
 module.exports = [ devConfig, jupyterConfig ]

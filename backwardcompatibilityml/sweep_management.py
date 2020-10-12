@@ -147,7 +147,7 @@ def get_test_sweep_manager():
 
     print("Creating test sweep manager")
     print("Reading dataset")
-    dataset_file = open("../tests/datasets/breast-cancer-wisconsin.data", "r")
+    dataset_file = open("tests/datasets/breast-cancer-wisconsin.data", "r")
     raw_data = dataset_file.read()
     dataset_file.close()
     data = list(map(lambda l: l.split(",")[1:], filter(lambda l: len(l) > 0, map(lambda l: l.strip(), raw_data.split("\n")))))
@@ -164,7 +164,7 @@ def get_test_sweep_manager():
 
     random.shuffle(data)
 
-    folder_name = "../tests/sweeps"
+    folder_name = "tests/sweeps"
     number_of_epochs = 10
     batch_size_train = 70
     batch_size_test = 139
