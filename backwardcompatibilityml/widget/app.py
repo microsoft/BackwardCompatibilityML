@@ -8,10 +8,10 @@ import random
 from backwardcompatibilityml import loss as bcloss
 from backwardcompatibilityml.helpers import training
 from backwardcompatibilityml.helpers.models import LogisticRegression, MLPClassifier
-from sklearn.metrics import accuracy_score
+from rai_core_flask.flask_helper import FlaskHelper
 from .compatibility_analysis import CompatibilityAnalysis
 
-folder_name="tests/sweeps"
+folder_name = "tests/sweeps"
 number_of_epochs = 10
 batch_size_train = 70
 batch_size_test = 139
@@ -71,7 +71,7 @@ with torch.no_grad():
 h2 = MLPClassifier(9, 2)
 
 analysis = CompatibilityAnalysis(
-    folder_name, 
+    folder_name,
     number_of_epochs,
     h1,
     h2,
@@ -84,8 +84,7 @@ analysis = CompatibilityAnalysis(
     optimizer_kwargs={"lr": learning_rate, "momentum": momentum},
     NewErrorLossClass=bcloss.BCCrossEntropyLoss,
     StrictImitationLossClass=bcloss.StrictImitationCrossEntropyLoss,
-    port=5050,
-    dev_mode=True)
+    port=5050)
 
-app = analysis.flask_service
+app = FlaskHelper.app
 app.logger.info('initialization complete')

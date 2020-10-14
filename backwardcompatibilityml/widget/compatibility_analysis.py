@@ -183,8 +183,7 @@ class CompatibilityAnalysis(object):
                  OptimizerClass=None, optimizer_kwargs=None,
                  NewErrorLossClass=None, StrictImitationLossClass=None,
                  port=None, new_error_loss_kwargs=None,
-                 strict_imitation_loss_kwargs=None, device="cpu",
-                 dev_mode=False):
+                 strict_imitation_loss_kwargs=None, device="cpu"):
         if OptimizerClass is None:
             OptimizerClass = optim.SGD
 
@@ -214,19 +213,11 @@ class CompatibilityAnalysis(object):
             strict_imitation_loss_kwargs=strict_imitation_loss_kwargs,
             device=device)
 
-        if dev_mode:
-            # Run Flask outside the FlaskHelper wrapper
-            # HTML will be served by webpack server
-            from flask import Flask
-            from flask_cors import CORS
-            self.flask_service = Flask(__name__)
-            CORS(self.flask_service)
-        else:
-            self.flask_service = FlaskHelper(ip="0.0.0.0", port=port)
-            api_service_environment = build_environment_params(self.flask_service.env)
-            api_service_environment["port"] = self.flask_service.port
-            html_string = render_widget_html(api_service_environment)
-            self.html_widget = HTML(html_string)
-            display(self.html_widget)
+        self.flask_service = FlaskHelper(ip="0.0.0.0", port=port)
+        api_service_environment = build_environment_params(self.flask_service.env)
+        api_service_environment["port"] = self.flask_service.port
+        html_string = render_widget_html(api_service_environment)
+        self.html_widget = HTML(html_string)
+        display(self.html_widget)
 
-        init_app_routes(self.flask_service, self.sweep_manager)
+        init_app_routes(FlaskHelper.app, self.sweep_manager)

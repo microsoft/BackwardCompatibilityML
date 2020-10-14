@@ -1,6 +1,7 @@
 import torch.nn as nn
 import torch.nn.functional as F
 
+
 class MLPClassifier(nn.Module):
 
     def __init__(self, input_size, num_classes, hidden_sizes=[50, 10]):
