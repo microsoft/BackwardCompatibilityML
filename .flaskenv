@@ -1,3 +1,3 @@
-FLASK_APP=backwardcompatibilityml\widget\app.py
+FLASK_APP=backwardcompatibilityml/widget/app.py
 FLASK_ENV=development
 FLASK_RUN_PORT=5050

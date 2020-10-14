@@ -100,14 +100,14 @@ const devConfig = {
     }
   },
   output: {
-    path: path.resolve(__dirname, 'backwardcompatibilityml/widget/resources'),
-    publicPath: '/backwardcompatibilityml/widget/resources/',
+    path: path.resolve(__dirname, 'dev-artifacts'),
+    publicPath: '/dev-artifacts/',
     filename: 'widget-build-dev.js'
   },
   devServer: {
-    contentBase: path.resolve(__dirname, 'backwardcompatibilityml/widget/resources'),
+    contentBase: path.resolve(__dirname, 'dev-artifacts'),
     port: 3000,
-    publicPath: 'http://localhost:3000/backwardcompatibilityml/widget/resources/',
+    publicPath: 'http://localhost:3000/dev-artifacts/',
     hotOnly: true
   },
 };
