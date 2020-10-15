@@ -37,8 +37,40 @@ label {
 .plot {
   position: relative;
   display: inline-block;
-  margin-left: 20px;
-  margin-right:20px;
+}
+
+.plot svg {
+  background-color: white
+}
+
+.plot-btc {
+  background-color: lightgrey;
+  padding-left: 20px;
+  padding-right:20px;
+  padding-top: 20px;
+  padding-bottom: 10px;
+}
+
+.plot-bec {
+  background-color: lightgrey;
+  padding-right:20px;
+  padding-top: 20px;
+  padding-bottom: 10px;
+}
+
+.plot-venn {
+  background-color: lightgrey;
+  padding-left: 20px;
+  padding-right:20px;
+  padding-top: 20px;
+  padding-bottom: 10px;
+}
+
+.plot-distribution {
+  background-color: lightgrey;
+  padding-right:20px;
+  padding-top: 20px;
+  padding-bottom: 10px;
 }
 
 .tooltip {
@@ -51,7 +83,7 @@ label {
 }
 
 .table {
-  width: 600px;
+  width: 700px;
   text-align: center;
   background-color: lightblue;
 }
@@ -62,7 +94,7 @@ label {
 }
 
 .data-selector {
-  width: 600px;
+  width: 700px;
   text-align: left;
 }
 
@@ -138,7 +170,7 @@ label {
 }
 
 .model-details {
-  width: 600px;
+  width: 700px;
   border-style: solid;
   border-width: 1px;
 }
