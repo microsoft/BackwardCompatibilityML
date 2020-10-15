@@ -1,2 +1,2 @@
-FLASK_APP=backwardcompatibilityml/widget/app.py
+FLASK_APP=development/app.py
 FLASK_ENV=development

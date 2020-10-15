@@ -24,7 +24,7 @@ module.exports = {
     }),
     isDevelopment && new HtmlWebpackPlugin({
       filename: './index.html',
-      template: './public/index.html'
+      template: './development/index.html'
     }),
     isDevelopment && new ReactRefreshPlugin()
   ].filter(Boolean),

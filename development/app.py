@@ -8,8 +8,8 @@ import random
 from backwardcompatibilityml import loss as bcloss
 from backwardcompatibilityml.helpers import training
 from backwardcompatibilityml.helpers.models import LogisticRegression, MLPClassifier
+from backwardcompatibilityml.widget import CompatibilityAnalysis
 from rai_core_flask.flask_helper import FlaskHelper
-from .compatibility_analysis import CompatibilityAnalysis
 
 folder_name = "tests/sweeps"
 number_of_epochs = 10

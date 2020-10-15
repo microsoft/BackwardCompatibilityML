@@ -6,7 +6,7 @@
 # Build the Typescript app and place the javascript
 # build artefact in a plae where the Python package
 # expects it.
-npx webpack
+NODE_ENV=production npx webpack
 
 # Install the Python dependencies and the package itself
 python -m pip install -r requirements.txt

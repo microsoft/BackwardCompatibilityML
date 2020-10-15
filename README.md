@@ -24,7 +24,7 @@ The Backward Compatibility ML project has two components:
 1. Setup a Python virtual environment or Conda environment and activate it.
 2. From within the root folder of this project do `pip install -r requirements.txt`
 3. From within the root folder do `npm install`
-4. From within the root folder of this project do `npx webpack && pip install -e .`
+4. From within the root folder of this project do `npm run build && pip install -e .` or `NODE_ENV=production npx webpack && pip install -e .`
 5. You should now be able to import the `backwardcompatibilityml` module and use it.
 
 # Examples
@@ -40,6 +40,16 @@ To run tests, make sure that you are in the project root folder and do:
 
 1. `pip install -r dev-requirements.txt`
 2. `pytest tests/`
+
+# Development environment
+
+To run the widget and APIs in a development environment:
+1. Open a new terminal, then from within the root folder do `npm start`. This will host the widget with `webpack-dev-server`.
+2. Open a new terminal, then from within the root folder do `flask run`. This will start the Flask server for the APIs used by the widget.
+
+The widget can be loaded in the web browser at `localhost:3000`. It will be loaded independently from a Jupyter notebook. The APIs will be hosted at `localhost:5050`.
+
+Changes to the CSS or TypeScript code will be hot loaded automatically in the browser. Flask will run in debug mode and automatically restart whenever the Python code is changed.
 
 # Contributing
 

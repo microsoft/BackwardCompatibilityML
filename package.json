@@ -43,7 +43,7 @@
     "webpack-dev-server": "^3.11.0"
   },
   "scripts": {
-    "start": "webpack-dev-server --hot --mode development",
+    "start": "webpack-dev-server --hot --mode development --host 0.0.0.0",
     "build": "cross-env NODE_ENV=production webpack"
   }
 }

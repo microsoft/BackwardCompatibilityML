@@ -214,10 +214,9 @@ class CompatibilityAnalysis(object):
             device=device)
 
         self.flask_service = FlaskHelper(ip="0.0.0.0", port=port)
+        init_app_routes(FlaskHelper.app, self.sweep_manager)
         api_service_environment = build_environment_params(self.flask_service.env)
         api_service_environment["port"] = self.flask_service.port
         html_string = render_widget_html(api_service_environment)
         self.html_widget = HTML(html_string)
         display(self.html_widget)
-
-        init_app_routes(FlaskHelper.app, self.sweep_manager)
