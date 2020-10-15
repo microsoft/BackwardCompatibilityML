@@ -74,7 +74,7 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
 
     var margin = { top: 15, right: 15, bottom: 50, left: 55 }
     var h = 250 - margin.top - margin.bottom
-    var w = 250 - margin.left - margin.right
+    var w = 320 - margin.left - margin.right
 
     var formatPercentX = d3.format('.3f');
     var formatPercentY = d3.format('.2f');
@@ -106,23 +106,14 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
       allDataPoints = allDataPoints.concat(data.filter(d => (d["testing"] && d["strict-imitation"])));
     }
 
-    // var xScale = d3.scaleLinear()
-    //   .domain([
-    //     d3.min([0,d3.min(data,function (d) { return d[_this.props.compatibilityScoreType] })]),
-    //     d3.max([0,d3.max(data,function (d) { return d[_this.props.compatibilityScoreType] })])
-    //     ])
-    //   .range([0,w])
-    // var yScale = d3.scaleLinear()
-    //   .domain([
-    //     d3.min([0,d3.min(data,function (d) { return d['performance'] })]),
-    //     d3.max([0,d3.max(data,function (d) { return d['performance'] })])
-    //     ])
-    //   .range([h,0])
+    var btcValues = allDataPoints.map(d => d["btc"]);
+    var becValues = allDataPoints.map(d => d["bec"]);
+    var allValues = [].concat(btcValues).concat(becValues);
 
     var xScale = d3.scaleLinear()
       .domain([
-        d3.min(allDataPoints,function (d) { return d[_this.props.compatibilityScoreType] }),
-        d3.max(allDataPoints,function (d) { return d[_this.props.compatibilityScoreType] })
+        d3.min(allValues),
+        d3.max(allValues)
         ])
       .range([0,w])
     var yScale = d3.scaleLinear()
@@ -132,11 +123,6 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
         ])
       .range([h,0])
 
-    // d3.select(`#lambdactooltip-${_this.props.compatibilityScoreType}`).remove();
-    // var tooltip = body.append("div")
-    //   .attr("class", "lambdactooltip")
-    //   .attr("id", `lambdactooltip-${_this.props.compatibilityScoreType}`)
-    //   .style("position", "absolute");
     var tooltip = d3.select(`#lambdactooltip-${_this.props.compatibilityScoreType}`);
 
     // SVG
@@ -194,31 +180,15 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
         .attr("fill", "black");
 
     svg.append("line")
-      .attr("x1", xScale(d3.min(allDataPoints,function (d) { return d[_this.props.compatibilityScoreType] }) - 0.005))
+      .attr("x1", xScale(d3.min(allValues) - 0.005))
       .attr("y1", yScale(this.props.h1Performance))
-      .attr("x2", xScale(d3.max(allDataPoints,function (d) { return d[_this.props.compatibilityScoreType] })))
+      .attr("x2", xScale(d3.max(allValues)))
       .attr("y2", yScale(this.props.h1Performance))
       .attr("stroke", "black")
       .attr("stroke-width", "1px")
       .attr("stroke-dasharray", "5,5");
 
     function drawCircles() {
-      // var allDataPoints = [];
-      // if (_this.state.training && _this.state.newError) {
-      //   allDataPoints = allDataPoints.concat(data.filter(d => (d["training"] && d["new-error"])));
-      // }
-
-      // if (_this.state.training && _this.state.strictImitation) {
-      //   allDataPoints = allDataPoints.concat(data.filter(d => (d["training"] && d["strict-imitation"])));
-      // }
-
-      // if (_this.state.testing && _this.state.newError) {
-      //   allDataPoints = allDataPoints.concat(data.filter(d => (d["testing"] && d["new-error"])));
-      // }
-
-      // if (_this.state.testing && _this.state.strictImitation) {
-      //   allDataPoints = allDataPoints.concat(data.filter(d => (d["testing"] && d["strict-imitation"])));
-      // }
 
       var circles = svg.selectAll('circle')
           .data(allDataPoints)
@@ -292,8 +262,9 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
   }
 
   render() {
+    let classes = `plot plot-${this.props.compatibilityScoreType}`;
     return (
-      <div className="plot" ref={this.node} id={`scatterplot-${this.props.compatibilityScoreType}`}>
+      <div className={classes} ref={this.node} id={`scatterplot-${this.props.compatibilityScoreType}`}>
         <div className="tooltip" id={`lambdactooltip-${this.props.compatibilityScoreType}`} />
       </div>
     );

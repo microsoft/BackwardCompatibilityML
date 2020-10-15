@@ -528,6 +528,7 @@ def evaluate_model_performance_and_compatibility_on_dataset(h1, h2, dataset, per
         ],
 
         "h2_error_fraction_by_class": h2_ds_error_fraction_by_class,
+        "sorted_classes": sorted(list(classes)),
         "h2_performance": h2_performance,
         "btc": btc,
         "bec": bec
