@@ -1,0 +1,41 @@
+<!--
+ Copyright (c) Microsoft Corporation.
+ Licensed under the MIT License.
+-->
+
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="css/bootstrap-tour.min.css">
+  <link rel="stylesheet" href="css/codemirror.css">
+  <link rel="stylesheet" href="css/custom.css">
+  <link rel="stylesheet" href="css/jquery.typeahead.min.css">
+  <link rel="stylesheet" href="css/jquery-ui.min.css">
+  <link rel="stylesheet" href="css/override.css">
+  <link rel="stylesheet" href="css/style.min.css">
+  <title>BCML widget</title>
+</head>
+
+<div class="container">
+    <div id="widget">
+    </div>
+    <script>
+        var data = null;
+        window.API_SERVICE_ENVIRONMENT = {environment_type: "local", base_url: "", port: 5000};
+        window.WIDGET_STATE = {
+            data: data,
+            sweepStatus: null,
+            selectedDataPoint: null,
+            training: true,
+            testing: true,
+            newError: true,
+            strictImitation: true,
+            error: null,
+            loading: false
+        };
+    </script>
+</div>
+
+</html>

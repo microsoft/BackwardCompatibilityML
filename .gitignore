@@ -123,6 +123,7 @@ tests/sweeps/*state
 node_modules/
 
 backwardcompatibilityml/widget/resources/widget-build.js
+backwardcompatibilityml/widget/resources/widget.css
 
 package-lock.json
 
