@@ -23,7 +23,6 @@ module.exports = {
       filename: 'widget.css'
     }),
     isDevelopment && new HtmlWebpackPlugin({
-      filename: './index.html',
       template: './development/index.html'
     }),
     isDevelopment && new ReactRefreshPlugin()
@@ -68,6 +67,7 @@ module.exports = {
     filename: 'widget-build.js'
   },
   devServer: {
+    contentBase: path.resolve(__dirname, "development"),
     port: 3000
   }
 };
