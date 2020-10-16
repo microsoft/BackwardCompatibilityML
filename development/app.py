@@ -83,8 +83,7 @@ analysis = CompatibilityAnalysis(
     OptimizerClass=optim.SGD,
     optimizer_kwargs={"lr": learning_rate, "momentum": momentum},
     NewErrorLossClass=bcloss.BCCrossEntropyLoss,
-    StrictImitationLossClass=bcloss.StrictImitationCrossEntropyLoss,
-    port=5050)
+    StrictImitationLossClass=bcloss.StrictImitationCrossEntropyLoss)
 
 app = FlaskHelper.app
 app.logger.info('initialization complete')

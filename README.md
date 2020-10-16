@@ -47,7 +47,7 @@ To run the widget and APIs in a development environment:
 1. Open a new terminal, then from within the root folder do `npm start`. This will host the widget with `webpack-dev-server`.
 2. Open a new terminal, then from within the root folder do `flask run`. This will start the Flask server for the APIs used by the widget.
 
-The widget can be loaded in the web browser at `localhost:3000`. It will be loaded independently from a Jupyter notebook. The APIs will be hosted at `localhost:5050`.
+The widget can be loaded in the web browser at `localhost:3000`. It will be loaded independently from a Jupyter notebook. The APIs will be hosted at `localhost:5000`.
 
 Changes to the CSS or TypeScript code will be hot loaded automatically in the browser. Flask will run in debug mode and automatically restart whenever the Python code is changed.
 
