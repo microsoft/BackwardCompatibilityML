@@ -163,9 +163,9 @@ class DataSelector extends Component<DataSelectorProps, DataSelectorState> {
           <div className={getDatasetDropdownClasses()}>
             <span className="anchor" onClick={this.toggleDatasetDropdown}>Dataset</span>
             <ul className="items">
-              <li><input type="checkbox" checked={this.state.training && this.state.testing} onClick={this.selectTrainingAndTesting} />(Select All)</li>
-              <li><input type="checkbox" checked={this.state.training} onClick={this.selectTraining} />Training</li>
-              <li><input type="checkbox" checked={this.state.testing} onClick={this.selectTesting} />Testing</li>
+              <li><input type="checkbox" aria-label="select all datasets" checked={this.state.training && this.state.testing} onChange={this.selectTrainingAndTesting} />(Select All)</li>
+              <li><input type="checkbox" aria-label="training" checked={this.state.training} onChange={this.selectTraining} />Training</li>
+              <li><input type="checkbox" aria-label="testing" checked={this.state.testing} onChange={this.selectTesting} />Testing</li>
             </ul>
           </div>
         </div>
@@ -173,9 +173,9 @@ class DataSelector extends Component<DataSelectorProps, DataSelectorState> {
           <div className={getDissonanceDropdownClasses()}>
             <span className="anchor" onClick={this.toggleDissonanceDropdown}>Dissonance</span>
             <ul className="items">
-              <li><input type="checkbox" checked={this.state.newError && this.state.strictImitation} onClick={this.selectNewErrorAndStrictImitation} />(Select All)</li>
-              <li><input type="checkbox" checked={this.state.newError} onClick={this.selectNewError} />New Error</li>
-              <li><input type="checkbox" checked={this.state.strictImitation} onClick={this.selectStrictImitation} />Strict Imitation</li>
+              <li><input type="checkbox" aria-label="select all dissonance" checked={this.state.newError && this.state.strictImitation} onChange={this.selectNewErrorAndStrictImitation} />(Select All)</li>
+              <li><input type="checkbox" aria-label="new error" checked={this.state.newError} onChange={this.selectNewError} />New Error</li>
+              <li><input type="checkbox" aria-label="strict imitation" checked={this.state.strictImitation} onChange={this.selectStrictImitation} />Strict Imitation</li>
             </ul>
           </div>
         </div>
