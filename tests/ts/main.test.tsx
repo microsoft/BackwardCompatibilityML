@@ -19,7 +19,13 @@ test('RawValues renders', () => {
     expect(screen.getByText("Raw Values Table goes here")).toBeInTheDocument();
 });
 
-test('DataSelector expected behavior', () => {
+function testCheckbox(label: string): void {
+    expect(screen.getByLabelText(label)).toBeChecked();
+    fireEvent.click(screen.getByLabelText(label));
+    expect(screen.getByLabelText(label)).not.toBeChecked();
+}
+
+test('DataSelector single checkboxes', () => {
     let trainingToggleCount = 0;
     let testingToggleCount = 0;
     let newErrorToggleCount = 0;
@@ -32,16 +38,10 @@ test('DataSelector expected behavior', () => {
         toggleStrictImitation={() => strictImitationToggleCount++}
         />);
 
-    let testCheckboxes = (label) => {
-        expect(screen.getByLabelText(label)).toBeChecked();
-        fireEvent.click(screen.getByLabelText(label));
-        expect(screen.getByLabelText(label)).not.toBeChecked();
-    };
-
-    testCheckboxes("training");
-    testCheckboxes("testing");
-    testCheckboxes("new error");
-    testCheckboxes("strict imitation");
+    testCheckbox("training");
+    testCheckbox("testing");
+    testCheckbox("new error");
+    testCheckbox("strict imitation");
 
     expect(trainingToggleCount).toBe(1);
     expect(testingToggleCount).toBe(1);
@@ -49,3 +49,23 @@ test('DataSelector expected behavior', () => {
     expect(strictImitationToggleCount).toBe(1);
 });
 
+test('DataSelector select all checkboxes', () => {
+    let trainingToggleCount = 0;
+    let testingToggleCount = 0;
+    let newErrorToggleCount = 0;
+    let strictImitationToggleCount = 0;
+
+    render(<DataSelector 
+        toggleTraining={() => trainingToggleCount++}
+        toggleTesting={() => testingToggleCount++}
+        toggleNewError={() => newErrorToggleCount++}
+        toggleStrictImitation={() => strictImitationToggleCount++}
+        />);
+
+    testCheckbox("select all datasets");
+    testCheckbox("select all dissonance");
+    expect(screen.getByLabelText("training")).not.toBeChecked();
+    expect(screen.getByLabelText("testing")).not.toBeChecked();
+    expect(screen.getByLabelText("new error")).not.toBeChecked();
+    expect(screen.getByLabelText("strict imitation")).not.toBeChecked();
+});
