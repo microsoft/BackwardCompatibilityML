@@ -44,17 +44,9 @@ module.exports = {
       },
       // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
       {
-        exclude: "node_modules",
         test: /\.js$/,
-        use: [
-          {
-            enforce: "pre",
-            loader: "source-map-loader"
-          },
-          {
-            loader: "babel-loader"
-          }
-        ]
+        enforce: "pre",
+        loader: "source-map-loader"
       },
       {
         test: /\.css$/,

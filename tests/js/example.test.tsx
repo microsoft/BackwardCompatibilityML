@@ -9,13 +9,13 @@ import { TestScheduler } from 'jest'
 import { act } from 'react-dom/test-utils'
 import { unmountComponentAtNode } from 'react-dom'
 
-import RawValues from 'RawValues'
-import DataSelector from 'DataSelector'
+import RawValues from '@App/RawValues'
+import DataSelector from '@App/DataSelector'
 
 afterEach(cleanup);
 
 test('RawValues renders', () => {
-    render(<RawValues />);
+    render(<RawValues data={{}}/>);
     expect(screen.getByText("Raw Values Table goes here")).toBeInTheDocument();
 });
 
