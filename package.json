@@ -19,11 +19,13 @@
     "@babel/preset-env": "^7.3.1",
     "@babel/preset-react": "^7.0.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.4.2",
+    "@testing-library/react": "^11.1.0",
     "@types/react": "^16.9.43",
     "@types/react-dom": "^16.9.8",
     "@types/react-redux": "^7.1.9",
     "@types/redux": "^3.6.0",
     "babel-core": "^6.26.3",
+    "babel-jest": "^26.6.0",
     "babel-loader": "^8.0.6",
     "babel-minify-webpack-plugin": "^0.3.1",
     "babel-polyfill": "^6.26.0",
@@ -32,11 +34,13 @@
     "cross-env": "^7.0.2",
     "css-loader": "^4.3.0",
     "html-webpack-plugin": "^4.5.0",
+    "jest": "^26.6.0",
     "mini-css-extract-plugin": "^0.12.0",
     "react-refresh": "^0.8.3",
     "source-map-loader": "^1.0.1",
     "style-loader": "^2.0.0",
     "ts-loader": "^8.0.1",
+    "ts-node": "^9.0.0",
     "typescript": "^3.9.7",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.2.1",
@@ -44,6 +48,7 @@
   },
   "scripts": {
     "start": "webpack-dev-server --hot --mode development --host 0.0.0.0",
-    "build": "cross-env NODE_ENV=production webpack"
+    "build": "cross-env NODE_ENV=production webpack",
+    "test": "jest"
   }
 }
