@@ -65,10 +65,22 @@ class IncompatiblePointDistribution extends Component<IncompatiblePointDistribut
 
     if (this.props.selectedDataPoint != null) {
       // Sort the data into the dataRows based on the ordering of the sorted classes
+      var totalErrors = 0;
+      for (var i=0; i < this.props.selectedDataPoint.sorted_classes.length; i++) {
+        var instanceClass = this.props.selectedDataPoint.sorted_classes[i];
+        var dataRow = this.props.selectedDataPoint.h2_error_instance_ids_by_class.filter(
+          dataDict => (dataDict["class"] == instanceClass)).pop();
+        totalErrors += dataRow["errorInstanceIds"].length;
+      }
+
+      if (totalErrors == 0) {
+        totalErrors = 1;
+      }
+
       var dataRows = [];
       for (var i=0; i < this.props.selectedDataPoint.sorted_classes.length; i++) {
         var instanceClass = this.props.selectedDataPoint.sorted_classes[i];
-        var dataRow = this.props.selectedDataPoint.h2_error_fraction_by_class.filter(
+        var dataRow = this.props.selectedDataPoint.h2_error_instance_ids_by_class.filter(
           dataDict => (dataDict["class"] == instanceClass)).pop();
         dataRows.push(dataRow);
       }
@@ -110,9 +122,9 @@ class IncompatiblePointDistribution extends Component<IncompatiblePointDistribut
          .enter().append("rect")
          .attr("class", "bar")
          .attr("x", function(d) { return xScale(d.class); })
-         .attr("y", function(d) { return yScale(d.incompatibleFraction * 100); })
+         .attr("y", function(d) { return yScale(d.errorInstanceIds.length/totalErrors * 100); })
          .attr("width", xScale.bandwidth())
-         .attr("height", function(d) { return h - yScale(d.incompatibleFraction * 100); });
+         .attr("height", function(d) { return h - yScale(d.errorInstanceIds.length/totalErrors * 100); });
       }
   }
 
