@@ -25,6 +25,7 @@ type PerformanceCompatibilityProps = {
   strictImitation: boolean,
   selectedDataPoint: any,
   compatibilityScoreType: string,
+  performanceFunctionLabel: string,
   selectDataPoint: (d: any) => void,
   getModelEvaluationData: (evaluationId: number) => void
 }
@@ -174,7 +175,7 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
         .attr('y',-50)
         .attr('dy','.71em')
         .style('text-anchor','end')
-        .text('Performance')
+        .text(this.props.performanceFunctionLabel)
         .attr("font-family", "sans-serif")
         .attr("font-size", "20px")
         .attr("fill", "black");
