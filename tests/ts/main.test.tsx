@@ -1,8 +1,4 @@
 import React from 'react'
-/*
-import {rest} from 'msw'
-import { setupServer } from 'msw/node'
-*/
 import { render, fireEvent, waitFor, screen, getByTestId, cleanup } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import { TestScheduler } from 'jest'
