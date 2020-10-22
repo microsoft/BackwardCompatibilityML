@@ -103,7 +103,7 @@ function Container({
             <PerformanceCompatibility
               data={data.data}
               h1Performance={data.h1_performance}
-              performanceFunctionLabel={data.performance_metric}
+              performanceMetric={data.performance_metric}
               training={training}
               testing={testing}
               newError={newError}
@@ -116,7 +116,7 @@ function Container({
             <PerformanceCompatibility
               data={data.data}
               h1Performance={data.h1_performance}
-              performanceFunctionLabel={data.performance_metric}
+              performanceMetric={data.performance_metric}
               training={training}
               testing={testing}
               newError={newError}
