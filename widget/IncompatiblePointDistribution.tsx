@@ -73,6 +73,8 @@ class IncompatiblePointDistribution extends Component<IncompatiblePointDistribut
         totalErrors += dataRow["errorInstanceIds"].length;
       }
 
+      // We add the following so that we do not get a divide by zero
+      // error later on if there are no errors.
       if (totalErrors == 0) {
         totalErrors = 1;
       }
