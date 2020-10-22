@@ -344,11 +344,11 @@ def get_all_error_instance_indices(h1, h2, batched_evaluation_data, batched_eval
         h2_error_instance_ids = h2_diff.nonzero().view(-1).tolist()
         error_instance_ids = list(set(h1_error_instance_ids).union(set(h2_error_instance_ids)))
         h1_predictions = torch.argmax(h1_output_logsoftmax, 1).index_select(
-            0, torch.tensor(error_instance_ids)).tolist()
+            0, torch.tensor(error_instance_ids).to(device)).tolist()
         h2_predictions = torch.argmax(h2_output_logsoftmax, 1).index_select(
-            0, torch.tensor(error_instance_ids)).tolist()
+            0, torch.tensor(error_instance_ids).to(device)).tolist()
         instance_ground_truths = batched_evaluation_target.index_select(
-            0, torch.tensor(error_instance_ids)).tolist()
+            0, torch.tensor(error_instance_ids).to(device)).tolist()
 
         return zip(error_instance_ids,
                    h1_predictions,
@@ -390,15 +390,15 @@ def get_model_error_overlap(h1, h2, batch_ids, batched_evaluation_data, batched_
     h1_and_h2_error_instance_ids = []
     if len(h1_error_indices) > 0:
         h1_error_instance_ids = torch.tensor(batch_ids).index_select(
-            0, torch.tensor(h1_error_indices)).tolist()
+            0, torch.tensor(h1_error_indices).to(device)).tolist()
 
     if len(h2_error_indices) > 0:
         h2_error_instance_ids = torch.tensor(batch_ids).index_select(
-            0, torch.tensor(h2_error_indices)).tolist()
+            0, torch.tensor(h2_error_indices).to(device)).tolist()
 
     if len(h1_and_h2_error_indices) > 0:
         h1_and_h2_error_instance_ids = torch.tensor(batch_ids).index_select(
-            0, torch.tensor(h1_and_h2_error_indices)).tolist()
+            0, torch.tensor(h1_and_h2_error_indices).to(device)).tolist()
 
     return h1_error_instance_ids, h2_error_instance_ids, h1_and_h2_error_instance_ids
 
@@ -429,7 +429,8 @@ def get_error_instance_ids_by_class(model, batch_ids, batched_evaluation_data, b
         _, _, model_output_logsoftmax = model(batched_evaluation_data)
         model_diff = (torch.argmax(model_output_logsoftmax, 1) - batched_evaluation_target).float()
         model_errors = model_diff.nonzero().view(-1).tolist()
-        error_instance_indices = torch.tensor(batch_ids).index_select(0, torch.tensor(model_errors)).tolist()
+        error_instance_indices = torch.tensor(batch_ids).index_select(
+            0, torch.tensor(model_errors).to(device)).tolist()
         target_error_classes = batched_evaluation_target[model_errors].view(-1).tolist()
         class_error_instance_ids = {}
         for class_label in set(batched_evaluation_target.view(-1).tolist()):
