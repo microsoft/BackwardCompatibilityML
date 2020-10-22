@@ -12,6 +12,7 @@ import torch.optim as optim
 from flask import Response
 from backwardcompatibilityml import loss
 from backwardcompatibilityml.sweep_management import SweepManager
+from backwardcompatibilityml.metrics import model_accuracy
 from rai_core_flask.flask_helper import FlaskHelper
 from rai_core_flask.environments import (
     AzureNBEnvironment,
@@ -169,6 +170,8 @@ class CompatibilityAnalysis(object):
         StrictImitationLossClass: The class of the Strict Imitation style loss
             function to be instantiated and used to perform compatibility
             constrained training of our model h2.
+        performance_metric: A function to evaluate model performance.
+            If none, accuracy will be used.
         port: An integer value to indicate the port to which the Flask service
             should bind.
         device: A string with values either "cpu" or "cuda" to indicate the
@@ -182,6 +185,7 @@ class CompatibilityAnalysis(object):
                  batch_size_train, batch_size_test, lambda_c_stepsize=0.25,
                  OptimizerClass=None, optimizer_kwargs=None,
                  NewErrorLossClass=None, StrictImitationLossClass=None,
+                 performance_metric=model_accuracy,
                  port=None, new_error_loss_kwargs=None,
                  strict_imitation_loss_kwargs=None, device="cpu"):
         if OptimizerClass is None:
@@ -211,6 +215,7 @@ class CompatibilityAnalysis(object):
             lambda_c_stepsize=lambda_c_stepsize,
             new_error_loss_kwargs=new_error_loss_kwargs,
             strict_imitation_loss_kwargs=strict_imitation_loss_kwargs,
+            performance_metric=performance_metric,
             device=device)
 
         self.flask_service = FlaskHelper(ip="0.0.0.0", port=port)

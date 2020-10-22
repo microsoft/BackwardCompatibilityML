@@ -6,6 +6,7 @@ import json
 import threading
 from queue import Queue
 from backwardcompatibilityml.helpers import training
+from backwardcompatibilityml.metrics import model_accuracy
 
 
 class SweepManager(object):
@@ -58,6 +59,7 @@ class SweepManager(object):
                  NewErrorLossClass, StrictImitationLossClass, lambda_c_stepsize=0.25,
                  new_error_loss_kwargs=None,
                  strict_imitation_loss_kwargs=None,
+                 performance_metric=model_accuracy,
                  device="cpu"):
         self.folder_name = folder_name
         self.number_of_epochs = number_of_epochs
@@ -71,6 +73,7 @@ class SweepManager(object):
         self.optimizer_kwargs = optimizer_kwargs
         self.NewErrorLossClass = NewErrorLossClass
         self.StrictImitationLossClass = StrictImitationLossClass
+        self.performance_metric = performance_metric
         self.lambda_c_stepsize = lambda_c_stepsize
         self.new_error_loss_kwargs = new_error_loss_kwargs
         self.strict_imitation_loss_kwargs = strict_imitation_loss_kwargs
@@ -83,7 +86,8 @@ class SweepManager(object):
                   self.training_set, self.test_set,
                   self.batch_size_train, self.batch_size_test,
                   self.OptimizerClass, self.optimizer_kwargs,
-                  self.NewErrorLossClass, self.StrictImitationLossClass,),
+                  self.NewErrorLossClass, self.StrictImitationLossClass,
+                  self.performance_metric,),
             kwargs={
                 "lambda_c_stepsize": self.lambda_c_stepsize,
                 "percent_complete_queue": self.percent_complete_queue,
@@ -114,8 +118,12 @@ class SweepManager(object):
         return self.last_sweep_status
 
     def get_sweep_summary(self):
+        metric_name = self.performance_metric.__name__
+        if metric_name == "model_accuracy":
+            metric_name = "Accuracy"
         sweep_summary = {
             "h1_performance": None,
+            "performance_metric": metric_name,
             "data": []
         }
 

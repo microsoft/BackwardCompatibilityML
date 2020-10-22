@@ -5,8 +5,8 @@ import copy
 import json
 import torch
 import numpy as np
-from sklearn.metrics import accuracy_score
 import backwardcompatibilityml.scores as scores
+from backwardcompatibilityml.metrics import model_accuracy
 
 
 def train_epoch(epoch, network, optimizer, loss_function, training_set, batch_size_train,
@@ -426,36 +426,13 @@ def compatibility_scores(h1, h2, dataset, device="cpu"):
     return btc_dataset, bec_dataset
 
 
-def model_accuracy(model, dataset, device="cpu"):
-    number_of_batches = len(dataset)
-    model_performance = 0
-    with torch.no_grad():
-        for data, target in dataset:
-            if device != "cpu":
-                data = data.to(device)
-                target = target.to(device)
-            _, _, output_logsoftmax = model(data)
-            output_labels = torch.argmax(output_logsoftmax, 1)
-            if device != "cpu":
-                output_labels = output_labels.cpu()
-                target = target.cpu()
-            performance = accuracy_score(output_labels.numpy(), target.numpy())
-            model_performance += performance
-            # _clean_from_gpu([data, target])
-
-        model_performance /= number_of_batches
-
-    return model_performance
-
-
-def evaluate_model_performance_and_compatibility_on_dataset(h1, h2, dataset, performance_metric=None,
+def evaluate_model_performance_and_compatibility_on_dataset(h1, h2, dataset, performance_metric,
                                                             device="cpu"):
     """
     Args:
         h1: The reference model being used.
         h2: The model being traind / updated.
-        performance_metric: Optional performance metric to be used when evaluating the model.
-            If not specified then accuracy is used.
+        performance_metric: Performance metric to be used when evaluating the model.
         device: A string with values either "cpu" or "cuda" to indicate the
             device that Pytorch is performing training on. By default this
             value is "cpu". But in case your models reside on the GPU, make sure
@@ -498,25 +475,7 @@ def evaluate_model_performance_and_compatibility_on_dataset(h1, h2, dataset, per
             "incompatibleFraction": error_fraction
         })
 
-    if performance_metric is not None:
-        h2_performance = performance_metric(h2, dataset)
-    else:
-        h2_performance = 0
-        with torch.no_grad():
-            for data, target in dataset:
-                if device != "cpu":
-                    data = data.to(device)
-                    target = target.to(device)
-                _, _, output_logsoftmax = h2(data)
-                output_labels = torch.argmax(output_logsoftmax, 1)
-                if device != "cpu":
-                    output_labels = output_labels.cpu()
-                    target = target.cpu()
-                performance = accuracy_score(output_labels.numpy(), target.numpy())
-                h2_performance += performance
-                # _clean_from_gpu([data, target])
-
-            h2_performance /= number_of_batches
+    h2_performance = performance_metric(h2, dataset, device)
 
     btc, bec = compatibility_scores(h1, h2, dataset, device=device)
 
@@ -535,7 +494,7 @@ def evaluate_model_performance_and_compatibility_on_dataset(h1, h2, dataset, per
     }
 
 
-def evaluate_model_performance_and_compatibility(h1, h2, training_set, test_set, performance_metric=None,
+def evaluate_model_performance_and_compatibility(h1, h2, training_set, test_set, performance_metric,
                                                  device="cpu"):
     """
     Calculate the error overlap of h1 and h2 on a batched dataset.
@@ -544,8 +503,7 @@ def evaluate_model_performance_and_compatibility(h1, h2, training_set, test_set,
     Args:
         h1: The reference model being used.
         h2: The model being traind / updated.
-        performance_metric: Optional performance metric to be used when evaluating the model.
-            If not specified then accuracy is used.
+        performance_metric: Performance metric to be used when evaluating the model.
         training_set: The list of batched training samples as (input, target) pairs.
         test_set: The list of batched testing samples as (input, target) pairs.
         device: A string with values either "cpu" or "cuda" to indicate the
@@ -559,11 +517,11 @@ def evaluate_model_performance_and_compatibility(h1, h2, training_set, test_set,
     """
     training_set_performance_and_compatibility =\
         evaluate_model_performance_and_compatibility_on_dataset(
-            h1, h2, training_set, performance_metric=performance_metric,
+            h1, h2, training_set, performance_metric,
             device=device)
     testing_set_performance_and_compatibility =\
         evaluate_model_performance_and_compatibility_on_dataset(
-            h1, h2, test_set, performance_metric=performance_metric,
+            h1, h2, test_set, performance_metric,
             device=device)
 
     return {
@@ -646,7 +604,7 @@ def compatibility_sweep(sweeps_folder_path, number_of_epochs, h1, h2,
                         training_set, test_set, batch_size_train, batch_size_test,
                         OptimizerClass, optimizer_kwargs,
                         NewErrorLossClass, StrictImitationLossClass,
-                        performance_metric=None,
+                        performance_metric=model_accuracy,
                         lambda_c_stepsize=0.25, percent_complete_queue=None,
                         new_error_loss_kwargs=None,
                         strict_imitation_loss_kwargs=None,
@@ -714,7 +672,7 @@ def compatibility_sweep(sweeps_folder_path, number_of_epochs, h1, h2,
 
         training_set_performance_and_compatibility =\
             evaluate_model_performance_and_compatibility_on_dataset(
-                h1, h2_new_error, training_set, performance_metric=performance_metric,
+                h1, h2_new_error, training_set, performance_metric,
                 device=device)
         training_set_performance_and_compatibility["lambda_c"] = lambda_c
         training_set_performance_and_compatibility["training"] = True
@@ -739,7 +697,7 @@ def compatibility_sweep(sweeps_folder_path, number_of_epochs, h1, h2,
 
         testing_set_performance_and_compatibility =\
             evaluate_model_performance_and_compatibility_on_dataset(
-                h1, h2_new_error, test_set, performance_metric=performance_metric,
+                h1, h2_new_error, test_set, performance_metric,
                 device=device)
         testing_set_performance_and_compatibility["lambda_c"] = lambda_c
         testing_set_performance_and_compatibility["training"] = False
@@ -774,7 +732,7 @@ def compatibility_sweep(sweeps_folder_path, number_of_epochs, h1, h2,
 
         training_set_performance_and_compatibility =\
             evaluate_model_performance_and_compatibility_on_dataset(
-                h1, h2_strict_imitation, training_set, performance_metric=performance_metric,
+                h1, h2_strict_imitation, training_set, performance_metric,
                 device=device)
         training_set_performance_and_compatibility["lambda_c"] = lambda_c
         training_set_performance_and_compatibility["training"] = True
@@ -799,7 +757,7 @@ def compatibility_sweep(sweeps_folder_path, number_of_epochs, h1, h2,
 
         testing_set_performance_and_compatibility =\
             evaluate_model_performance_and_compatibility_on_dataset(
-                h1, h2_new_error, test_set, performance_metric=performance_metric,
+                h1, h2_new_error, test_set, performance_metric,
                 device=device)
         testing_set_performance_and_compatibility["lambda_c"] = lambda_c
         testing_set_performance_and_compatibility["training"] = False
