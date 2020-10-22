@@ -133,10 +133,7 @@ function Container({
             <IncompatiblePointDistribution selectedDataPoint={selectedDataPoint} />
           </div>
           <div className="row">
-            <RawValues data={data.data} />
-          </div>
-          <div className="row">
-            <ErrorInstancesTable data={data.data} />
+            <ErrorInstancesTable selectedDataPoint={selectedDataPoint} />
           </div>
       </div>
     );

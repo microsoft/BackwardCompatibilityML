@@ -3,37 +3,57 @@
 
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
-import * as d3 from "d3";
+import {
+  DetailsList,
+  DetailsListLayoutMode,
+  Selection,
+  SelectionMode,
+  IColumn
+} from "office-ui-fabric-react/lib/DetailsList";
+import { Fabric } from "office-ui-fabric-react/lib/Fabric";
 
 
 type ErrorInstancesTableState = {
-  data: any
+  selecedDataPoint: any
 }
 
 type ErrorInstancesTableProps = {
-  data: any
+  selectedDataPoint: any
 }
 
 class ErrorInstancesTable extends Component<ErrorInstancesTableProps, ErrorInstancesTableState> {
   constructor(props) {
     super(props);
-
-    this.state = {
-      data: this.props.data
-    };
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      data: nextProps.data
+      selecedDataPoint: nextProps.selecedDataPoint
     });
   }
 
   render() {
+
+    if (this.props.selectedDataPoint == null) {
+      return (
+        <React.Fragment />
+      );
+    }
+    var columns = [
+      { key: 'instanceId', name: 'Instance ID', fieldName: 'instance_id', minWidth: 100, maxWidth: 100, isResizable: false },
+      { key: 'h1Prediction', name: 'h1 Prediction', fieldName: 'h1_prediction', minWidth: 100, maxWidth: 100, isResizable: false },
+      { key: 'h2Prediction', name: 'h2 Prediction', fieldName: 'h2_prediction', minWidth: 100, maxWidth: 100, isResizable: false },
+      { key: 'groundTruth', name: 'Ground Truth', fieldName: 'ground_truth', minWidth: 100, maxWidth: 100, isResizable: false },
+    ];
+
     return (
-      <div className="table">
-        Error Instances Table goes here
-      </div>
+      <Fabric>
+        <DetailsList
+          selectionMode={SelectionMode.none}
+          items={this.props.selectedDataPoint.error_instances}
+          columns={columns}
+        />
+      </Fabric>
     );
   }
 }

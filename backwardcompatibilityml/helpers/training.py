@@ -313,6 +313,49 @@ def get_error_instance_indices(model, batched_evaluation_data, batched_evaluatio
         return model_diff.nonzero().view(-1).tolist()
 
 
+def get_all_error_instance_indices(h1, h2, batched_evaluation_data, batched_evaluation_target,
+                                   device="cpu"):
+    """
+    Return the list of indices of instances from batched_evaluation_data on which the
+    model prediction differs from the ground truth in batched_evaluation_target.
+
+    Args:
+        model: The model being evaluated.
+        batched_evaluation_data: A single batch of input data to be passed to our model.
+        batched_evaluation_target: A single batch of the corresponding output targets.
+        device: A string with values either "cpu" or "cuda" to indicate the
+            device that Pytorch is performing training on. By default this
+            value is "cpu". But in case your models reside on the GPU, make sure
+            to set this to "cuda". This makes sure that the input and target
+            tensors are transferred to the GPU during training.
+    Returns:
+        A list of indices of the instances within the batched data, for which the
+        model did not match the expected target.
+    """
+    with torch.no_grad():
+        if device != "cpu":
+            batched_evaluation_data = batched_evaluation_data.to(device)
+            batched_evaluation_target = batched_evaluation_target.to(device)
+        _, _, h1_output_logsoftmax = h1(batched_evaluation_data)
+        _, _, h2_output_logsoftmax = h2(batched_evaluation_data)
+        h1_diff = (torch.argmax(h1_output_logsoftmax, 1) - batched_evaluation_target).float()
+        h2_diff = (torch.argmax(h2_output_logsoftmax, 1) - batched_evaluation_target).float()
+        h1_error_instance_ids = h1_diff.nonzero().view(-1).tolist()
+        h2_error_instance_ids = h2_diff.nonzero().view(-1).tolist()
+        error_instance_ids = list(set(h1_error_instance_ids).union(set(h2_error_instance_ids)))
+        h1_predictions = torch.argmax(h1_output_logsoftmax, 1).index_select(
+            0, torch.tensor(error_instance_ids)).tolist()
+        h2_predictions = torch.argmax(h2_output_logsoftmax, 1).index_select(
+            0, torch.tensor(error_instance_ids)).tolist()
+        instance_ground_truths = batched_evaluation_target.index_select(
+            0, torch.tensor(error_instance_ids)).tolist()
+
+        return zip(error_instance_ids,
+                   h1_predictions,
+                   h2_predictions,
+                   instance_ground_truths)
+
+
 def get_model_error_overlap(h1, h2, batch_ids, batched_evaluation_data, batched_evaluation_target,
                             device="cpu"):
     """
@@ -460,12 +503,16 @@ def evaluate_model_performance_and_compatibility_on_dataset(h1, h2, dataset, per
     h1_and_h2_dataset_error_instance_ids = []
     h2_dataset_error_instance_ids_by_class = {}
     classes = set()
+    all_error_instances = []
     for batch_ids, data, target in dataset:
         classes = classes.union(target.tolist())
         h1_error_count_batch, h2_error_count_batch, h1_and_h2_error_count_batch =\
             get_model_error_overlap(h1, h2, batch_ids, data, target, device=device)
         h2_error_instance_ids_by_class =\
             get_error_instance_ids_by_class(h2, batch_ids, data, target, device=device)
+        all_errors = get_all_error_instance_indices(
+            h1, h2, data, target, device=device)
+        all_error_instances += all_errors
         h1_dataset_error_instance_ids += h1_error_count_batch
         h2_dataset_error_instance_ids += h2_error_count_batch
         h1_and_h2_dataset_error_instance_ids += h1_and_h2_error_count_batch
@@ -484,6 +531,15 @@ def evaluate_model_performance_and_compatibility_on_dataset(h1, h2, dataset, per
 
     h2_performance = performance_metric(h2, dataset, device)
 
+    all_error_instances_results = []
+    for error_instance_id, h1_prediction, h2_prediction, ground_truth in all_error_instances:
+        all_error_instances_results.append({
+            "instance_id": error_instance_id,
+            "h1_prediction": h1_prediction,
+            "h2_prediction": h2_prediction,
+            "ground_truth": ground_truth
+        })
+
     btc, bec = compatibility_scores(h1, h2, dataset, device=device)
 
     return {
@@ -497,7 +553,8 @@ def evaluate_model_performance_and_compatibility_on_dataset(h1, h2, dataset, per
         "sorted_classes": sorted(list(classes)),
         "h2_performance": h2_performance,
         "btc": btc,
-        "bec": bec
+        "bec": bec,
+        "error_instances": all_error_instances_results
     }
 
 
