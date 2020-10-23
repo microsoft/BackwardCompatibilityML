@@ -9,7 +9,7 @@ def model_accuracy(model, dataset, device="cpu"):
     model_performance = 0
     number_of_batches = len(dataset)
     with torch.no_grad():
-        for data, target in dataset:
+        for batch_ids, data, target in dataset:
             if device != "cpu":
                 data = data.to(device)
                 target = target.to(device)

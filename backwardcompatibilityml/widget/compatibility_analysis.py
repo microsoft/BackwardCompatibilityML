@@ -123,6 +123,14 @@ def init_app_routes(app, sweep_manager):
     def get_evaluation(evaluation_id):
         return sweep_manager.get_evaluation(evaluation_id)
 
+    @app.route("/api/v1/instance_data/<int:instance_id>")
+    def get_instance_data(instance_id):
+        return sweep_manager.get_instance_data(instance_id)
+
+    @app.route("/api/v1/instance_label/<int:instance_id>")
+    def get_instance_label(instance_id):
+        return sweep_manager.get_instance_label(instance_id)
+
 
 class CompatibilityAnalysis(object):
     """
@@ -192,7 +200,10 @@ class CompatibilityAnalysis(object):
                  NewErrorLossClass=None, StrictImitationLossClass=None,
                  performance_metric=model_accuracy,
                  port=None, new_error_loss_kwargs=None,
-                 strict_imitation_loss_kwargs=None, device="cpu"):
+                 strict_imitation_loss_kwargs=None,
+                 get_instance_data_by_id=None,
+                 get_instance_label_by_id=None,
+                 device="cpu"):
         if OptimizerClass is None:
             OptimizerClass = optim.SGD
 
@@ -221,6 +232,8 @@ class CompatibilityAnalysis(object):
             new_error_loss_kwargs=new_error_loss_kwargs,
             strict_imitation_loss_kwargs=strict_imitation_loss_kwargs,
             performance_metric=performance_metric,
+            get_instance_data_by_id=get_instance_data_by_id,
+            get_instance_label_by_id=get_instance_label_by_id,
             device=device)
 
         self.flask_service = FlaskHelper(ip="0.0.0.0", port=port)
