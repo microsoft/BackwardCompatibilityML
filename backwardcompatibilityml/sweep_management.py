@@ -118,12 +118,9 @@ class SweepManager(object):
         return self.last_sweep_status
 
     def get_sweep_summary(self):
-        metric_name = self.performance_metric.__name__
-        if metric_name == "model_accuracy":
-            metric_name = "Accuracy"
         sweep_summary = {
             "h1_performance": None,
-            "performance_metric": metric_name,
+            "performance_metric": self.performance_metric.__name__,
             "data": []
         }
 

@@ -171,7 +171,7 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
       .append('text')
         .attr('id', 'yAxisLabel')
         .attr('transform','rotate(-90)')
-        .attr('x',-h/2)
+        .attr('x',-h/2+2.5*this.props.performanceMetric.length)
         .attr('y',-50)
         .attr('dy','.71em')
         .style('text-anchor','end')
