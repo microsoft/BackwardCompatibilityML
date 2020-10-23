@@ -85,9 +85,9 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
     if (this.state.selectedDataPoint != null) {
       //var selectedDataPoint = this.state.selectedDataPoint;
       var errorPartition = this.state.selectedDataPoint.models_error_overlap;
-      var a = errorPartition[0];
-      var b = errorPartition[1];
-      var ab = errorPartition[2];
+      var a = errorPartition[0].length;
+      var b = errorPartition[1].length;
+      var ab = errorPartition[2].length;
 
       var totalErrors = a + b - ab
       var aProportion = 0.0
@@ -151,7 +151,7 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
       let d = bisect(aIntersection, (r + R - 0.00001), (R - r + 0.00001));
 
       var circleRad = 50;
-      var xCenter = w/4 + margin.left;
+      var xCenter = w/2 - d/2;
       var yCenter = h/2
       var xCenter2 = xCenter + d;
 

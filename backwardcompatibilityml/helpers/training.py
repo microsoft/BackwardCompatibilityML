@@ -37,7 +37,7 @@ def train_epoch(epoch, network, optimizer, loss_function, training_set, batch_si
     train_losses = []
     train_counter = []
     network.train()
-    for batch_idx, (data, target) in enumerate(training_set):
+    for batch_idx, (batch_ids, data, target) in enumerate(training_set):
         if device != "cpu":
             data = data.to(device)
             target = target.to(device)
@@ -82,7 +82,7 @@ def test(network, loss_function, test_set, batch_size_test, device="cpu"):
     test_loss = 0
     correct = 0
     with torch.no_grad():
-        for data, target in test_set:
+        for batch_ids, data, target in test_set:
             if device != "cpu":
                 data = data.to(device)
                 target = target.to(device)
@@ -177,7 +177,7 @@ def train_compatibility_epoch(epoch, h2, optimizer, loss_function, training_set,
     train_losses = []
     train_counter = []
     h2.train()
-    for batch_idx, (data, target) in enumerate(training_set):
+    for batch_idx, (batch_ids, data, target) in enumerate(training_set):
         if device != "cpu":
             data = data.to(device)
             target = target.to(device)
@@ -218,7 +218,7 @@ def test_compatibility(h2, loss_function, test_set, batch_size_test, device="cpu
     test_loss = 0
     correct = 0
     with torch.no_grad():
-        for data, target in test_set:
+        for batch_ids, data, target in test_set:
             if device != "cpu":
                 data = data.to(device)
                 target = target.to(device)
@@ -313,15 +313,16 @@ def get_error_instance_indices(model, batched_evaluation_data, batched_evaluatio
         return model_diff.nonzero().view(-1).tolist()
 
 
-def get_model_error_overlap(h1, h2, batched_evaluation_data, batched_evaluation_target,
+def get_model_error_overlap(h1, h2, batch_ids, batched_evaluation_data, batched_evaluation_target,
                             device="cpu"):
     """
-    Return the number of errors of each model and the number of errors common to both models,
-    all with respect to the total number of errors of each model.
+    Return the instance ids corresponding to errors of each model
+    as well as the instance ids corresponding to errors common to both models.
 
     Args:
         h1: Reference Pytorch model.
         h2: The model being compared to h1.
+        batch_ids: The instance ids of the data rows in the batched data.
         batched_evaluation_data: A single batch of input data to be passed to our model.
         batched_evaluation_target: A single batch of the corresponding output targets.
         device: A string with values either "cpu" or "cuda" to indicate the
@@ -331,25 +332,38 @@ def get_model_error_overlap(h1, h2, batched_evaluation_data, batched_evaluation_
             tensors are transferred to the GPU during training.
     Returns:
         A triple of the form:
-            number_of_errors_due_to_h1,
-            number_of_errors_due_to_h2,
-            number_of_errors_due_to_h1_and_h2
+            instance_ids_of_errors_due_to_h1,
+            instance_ids_of_errors_due_to_h2,
+            instance_ids_of_errors_due_to_h1_and_h2
     """
     h1_error_indices = get_error_instance_indices(
         h1, batched_evaluation_data, batched_evaluation_target, device=device)
     h2_error_indices = get_error_instance_indices(
         h2, batched_evaluation_data, batched_evaluation_target, device=device)
-    h1_size = len(h1_error_indices)
-    h2_size = len(h2_error_indices)
-    h1_and_h2_size = len(set(h1_error_indices).intersection(set(h2_error_indices)))
+    h1_and_h2_error_indices = list(set(h1_error_indices).intersection(set(h2_error_indices)))
 
-    return h1_size, h2_size, h1_and_h2_size
+    h1_error_instance_ids = []
+    h2_error_instance_ids = []
+    h1_and_h2_error_instance_ids = []
+    if len(h1_error_indices) > 0:
+        h1_error_instance_ids = torch.tensor(batch_ids).index_select(
+            0, torch.tensor(h1_error_indices)).tolist()
+
+    if len(h2_error_indices) > 0:
+        h2_error_instance_ids = torch.tensor(batch_ids).index_select(
+            0, torch.tensor(h2_error_indices)).tolist()
+
+    if len(h1_and_h2_error_indices) > 0:
+        h1_and_h2_error_instance_ids = torch.tensor(batch_ids).index_select(
+            0, torch.tensor(h1_and_h2_error_indices)).tolist()
+
+    return h1_error_instance_ids, h2_error_instance_ids, h1_and_h2_error_instance_ids
 
 
-def get_error_fraction_by_class(model, batched_evaluation_data, batched_evaluation_target,
-                                device="cpu"):
+def get_error_instance_ids_by_class(model, batch_ids, batched_evaluation_data, batched_evaluation_target,
+                                    device="cpu"):
     """
-    Return the fraction of errors of the model by class.
+    Return the instance ids corresponding to errors of the model by class.
 
     Args:
         model: The model being evaluated.
@@ -362,8 +376,8 @@ def get_error_fraction_by_class(model, batched_evaluation_data, batched_evaluati
             tensors are transferred to the GPU during training.
     Returns:
         A dictionary of key / value pairs, where the key is the output class
-        and the value is the fraction of misclassification errors of the
-        model within that class.
+        and the value is the list of instance ids corresponding to misclassification
+        errors of the model within that class.
     """
     with torch.no_grad():
         if device != "cpu":
@@ -371,20 +385,16 @@ def get_error_fraction_by_class(model, batched_evaluation_data, batched_evaluati
             batched_evaluation_target = batched_evaluation_target.to(device)
         _, _, model_output_logsoftmax = model(batched_evaluation_data)
         model_diff = (torch.argmax(model_output_logsoftmax, 1) - batched_evaluation_target).float()
-        model_errors = (model_diff != 0)
+        model_errors = model_diff.nonzero().view(-1).tolist()
+        error_instance_indices = torch.tensor(batch_ids).index_select(0, torch.tensor(model_errors)).tolist()
         target_error_classes = batched_evaluation_target[model_errors].view(-1).tolist()
-        class_error_count = {}
-        total_errors = len(target_error_classes)
+        class_error_instance_ids = {}
         for class_label in set(batched_evaluation_target.view(-1).tolist()):
-            class_error_count[class_label] = 0
-        for error_class in target_error_classes:
-            class_error_count[error_class] = class_error_count[error_class] + 1
+            class_error_instance_ids[class_label] = []
+        for error_instance_index, error_class in zip(error_instance_indices, target_error_classes):
+            class_error_instance_ids[error_class].append(error_instance_index)
 
-        if total_errors > 0:
-            for class_label, error_count in class_error_count.items():
-                class_error_count[class_label] = error_count / total_errors
-
-        return class_error_count
+        return class_error_instance_ids
 
 
 def compatibility_scores(h1, h2, dataset, device="cpu"):
@@ -407,7 +417,7 @@ def compatibility_scores(h1, h2, dataset, device="cpu"):
     with torch.no_grad():
         btc_dataset = 0
         bec_dataset = 0
-        for data, target in dataset:
+        for batch_ids, data, target in dataset:
             if device != "cpu":
                 data = data.to(device)
                 target = target.to(device)
@@ -445,34 +455,31 @@ def evaluate_model_performance_and_compatibility_on_dataset(h1, h2, dataset, per
         the error compatibility score of h2 with respect to h1.
     """
     number_of_batches = len(dataset)
-    h1_dataset_error_count = 0
-    h2_dataset_error_count = 0
-    h1_and_h2_dataset_error_count = 0
-    h2_dataset_error_fraction_by_class = {}
+    h1_dataset_error_instance_ids = []
+    h2_dataset_error_instance_ids = []
+    h1_and_h2_dataset_error_instance_ids = []
+    h2_dataset_error_instance_ids_by_class = {}
     classes = set()
-    for data, target in dataset:
+    for batch_ids, data, target in dataset:
         classes = classes.union(target.tolist())
         h1_error_count_batch, h2_error_count_batch, h1_and_h2_error_count_batch =\
-            get_model_error_overlap(h1, h2, data, target, device=device)
-        h2_error_fraction_by_class =\
-            get_error_fraction_by_class(h2, data, target, device=device)
-        h1_dataset_error_count += h1_error_count_batch
-        h2_dataset_error_count += h2_error_count_batch
-        h1_and_h2_dataset_error_count += h1_and_h2_error_count_batch
-        for class_label, error_fraction in h2_error_fraction_by_class.items():
-            if class_label in h2_dataset_error_fraction_by_class:
-                h2_dataset_error_fraction_by_class[class_label] += error_fraction
+            get_model_error_overlap(h1, h2, batch_ids, data, target, device=device)
+        h2_error_instance_ids_by_class =\
+            get_error_instance_ids_by_class(h2, batch_ids, data, target, device=device)
+        h1_dataset_error_instance_ids += h1_error_count_batch
+        h2_dataset_error_instance_ids += h2_error_count_batch
+        h1_and_h2_dataset_error_instance_ids += h1_and_h2_error_count_batch
+        for class_label, error_instance_ids in h2_error_instance_ids_by_class.items():
+            if class_label in h2_dataset_error_instance_ids_by_class:
+                h2_dataset_error_instance_ids_by_class[class_label] += error_instance_ids
             else:
-                h2_dataset_error_fraction_by_class[class_label] = error_fraction
+                h2_dataset_error_instance_ids_by_class[class_label] = error_instance_ids
 
-    for class_label, error_fraction in h2_dataset_error_fraction_by_class.items():
-        h2_dataset_error_fraction_by_class[class_label] /= number_of_batches
-
-    h2_ds_error_fraction_by_class = []
-    for class_label, error_fraction in h2_dataset_error_fraction_by_class.items():
-        h2_ds_error_fraction_by_class.append({
+    h2_ds_error_instance_ids_by_class = []
+    for class_label, error_instance_ids in h2_dataset_error_instance_ids_by_class.items():
+        h2_ds_error_instance_ids_by_class.append({
             "class": class_label,
-            "incompatibleFraction": error_fraction
+            "errorInstanceIds": error_instance_ids
         })
 
     h2_performance = performance_metric(h2, dataset, device)
@@ -481,12 +488,12 @@ def evaluate_model_performance_and_compatibility_on_dataset(h1, h2, dataset, per
 
     return {
         "models_error_overlap": [
-            h1_dataset_error_count,
-            h2_dataset_error_count,
-            h1_and_h2_dataset_error_count
+            h1_dataset_error_instance_ids,
+            h2_dataset_error_instance_ids,
+            h1_and_h2_dataset_error_instance_ids
         ],
 
-        "h2_error_fraction_by_class": h2_ds_error_fraction_by_class,
+        "h2_error_instance_ids_by_class": h2_ds_error_instance_ids_by_class,
         "sorted_classes": sorted(list(classes)),
         "h2_performance": h2_performance,
         "btc": btc,
