@@ -40,6 +40,8 @@ To run tests, make sure that you are in the project root folder and do:
 
 1. `pip install -r dev-requirements.txt`
 2. `pytest tests/`
+3. `npm install`
+4. `npm run test`
 
 # Development environment
 
