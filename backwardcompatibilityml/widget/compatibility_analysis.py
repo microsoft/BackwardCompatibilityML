@@ -170,8 +170,13 @@ class CompatibilityAnalysis(object):
         StrictImitationLossClass: The class of the Strict Imitation style loss
             function to be instantiated and used to perform compatibility
             constrained training of our model h2.
-        performance_metric: A function to evaluate model performance.
-            If none, accuracy will be used.
+        performance_metric: A function to evaluate model performance. The function is
+            expected to have the following signature:
+                metric(model, dataset, device)
+                    model: The model being evaluated
+                    dataset: The dataset as a list of (input, target) pairs
+                    device: The device Pytorch is using for training - "cpu" or "cuda"
+            If unspecified, then accuracy is used.
         port: An integer value to indicate the port to which the Flask service
             should bind.
         device: A string with values either "cpu" or "cuda" to indicate the
