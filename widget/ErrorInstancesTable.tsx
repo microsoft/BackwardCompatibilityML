@@ -11,6 +11,7 @@ import {
   IColumn
 } from "office-ui-fabric-react/lib/DetailsList";
 import { Fabric } from "office-ui-fabric-react/lib/Fabric";
+import { apiBaseUrl } from "./api.ts";
 
 
 type ErrorInstancesTableState = {
@@ -40,7 +41,17 @@ class ErrorInstancesTable extends Component<ErrorInstancesTableProps, ErrorInsta
       );
     }
     var columns = [
-      { key: 'instanceId', name: 'Instance ID', fieldName: 'instance_id', minWidth: 100, maxWidth: 100, isResizable: false },
+      {
+        key: 'instanceId',
+        name: 'Instance ID',
+        fieldName: 'instance_id',
+        minWidth: 100,
+        maxWidth: 100,
+        isResizable: false ,
+        onRender: (instance) => {
+          return (<img src={`${apiBaseUrl}/api/v1/instance_data/${instance.instance_id}`} />);
+        }
+      },
       { key: 'h1Prediction', name: 'h1 Prediction', fieldName: 'h1_prediction', minWidth: 100, maxWidth: 100, isResizable: false },
       { key: 'h2Prediction', name: 'h2 Prediction', fieldName: 'h2_prediction', minWidth: 100, maxWidth: 100, isResizable: false },
       { key: 'groundTruth', name: 'Ground Truth', fieldName: 'ground_truth', minWidth: 100, maxWidth: 100, isResizable: false },
