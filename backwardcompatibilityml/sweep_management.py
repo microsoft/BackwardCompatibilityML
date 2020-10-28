@@ -146,6 +146,10 @@ class SweepManager(object):
         return evaluation_data
 
     def get_instance_data(self, instance_id):
+        get_instance_data_by_id = self.get_instance_data_by_id
+        if get_instance_data_by_id is not None:
+            return get_instance_data_by_id(instance_id)
+
         # Generate a blank white PNG image as the default
         data = np.uint8(np.zeros((30, 30)) + 255)
         image = Image.fromarray(data)
