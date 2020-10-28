@@ -55,7 +55,7 @@ class ErrorInstancesTable extends Component<ErrorInstancesTableProps, ErrorInsta
     var columns = [
       {
         key: 'instanceId',
-        name: 'Instance ID',
+        name: 'Instance',
         fieldName: 'instance_id',
         minWidth: 100,
         maxWidth: 100,

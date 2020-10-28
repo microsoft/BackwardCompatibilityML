@@ -18,6 +18,7 @@ from rai_core_flask.environments import (
     AzureNBEnvironment,
     DatabricksEnvironment,
     LocalIPythonEnvironment)
+from backwardcompatibilityml.helpers import http
 
 
 def build_environment_params(flask_service_env):
@@ -99,6 +100,7 @@ def init_app_routes(app, sweep_manager):
     """
 
     @app.route("/api/v1/start_sweep", methods=["POST"])
+    @http.no_cache
     def start_sweep():
         sweep_manager.start_sweep()
         return {
@@ -107,6 +109,7 @@ def init_app_routes(app, sweep_manager):
         }
 
     @app.route("/api/v1/sweep_status", methods=["GET"])
+    @http.no_cache
     def get_sweep_status():
         return {
             "running": sweep_manager.sweep_thread.is_alive(),
@@ -114,20 +117,24 @@ def init_app_routes(app, sweep_manager):
         }
 
     @app.route("/api/v1/sweep_summary", methods=["GET"])
+    @http.no_cache
     def get_data():
         return Response(
             json.dumps(sweep_manager.get_sweep_summary()),
             mimetype="application/json")
 
     @app.route("/api/v1/evaluation_data/<int:evaluation_id>")
+    @http.no_cache
     def get_evaluation(evaluation_id):
         return sweep_manager.get_evaluation(evaluation_id)
 
     @app.route("/api/v1/instance_data/<int:instance_id>")
+    @http.no_cache
     def get_instance_data(instance_id):
         return sweep_manager.get_instance_data(instance_id)
 
     @app.route("/api/v1/instance_label/<int:instance_id>")
+    @http.no_cache
     def get_instance_label(instance_id):
         return sweep_manager.get_instance_label(instance_id)
 
