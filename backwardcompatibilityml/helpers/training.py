@@ -320,7 +320,8 @@ def get_all_error_instance_indices(h1, h2, batched_evaluation_data, batched_eval
     model prediction differs from the ground truth in batched_evaluation_target.
 
     Args:
-        model: The model being evaluated.
+        h1: The baseline model.
+        h2: The new updated model.
         batched_evaluation_data: A single batch of input data to be passed to our model.
         batched_evaluation_target: A single batch of the corresponding output targets.
         device: A string with values either "cpu" or "cuda" to indicate the
