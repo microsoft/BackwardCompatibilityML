@@ -105,6 +105,9 @@ venv.bak/
 # mypy
 .mypy_cache/
 
+development/sweeps-mnist/*.json
+development/sweeps-mnist/*state
+
 examples/datasets/*.gz
 examples/datasets/*/
 
