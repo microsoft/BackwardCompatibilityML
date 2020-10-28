@@ -22,7 +22,7 @@ def train_epoch(epoch, network, optimizer, loss_function, training_set, batch_si
         network: The model which is undergoing training.
         optimizer: The optimizer instance to use for training.
         loss_function: An instance of the loss function to use for training.
-        training_set: The list of training samples as (input, target) pairs.
+        training_set: The list of training samples as (batch_ids, input, target).
         batch_size_train: An integer representing batch size of the training set.
         device: A string with values either "cpu" or "cuda" to indicate the
             device that Pytorch is performing training on. By default this
@@ -67,7 +67,7 @@ def test(network, loss_function, test_set, batch_size_test, device="cpu"):
     Args:
         network: The model which is undergoing testing.
         loss_function: An instance of the loss function to use for training.
-        test_set: The list of testing samples as (input, target) pairs.
+        test_set: The list of testing samples as (batch_ids, input, target).
         batch_size_test: An integer representing the batch size of the test set.
         device: A string with values either "cpu" or "cuda" to indicate the
             device that Pytorch is performing training on. By default this
@@ -114,8 +114,8 @@ def train(number_of_epochs, network, optimizer, loss_function,
         number_of_epochs: Number of epochs of training.
         optimizer: The optimizer instance to use for training.
         loss_function: An instance of the loss function to use for training.
-        training_set: The list of training samples as (input, target) pairs.
-        test_set: The list of testing samples as (input, target) pairs.
+        training_set: The list of training samples as (batch_ids, input, target).
+        test_set: The list of testing samples as (batch_ids, input, target).
         batch_size_train: An integer representing batch size of the training set.
         batch_size_test: An integer representing the batch size of the test set.
         device: A string with values either "cpu" or "cuda" to indicate the
@@ -162,7 +162,7 @@ def train_compatibility_epoch(epoch, h2, optimizer, loss_function, training_set,
         h2: The model which is undergoing training / updating.
         optimizer: The optimizer instance to use for training.
         loss_function: An instance of a compatibility loss function.
-        training_set: The list of training samples as (input, target) pairs.
+        training_set: The list of training samples as (batch_ids, input, target).
         batch_size_train: An integer representing batch size of the training set.
         device: A string with values either "cpu" or "cuda" to indicate the
             device that Pytorch is performing training on. By default this
@@ -203,7 +203,7 @@ def test_compatibility(h2, loss_function, test_set, batch_size_test, device="cpu
     Args:
         h2: The model which is undergoing training / updating.
         loss_function: An instance of a compatibility loss function.
-        test_set: The list of testing samples as (input, target) pairs.
+        test_set: The list of testing samples as (batch_ids, input, target).
         batch_size_test: An integer representing the batch size of the test set.
         device: A string with values either "cpu" or "cuda" to indicate the
             device that Pytorch is performing training on. By default this
@@ -248,8 +248,8 @@ def train_compatibility(number_of_epochs, h2, optimizer, loss_function,
         number_of_epochs: Number of epochs of training.
         loss_function: An instance of a compatibility loss function.
         optimizer: The optimizer instance to use for training.
-        training_set: The list of training samples as (input, target) pairs.
-        test_set: The list of testing samples as (input, target) pairs.
+        training_set: The list of training samples as (batch_ids, input, target).
+        test_set: The list of testing samples as (batch_ids, input, target).
         batch_size_train: An integer representing batch size of the training set.
         batch_size_test: An integer representing the batch size of the test set.
         device: A string with values either "cpu" or "cuda" to indicate the
@@ -574,8 +574,8 @@ def evaluate_model_performance_and_compatibility(h1, h2, training_set, test_set,
         h1: The reference model being used.
         h2: The model being traind / updated.
         performance_metric: Performance metric to be used when evaluating the model.
-        training_set: The list of batched training samples as (input, target) pairs.
-        test_set: The list of batched testing samples as (input, target) pairs.
+        training_set: The list of batched training samples as (batch_ids, input, target).
+        test_set: The list of batched testing samples as (batch_ids, input, target).
         device: A string with values either "cpu" or "cuda" to indicate the
             device that Pytorch is performing training on. By default this
             value is "cpu". But in case your models reside on the GPU, make sure
@@ -610,8 +610,8 @@ def train_new_error(h1, h2, number_of_epochs,
         h1: Reference Pytorch model.
         h2: The model which is undergoing training / updating.
         number_of_epochs: Number of epochs of training.
-        training_set: The list of training samples as (input, target) pairs.
-        test_set: The list of testing samples as (input, target) pairs.
+        training_set: The list of training samples as (batch_ids, input, target).
+        test_set: The list of testing samples as (batch_ids, input, target).
         batch_size_train: An integer representing batch size of the training set.
         batch_size_test: An integer representing the batch size of the test set.
         OptimizerClass: The class to instantiate an optimizer from for training.
@@ -645,8 +645,8 @@ def train_strict_imitation(h1, h2, number_of_epochs,
         h1: Reference Pytorch model.
         h2: The model which is undergoing training / updating.
         number_of_epochs: Number of epochs of training.
-        training_set: The list of training samples as (input, target) pairs.
-        test_set: The list of testing samples as (input, target) pairs.
+        training_set: The list of training samples as (batch_ids, input, target).
+        test_set: The list of testing samples as (batch_ids, input, target).
         batch_size_train: An integer representing batch size of the training set.
         batch_size_test: An integer representing the batch size of the test set.
         OptimizerClass: The class to instantiate an optimizer from for training.
@@ -691,8 +691,8 @@ def compatibility_sweep(sweeps_folder_path, number_of_epochs, h1, h2,
         number_of_epochs: The number of training epochs to use on each sweep.
         h1: The reference model being used.
         h2: The new model being traind / updated.
-        training_set: The list of training samples as (input, target) pairs.
-        test_set: The list of testing samples as (input, target) pairs.
+        training_set: The list of training samples as (batch_ids, input, target).
+        test_set: The list of testing samples as (batch_ids, input, target).
         batch_size_train: An integer representing batch size of the training set.
         batch_size_test: An integer representing the batch size of the test set.
         OptimizerClass: The class to instantiate an optimizer from for training.
@@ -708,7 +708,7 @@ def compatibility_sweep(sweeps_folder_path, number_of_epochs, h1, h2,
             expected to have the following signature:
                 metric(model, dataset, device)
                     model: The model being evaluated
-                    dataset: The dataset as a list of (input, target) pairs
+                    dataset: The dataset as a list of (batch_ids, input, target)
                     device: The device Pytorch is using for training - "cpu" or "cuda"
             If unspecified, then accuracy is used.
         lambda_c_stepsize: The increments of lambda_c to use as we sweep the parameter

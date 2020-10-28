@@ -170,8 +170,8 @@ class CompatibilityAnalysis(object):
         number_of_epochs: The number of training epochs to use on each sweep.
         h1: The reference model being used.
         h2: The new model being traind / updated.
-        training_set: The list of training samples as (input, target) pairs.
-        test_set: The list of testing samples as (input, target) pairs.
+        training_set: The list of training samples as (batch_ids, input, target).
+        test_set: The list of testing samples as (batch_ids, input, target).
         batch_size_train: An integer representing batch size of the training set.
         batch_size_test: An integer representing the batch size of the test set.
         lambda_c_stepsize: The increments of lambda_c to use as we sweep the parameter
