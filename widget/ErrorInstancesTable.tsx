@@ -70,7 +70,10 @@ class ErrorInstancesTable extends Component<ErrorInstancesTableProps, ErrorInsta
     ];
 
     var items = [];
-    for(var i=(this.state.page * this.props.pageSize); i < (this.state.page * this.props.pageSize) + this.props.pageSize; i++) {
+    for(var i=(this.state.page * this.props.pageSize);
+        i < Math.min((this.state.page * this.props.pageSize) + this.props.pageSize),
+                     this.props.selectedDataPoint.error_instances.length;
+        i++) {
       items.push(this.props.selectedDataPoint.error_instances[i]);
     }
 
