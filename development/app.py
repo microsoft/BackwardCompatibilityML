@@ -32,27 +32,33 @@ for i in range(len(data)):
     data[i] = row
 
 data = list(map(lambda r: (torch.tensor(r[:9], dtype=torch.float32), torch.tensor(r[9])), data))
+instance_ids = list(range(len(data)))
+dataset = []
+for (instance_id, (instance_data, instance_label)) in zip(instance_ids, data):
+    dataset.append([instance_id, instance_data, instance_label])
 
-random.shuffle(data)
+random.shuffle(dataset)
 
-training_set = data[:560]
-testing_set = data[560:]
+training_set = dataset[:560]
+testing_set = dataset[560:]
 
 training_set_torch = []
 prev = 0
 for i in range((batch_size_train - 1), len(training_set), batch_size_train):
-    training_data = list(map(lambda r: r[0], training_set[prev:(i + 1)]))
-    training_labels = list(map(lambda r: r[1], training_set[prev:(i + 1)]))
+    batch_ids = list(map(lambda r: r[0], training_set[prev:(i + 1)]))
+    training_data = list(map(lambda r: r[1], training_set[prev:(i + 1)]))
+    training_labels = list(map(lambda r: r[2], training_set[prev:(i + 1)]))
     prev = i
-    training_set_torch.append([torch.stack(training_data, dim=0), torch.stack(training_labels, dim=0)])
+    training_set_torch.append([batch_ids, torch.stack(training_data, dim=0), torch.stack(training_labels, dim=0)])
 
 testing_set_torch = []
 prev = 0
 for i in range((batch_size_test - 1), len(testing_set), batch_size_test):
-    testing_data = list(map(lambda r: r[0], testing_set[prev:(i + 1)]))
-    testing_labels = list(map(lambda r: r[1], testing_set[prev:(i + 1)]))
+    batch_ids = list(map(lambda r: r[0], testing_set[prev:(i + 1)]))
+    testing_data = list(map(lambda r: r[1], testing_set[prev:(i + 1)]))
+    testing_labels = list(map(lambda r: r[2], testing_set[prev:(i + 1)]))
     prev = i
-    testing_set_torch.append([torch.stack(testing_data, dim=0), torch.stack(testing_labels, dim=0)])
+    testing_set_torch.append([batch_ids, torch.stack(testing_data, dim=0), torch.stack(testing_labels, dim=0)])
 
 training_set = training_set_torch
 partial_training_set = training_set[:int(0.5 * (len(training_set)))]
@@ -66,7 +72,7 @@ train_counter, test_counter, train_losses, test_losses = training.train(
 h1.eval()
 
 with torch.no_grad():
-    _, _, output = h1(testing_set[0][0])
+    _, _, output = h1(testing_set[0][1])
 
 h2 = MLPClassifier(9, 2)
 

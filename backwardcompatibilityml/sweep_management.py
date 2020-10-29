@@ -4,6 +4,10 @@
 import os
 import json
 import threading
+import io
+import numpy as np
+from flask import send_file
+from PIL import Image
 from queue import Queue
 from backwardcompatibilityml.helpers import training
 from backwardcompatibilityml.metrics import model_accuracy
@@ -29,8 +33,8 @@ class SweepManager(object):
         number_of_epochs: The number of training epochs to use on each sweep.
         h1: The reference model being used.
         h2: The new model being traind / updated.
-        training_set: The list of training samples as (input, target) pairs.
-        test_set: The list of testing samples as (input, target) pairs.
+        training_set: The list of training samples as (batch_ids, input, target).
+        test_set: The list of testing samples as (batch_ids, input, target).
         batch_size_train: An integer representing batch size of the training set.
         batch_size_test: An integer representing the batch size of the test set.
         OptimizerClass: The class to instantiate an optimizer from for training.
@@ -146,7 +150,14 @@ class SweepManager(object):
         if get_instance_data_by_id is not None:
             return get_instance_data_by_id(instance_id)
 
-        return {}
+        # Generate a blank white PNG image as the default
+        data = np.uint8(np.zeros((30, 30)) + 255)
+        image = Image.fromarray(data)
+        img_bytes = io.BytesIO()
+        image.save(img_bytes, format="PNG")
+        img_bytes.seek(0)
+
+        return send_file(img_bytes, mimetype="image/png")
 
     def get_instance_label(self, instance_id):
         get_instance_label_by_id = self.get_instance_label_by_id
