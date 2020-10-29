@@ -142,7 +142,8 @@ class IncompatiblePointDistribution extends Component<IncompatiblePointDistribut
   }
 
   render() {
-    let numPages = Math.ceil(this.props.selectedDataPoint.sorted_classes.length/this.props.pageSize) - 1
+    let numClasses = this.props.selectedDataPoint?.sorted_classes?.length ?? 0;
+    let numPages = Math.ceil(numClasses/this.props.pageSize) - 1;
     return (
       <div className="plot plot-distribution">
         <div ref={this.node}/>
