@@ -142,19 +142,23 @@ class IncompatiblePointDistribution extends Component<IncompatiblePointDistribut
   }
 
   render() {
+    let numPages = Math.ceil(this.props.selectedDataPoint.sorted_classes.length/this.props.pageSize) - 1
     return (
       <div className="plot plot-distribution">
         <div ref={this.node}/>
-        <button onClick={() => {
-          this.setState({
-            page: Math.max(0, this.state.page-1)
-          })
-        }}>Previous</button>
-        <button onClick={() => {
-          this.setState({
-            page: Math.min(Math.ceil(this.props.selectedDataPoint.sorted_classes.length/this.props.pageSize) - 1, this.state.page+1)
-          })
-        }}>Next</button>
+        <div className="page-button-row">
+          <button onClick={() => {
+            this.setState({
+              page: Math.max(0, this.state.page-1)
+            })
+          }}>&lt;</button>
+          <span>{this.state.page+1} of {numPages+1}</span>
+          <button onClick={() => {
+            this.setState({
+              page: Math.min(numPages, this.state.page+1)
+            })
+          }}>&gt;</button>
+        </div>
       </div>
     );
   }
