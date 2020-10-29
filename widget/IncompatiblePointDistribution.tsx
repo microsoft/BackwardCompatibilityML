@@ -75,9 +75,9 @@ class IncompatiblePointDistribution extends Component<IncompatiblePointDistribut
     if (this.props.selectedDataPoint != null) {
       // Sort the data into the dataRows based on the ordering of the sorted classes
       var totalErrors = 0;
-      var start_i = this.state.page * this.props.pageSize;
-      var end_i = Math.min(start_i + this.props.pageSize, this.props.selectedDataPoint.sorted_classes.length);
-      for (var i = start_i; i < end_i; i++) {
+      var startI = this.state.page * this.props.pageSize;
+      var endI = Math.min(startI + this.props.pageSize, this.props.selectedDataPoint.sorted_classes.length);
+      for (var i = startI; i < endI; i++) {
         var instanceClass = this.props.selectedDataPoint.sorted_classes[i];
         var dataRow = this.props.selectedDataPoint.h2_error_instance_ids_by_class.filter(
           dataDict => (dataDict["class"] == instanceClass)).pop();
@@ -91,7 +91,7 @@ class IncompatiblePointDistribution extends Component<IncompatiblePointDistribut
       }
 
       var dataRows = [];
-      for (var i=start_i; i < end_i; i++) {
+      for (var i=startI; i < endI; i++) {
         var instanceClass = this.props.selectedDataPoint.sorted_classes[i];
         var dataRow = this.props.selectedDataPoint.h2_error_instance_ids_by_class.filter(
           dataDict => (dataDict["class"] == instanceClass)).pop();
