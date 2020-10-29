@@ -27,6 +27,7 @@ function makePostCall(endpoint: string, payload: any) {
 }
 
 export {
+  apiBaseUrl,
   makeGetCall,
   makePostCall
 };
