@@ -5,15 +5,9 @@ import { TestScheduler } from 'jest'
 import { act } from 'react-dom/test-utils'
 import { unmountComponentAtNode } from 'react-dom'
 
-import RawValues from '@App/RawValues'
 import DataSelector from '@App/DataSelector'
 
 afterEach(cleanup);
-
-test('RawValues renders', () => {
-    render(<RawValues data={{}}/>);
-    expect(screen.getByText("Raw Values Table goes here")).toBeInTheDocument();
-});
 
 function testCheckbox(label: string): void {
     expect(screen.getByLabelText(label)).toBeChecked();
