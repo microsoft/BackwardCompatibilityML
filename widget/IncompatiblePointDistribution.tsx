@@ -7,19 +7,27 @@ import * as d3 from "d3";
 
 
 type IncompatiblePointDistributionState = {
-  selectedDataPoint: any
+  selectedDataPoint: any,
+  page: number
 }
 
 type IncompatiblePointDistributionProps = {
-  selectedDataPoint: any
+  selectedDataPoint: any,
+  pageSize?: number
 }
 
 class IncompatiblePointDistribution extends Component<IncompatiblePointDistributionProps, IncompatiblePointDistributionState> {
+
+  public static defaultProps = {
+      pageSize: 5
+  };
+
   constructor(props) {
     super(props);
 
     this.state = {
-      selectedDataPoint: this.props.selectedDataPoint
+      selectedDataPoint: this.props.selectedDataPoint,
+      page: 0
     };
 
     this.node = React.createRef<HTMLDivElement>();
@@ -34,7 +42,7 @@ class IncompatiblePointDistribution extends Component<IncompatiblePointDistribut
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      selectedDataPoint: nextProps.selectedDataPoint
+      selectedDataPoint: nextProps.selectedDataPoint,
     });
   }
 
@@ -55,7 +63,8 @@ class IncompatiblePointDistribution extends Component<IncompatiblePointDistribut
     var svg = body.append('svg')
         .attr('id', "incompatiblepointdistribution")
         .attr('height',h + margin.top + margin.bottom)
-        .attr('width',w + margin.left + margin.right);
+        .attr('width',w + margin.left + margin.right)
+        .attr('float', 'left');
 
     svg.append("text")
        .attr("x", margin.left + 20)
@@ -66,7 +75,9 @@ class IncompatiblePointDistribution extends Component<IncompatiblePointDistribut
     if (this.props.selectedDataPoint != null) {
       // Sort the data into the dataRows based on the ordering of the sorted classes
       var totalErrors = 0;
-      for (var i=0; i < this.props.selectedDataPoint.sorted_classes.length; i++) {
+      var startI = this.state.page * this.props.pageSize;
+      var endI = Math.min(startI + this.props.pageSize, this.props.selectedDataPoint.sorted_classes.length);
+      for (var i = startI; i < endI; i++) {
         var instanceClass = this.props.selectedDataPoint.sorted_classes[i];
         var dataRow = this.props.selectedDataPoint.h2_error_instance_ids_by_class.filter(
           dataDict => (dataDict["class"] == instanceClass)).pop();
@@ -80,7 +91,7 @@ class IncompatiblePointDistribution extends Component<IncompatiblePointDistribut
       }
 
       var dataRows = [];
-      for (var i=0; i < this.props.selectedDataPoint.sorted_classes.length; i++) {
+      for (var i=startI; i < endI; i++) {
         var instanceClass = this.props.selectedDataPoint.sorted_classes[i];
         var dataRow = this.props.selectedDataPoint.h2_error_instance_ids_by_class.filter(
           dataDict => (dataDict["class"] == instanceClass)).pop();
@@ -131,8 +142,25 @@ class IncompatiblePointDistribution extends Component<IncompatiblePointDistribut
   }
 
   render() {
+    let numClasses = this.props.selectedDataPoint?.sorted_classes?.length ?? 0;
+    let numPages = Math.ceil(numClasses/this.props.pageSize) - 1;
     return (
-      <div className="plot plot-distribution" ref={this.node} />
+      <div className="plot plot-distribution">
+        <div ref={this.node}/>
+        <div className="page-button-row">
+          <button onClick={() => {
+            this.setState({
+              page: Math.max(0, this.state.page-1)
+            })
+          }}>&lt;</button>
+          <span>{this.state.page+1} of {numPages+1}</span>
+          <button onClick={() => {
+            this.setState({
+              page: Math.min(numPages, this.state.page+1)
+            })
+          }}>&gt;</button>
+        </div>
+      </div>
     );
   }
 }
