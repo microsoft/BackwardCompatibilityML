@@ -9,7 +9,7 @@
             "request": "launch",
             "name": "Launch Chrome against localhost",
             "url": "http://localhost:3000",
-            "webRoot": "${workspaceFolder}/widget"
+            "webRoot": "${workspaceFolder}"
         }
     ]
 }
