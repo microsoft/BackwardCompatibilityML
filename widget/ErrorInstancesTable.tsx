@@ -22,7 +22,8 @@ type ErrorInstancesTableState = {
 
 type ErrorInstancesTableProps = {
   selectedDataPoint: any,
-  pageSize?: number
+  pageSize?: number,
+  filterInstances: number[]
 }
 
 class ErrorInstancesTable extends Component<ErrorInstancesTableProps, ErrorInstancesTableState> {
@@ -76,12 +77,21 @@ class ErrorInstancesTable extends Component<ErrorInstancesTableProps, ErrorInsta
       { key: 'groundTruth', name: 'Ground Truth', fieldName: 'ground_truth', minWidth: 100, maxWidth: 100, isResizable: false },
     ];
 
+    var errorInstances = this.props.selectedDataPoint.error_instances;
+    console.log(this.props.filterInstances);
+    if (this.props.filterInstances != null) {
+      errorInstances = this.props.selectedDataPoint.error_instances.filter(errorInstance => {
+        console.log(errorInstance.instance_id, (this.props.filterInstances.indexOf(errorInstance.instance_id) != -1));
+        return (this.props.filterInstances.indexOf(errorInstance.instance_id) != -1)
+      });
+    }
+
     var items = [];
     for(var i=(this.state.page * this.props.pageSize);
         i < Math.min((this.state.page * this.props.pageSize) + this.props.pageSize,
-                     this.props.selectedDataPoint.error_instances.length);
+                     errorInstances.length);
         i++) {
-      items.push(this.props.selectedDataPoint.error_instances[i]);
+      items.push(errorInstances[i]);
     }
 
     return (

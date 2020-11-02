@@ -23,7 +23,8 @@ import {
   getTrainingAndTestingData,
   getModelEvaluationData,
   getSweepStatus,
-  startSweep
+  startSweep,
+  filterByInstanceIds
 } from './actions.ts';
 
 
@@ -31,6 +32,7 @@ function Container({
   data,
   sweepStatus,
   selectedDataPoint,
+  filterInstances,
   training,
   testing,
   newError,
@@ -45,7 +47,8 @@ function Container({
   getTrainingAndTestingData,
   getModelEvaluationData,
   getSweepStatus,
-  startSweep}) {
+  startSweep,
+  filterByInstanceIds}) {
 
     if (loading) {
       return (
@@ -129,11 +132,11 @@ function Container({
           </div>
           {(selectedDataPoint != null)? <SelectedModelDetails btc={selectedDataPoint.btc} bec={selectedDataPoint.bec} performance={selectedDataPoint.h2_performance} lambda_c={selectedDataPoint.lambda_c} />: null}
           <div className="row">
-            <IntersectionBetweenModelErrors selectedDataPoint={selectedDataPoint} />
-            <IncompatiblePointDistribution selectedDataPoint={selectedDataPoint} />
+            <IntersectionBetweenModelErrors selectedDataPoint={selectedDataPoint} filterByInstanceIds={filterByInstanceIds}/>
+            <IncompatiblePointDistribution selectedDataPoint={selectedDataPoint} filterByInstanceIds={filterByInstanceIds} />
           </div>
           <div className="row">
-            <ErrorInstancesTable selectedDataPoint={selectedDataPoint} />
+            <ErrorInstancesTable selectedDataPoint={selectedDataPoint} filterInstances={filterInstances} />
           </div>
       </div>
     );
@@ -144,6 +147,7 @@ function mapStateToProps (state) {
     data: state.data,
     sweepStatus: state.sweepStatus,
     selectedDataPoint: state.selectedDataPoint,
+    filterInstances: state.filterInstances,
     training: state.training,
     testing: state.testing,
     newError: state.newError,
@@ -163,7 +167,8 @@ function mapDispatchToProps (dispatch) {
     getTrainingAndTestingData: getTrainingAndTestingData,
     getModelEvaluationData: getModelEvaluationData,
     getSweepStatus: getSweepStatus,
-    startSweep: startSweep
+    startSweep: startSweep,
+    filterByInstanceIds: filterByInstanceIds
   }, dispatch);
  }
 

@@ -12,7 +12,8 @@ type IntersectionBetweenModelErrorsState = {
 }
 
 type IntersectionBetweenModelErrorsProps = {
-  selectedDataPoint: any
+  selectedDataPoint: any,
+  filterByInstanceIds: any
 }
 
 class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelErrorsProps, IntersectionBetweenModelErrorsState> {
@@ -263,6 +264,9 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
           .on("mouseout", function() {
             tooltip.style("opacity", 0);
             d3.select(this).attr("stroke-width", "1px");
+          })
+          .on("click", function() {
+            _this.props.filterByInstanceIds(errorPartition[0]);
           });
 
       areas.append("circle")
@@ -291,6 +295,9 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
           .on("mouseout", function() {
             tooltip.style("opacity", 0);
             d3.select(this).attr("stroke-width", "1px");
+          })
+          .on("click", function() {
+            _this.props.filterByInstanceIds(errorPartition[0]);
           });
 
       var path = areas.append("path");
@@ -322,6 +329,9 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
             tooltip.style("opacity", 0);
             d3.select(this).attr("stroke-width", "1px");
             d3.select(this).attr("stroke", "black");
+          })
+          .on("click", function() {
+            _this.props.filterByInstanceIds(errorPartition[2]);
           });
 
       areas.selectAll("g")
