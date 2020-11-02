@@ -66,6 +66,7 @@ class SweepManager(object):
                  performance_metric=model_accuracy,
                  get_instance_data_by_id=None,
                  get_instance_label_by_id=None,
+                 get_instance_metadata=None,
                  device="cpu"):
         self.folder_name = folder_name
         self.number_of_epochs = number_of_epochs
@@ -85,6 +86,7 @@ class SweepManager(object):
         self.strict_imitation_loss_kwargs = strict_imitation_loss_kwargs
         self.get_instance_data_by_id = get_instance_data_by_id
         self.get_instance_label_by_id = get_instance_label_by_id
+        self.get_instance_metadata = get_instance_metadata
         self.device = device
         self.last_sweep_status = 0.0
         self.percent_complete_queue = Queue()
@@ -101,6 +103,7 @@ class SweepManager(object):
                 "percent_complete_queue": self.percent_complete_queue,
                 "new_error_loss_kwargs": self.new_error_loss_kwargs,
                 "strict_imitation_loss_kwargs": self.strict_imitation_loss_kwargs,
+                "get_instance_metadata": self.get_instance_metadata,
                 "device": self.device
             })
 
@@ -116,6 +119,7 @@ class SweepManager(object):
             lambda_c_stepsize=self.lambda_c_stepsize, percent_complete_queue=self.percent_complete_queue,
             new_error_loss_kwargs=self.new_error_loss_kwargs,
             strict_imitation_loss_kwargs=self.strict_imitation_loss_kwargs,
+            get_instance_metadata=self.get_instance_metadata,
             device=self.device)
 
     def get_sweep_status(self):

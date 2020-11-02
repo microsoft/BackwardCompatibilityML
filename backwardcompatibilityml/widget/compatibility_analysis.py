@@ -90,6 +90,10 @@ def render_widget_html(api_service_environment):
         data=json.dumps(None))
 
 
+def default_get_instance_metadata(instance_id):
+    return str(instance_id)
+
+
 def init_app_routes(app, sweep_manager):
     """
     Defines the API for the Flask app.
@@ -210,6 +214,7 @@ class CompatibilityAnalysis(object):
                  strict_imitation_loss_kwargs=None,
                  get_instance_data_by_id=None,
                  get_instance_label_by_id=None,
+                 get_instance_metadata=None,
                  device="cpu"):
         if OptimizerClass is None:
             OptimizerClass = optim.SGD
@@ -222,6 +227,9 @@ class CompatibilityAnalysis(object):
 
         if StrictImitationLossClass is None:
             StrictImitationLossClass = loss.StrictImitationCrossEntropyLoss
+
+        if get_instance_metadata is None:
+            get_instance_metadata = default_get_instance_metadata
 
         self.sweep_manager = SweepManager(
             folder_name,
@@ -241,6 +249,7 @@ class CompatibilityAnalysis(object):
             performance_metric=performance_metric,
             get_instance_data_by_id=get_instance_data_by_id,
             get_instance_label_by_id=get_instance_label_by_id,
+            get_instance_metadata=get_instance_metadata,
             device=device)
 
         self.flask_service = FlaskHelper(ip="0.0.0.0", port=port)

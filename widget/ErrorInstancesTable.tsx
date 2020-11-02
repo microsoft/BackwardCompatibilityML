@@ -54,15 +54,22 @@ class ErrorInstancesTable extends Component<ErrorInstancesTableProps, ErrorInsta
     }
     var columns = [
       {
-        key: 'instanceId',
-        name: 'Instance',
-        fieldName: 'instance_id',
-        minWidth: 100,
-        maxWidth: 100,
-        isResizable: false ,
+        key: 'instanceImage',
+        name: '',
+        minWidth: 50,
+        maxWidth: 50,
+        isResizable: false,
         onRender: (instance) => {
           return (<img src={`${apiBaseUrl}/api/v1/instance_data/${instance.instance_id}`} />);
         }
+      },
+      {
+        key: 'instanceData',
+        name: 'Instance',
+        fieldName: 'metadata',
+        minWidth: 100,
+        maxWidth: 100,
+        isResizable: false
       },
       { key: 'h1Prediction', name: 'h1 Prediction', fieldName: 'h1_prediction', minWidth: 100, maxWidth: 100, isResizable: false },
       { key: 'h2Prediction', name: 'h2 Prediction', fieldName: 'h2_prediction', minWidth: 100, maxWidth: 100, isResizable: false },
