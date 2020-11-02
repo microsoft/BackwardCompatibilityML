@@ -9,9 +9,10 @@ import * as d3 from "d3";
 type SelectedModelDetailsProps = {
   btc: number,
   bec: number,
-  h1_performance: number,
-  h2_performance: number,
-  lambda_c: number
+  h1Performance: number,
+  h2Performance: number,
+  performanceMetric: string,
+  lambdaC: number
 }
 
 class SelectedModelDetails extends Component<SelectedModelDetailsProps, null> {
@@ -20,25 +21,19 @@ class SelectedModelDetails extends Component<SelectedModelDetailsProps, null> {
   }
 
   render() {
-    let h2ModelName = "Updated Model";
-    let deltaPerf = this.props.h1_performance != 0 ? (this.props.h2_performance - this.props.h1_performance) / this.props.h1_performance * 100 : 0;
+    let deltaPerf = this.props.h1Performance != 0 ? (this.props.h2Performance - this.props.h1Performance) / this.props.h1Performance * 100 : 0;
 
     return (
       <table className="model-details">
         <tr className="model-details-row">
-          <td>&nbsp;</td>
-          <td><span className="model-details-info-data">{h2ModelName} (h2)</span></td>
-          <td>&nbsp;</td>
+          <td><span className="model-details-info-type">BTC</span>&nbsp;<span className="model-details-info-data">{this.props.btc.toFixed(3)}</span></td>
+          <td><span className="model-details-info-type">h1 {this.props.performanceMetric}</span>&nbsp;<span className="model-details-info-data">{this.props.h1Performance.toFixed(3)}</span></td>
+          <td><span className="model-details-info-type">Δ{this.props.performanceMetric}</span>&nbsp;<span className="model-details-info-data">{(deltaPerf >= 0 ? "+" : "-") + deltaPerf.toFixed(3)}%</span></td>
         </tr>
         <tr className="model-details-row">
-          <td><span className="model-details-info-data">{this.props.btc.toFixed(3)}</span><br/><span className="model-details-info-type">(BTC)</span></td>
-          <td><span className="model-details-info-data">{this.props.h1_performance.toFixed(3)}</span><br/><span className="model-details-info-type">(h1 performance)</span></td>
-          <td><span className="model-details-info-data">{(deltaPerf >= 0 ? "+" : "-") + deltaPerf.toFixed(3)}%</span><br/><span className="model-details-info-type">(Δperformance)</span></td>
-        </tr>
-        <tr className="model-details-row">
-          <td><span className="model-details-info-data">{this.props.bec.toFixed(3)}</span><br/><span className="model-details-info-type">(BEC)</span></td>
-          <td><span className="model-details-info-data">{this.props.h2_performance.toFixed(3)}</span><br/><span className="model-details-info-type">(h2 performance)</span></td>
-          <td><span className="model-details-info-data">{this.props.lambda_c.toFixed(2)}</span><br/><span className="model-details-info-type">(lambda_c)</span></td>
+          <td><span className="model-details-info-type">BEC</span>&nbsp;<span className="model-details-info-data">{this.props.bec.toFixed(3)}</span></td>
+          <td><span className="model-details-info-type">h2 {this.props.performanceMetric}</span>&nbsp;<span className="model-details-info-data">{this.props.h2Performance.toFixed(3)}</span></td>
+          <td><span className="model-details-info-type">λ<sub>c</sub></span>&nbsp;<span className="model-details-info-data">{this.props.lambdaC.toFixed(2)}</span></td>
         </tr>
       </table>
     )

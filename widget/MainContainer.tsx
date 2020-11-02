@@ -126,7 +126,9 @@ function Container({
               selectedDataPoint={selectedDataPoint}
             />
           </div>
-          {(selectedDataPoint != null)? <SelectedModelDetails btc={selectedDataPoint.btc} bec={selectedDataPoint.bec} h1_performance={data.h1_performance} h2_performance={selectedDataPoint.h2_performance} lambda_c={selectedDataPoint.lambda_c} />: null}
+          {(selectedDataPoint != null)? 
+            <SelectedModelDetails btc={selectedDataPoint.btc} bec={selectedDataPoint.bec} h1Performance={data.h1_performance} h2Performance={selectedDataPoint.h2_performance} performanceMetric={data.performance_metric} lambdaC={selectedDataPoint.lambda_c} />
+            : null}
           <div className="row">
             <IntersectionBetweenModelErrors selectedDataPoint={selectedDataPoint} />
             <IncompatiblePointDistribution selectedDataPoint={selectedDataPoint} />

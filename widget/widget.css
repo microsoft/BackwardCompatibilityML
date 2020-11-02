@@ -198,13 +198,13 @@ label {
 .model-details-row {
   width: 100%;
   display: inline-block;
-  text-align: center;
-  padding: 0.3em 0.3em !important;
+  text-align: center !important;
+  padding: 0.1em 0.1em !important;
 }
 
 .model-details-row td {
   display: inline-block;
-  width: 100px;
+  width: 180px;
 }
 
 .model-details-info-data {
@@ -212,7 +212,6 @@ label {
   font-weight: bold;
   font-size: 10px;
   margin-right: 4px;
-  text-align: center;
 }
 
 .model-details-info-type {
@@ -220,5 +219,4 @@ label {
   font-style: italic;
   font-size: 10px;
   font-weight: normal;
-  text-align: center;
 }
