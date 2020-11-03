@@ -376,6 +376,33 @@ def get_all_error_instance_indices(h1, h2, batch_ids, batched_evaluation_data, b
                     instance_ground_truths))
 
 
+
+def get_incompatible_instances_by_class(all_errors, batch_ids, batched_evaluation_target, class_incompatible_instance_ids):
+    """
+    Finds instances where h2 is incompatible with h1 and inserts
+    {class : incompatible_data_id} mappings into the class_incompatible_instance_ids dictionary.
+
+    Args:
+        all_errors: A list of tuples of error indices, h1 and h2 predictions, and ground truth for each instance
+        batch_ids: The instance ids of the data rows in the batched data.
+        batched_evaluation_target: A single batch of the corresponding output targets.
+        class_incompatible_instance_ids: The dictionary to fill with incompatible instances and their ids
+    """
+    h1h2_incompatible_ids = []
+    for (error_instance_id, h1_prediction, h2_prediction, ground_truth) in all_errors:
+        if (h1_prediction == ground_truth and h2_prediction != ground_truth):
+            h1h2_incompatible_ids.append(error_instance_id)
+
+    if len(h1h2_incompatible_ids) > 0:
+        incompatible_instance_indices = torch.tensor(batch_ids).index_select(
+            0, torch.tensor(h1h2_incompatible_ids)).tolist()
+        target_incompatible_classes = batched_evaluation_target[h1h2_incompatible_ids].view(-1).tolist()
+        for incompatible_instance_index, incompatible_class in zip(incompatible_instance_indices, target_incompatible_classes):
+            if (incompatible_class not in class_incompatible_instance_ids):
+                class_incompatible_instance_ids[incompatible_class] = []
+            class_incompatible_instance_ids[incompatible_class].append(incompatible_instance_index)
+
+
 def get_model_error_overlap(h1, h2, batch_ids, batched_evaluation_data, batched_evaluation_target,
                             device="cpu"):
     """
@@ -530,7 +557,7 @@ def evaluate_model_performance_and_compatibility_on_dataset(h1, h2, dataset, per
     h1_dataset_error_instance_ids = []
     h2_dataset_error_instance_ids = []
     h1_and_h2_dataset_error_instance_ids = []
-    h2_dataset_error_instance_ids_by_class = {}
+    h1h2_dataset_incompatible_instance_ids_by_class = {}
     classes = set()
     all_error_instances = []
     for batch_ids, data, target in dataset:
@@ -542,6 +569,7 @@ def evaluate_model_performance_and_compatibility_on_dataset(h1, h2, dataset, per
         all_errors = get_all_error_instance_indices(
             h1, h2, batch_ids, data, target,
             get_instance_metadata=get_instance_metadata, device=device)
+        get_incompatible_instances_by_class(all_errors, batch_ids, target, h1h2_dataset_incompatible_instance_ids_by_class)
         all_error_instances += all_errors
         h1_dataset_error_instance_ids += h1_error_count_batch
         h2_dataset_error_instance_ids += h2_error_count_batch
@@ -552,11 +580,11 @@ def evaluate_model_performance_and_compatibility_on_dataset(h1, h2, dataset, per
             else:
                 h2_dataset_error_instance_ids_by_class[class_label] = error_instance_ids
 
-    h2_ds_error_instance_ids_by_class = []
-    for class_label, error_instance_ids in h2_dataset_error_instance_ids_by_class.items():
-        h2_ds_error_instance_ids_by_class.append({
+    h1h2_ds_incompatible_instance_ids_by_class = []
+    for class_label, incompatible_instance_ids in h1h2_dataset_incompatible_instance_ids_by_class.items():
+        h1h2_ds_incompatible_instance_ids_by_class.append({
             "class": class_label,
-            "errorInstanceIds": error_instance_ids
+            "incompatibleInstanceIds": incompatible_instance_ids
         })
 
     h2_performance = performance_metric(h2, dataset, device)
@@ -580,7 +608,7 @@ def evaluate_model_performance_and_compatibility_on_dataset(h1, h2, dataset, per
             h1_and_h2_dataset_error_instance_ids
         ],
 
-        "h2_error_instance_ids_by_class": h2_ds_error_instance_ids_by_class,
+        "h2_incompatible_instance_ids_by_class": h1h2_ds_incompatible_instance_ids_by_class,
         "sorted_classes": sorted(list(classes)),
         "h2_performance": h2_performance,
         "btc": btc,
