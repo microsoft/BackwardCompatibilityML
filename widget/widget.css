@@ -204,6 +204,7 @@ label {
 
 .model-details-row td {
   display: inline-block;
+  text-align: center;
   width: 180px;
 }
 
