@@ -24,7 +24,7 @@ class SelectedModelDetails extends Component<SelectedModelDetailsProps, null> {
     let deltaPerf = this.props.h1Performance != 0 ? (this.props.h2Performance - this.props.h1Performance) / this.props.h1Performance * 100 : 0;
 
     return (
-      <table className="model-details">
+      <table className="model-details" id="raw-values-table">
         <tr className="model-details-row">
           <td><span className="model-details-info-type">BTC</span>&nbsp;<span className="model-details-info-data">{this.props.btc.toFixed(3)}</span></td>
           <td><span className="model-details-info-type">h1 {this.props.performanceMetric}</span>&nbsp;<span className="model-details-info-data">{this.props.h1Performance.toFixed(3)}</span></td>
