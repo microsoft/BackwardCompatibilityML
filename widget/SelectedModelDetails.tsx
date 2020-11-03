@@ -28,7 +28,7 @@ class SelectedModelDetails extends Component<SelectedModelDetailsProps, null> {
         <tr className="model-details-row">
           <td><span className="model-details-info-type">BTC</span>&nbsp;<span className="model-details-info-data">{this.props.btc.toFixed(3)}</span></td>
           <td><span className="model-details-info-type">h1 {this.props.performanceMetric}</span>&nbsp;<span className="model-details-info-data">{this.props.h1Performance.toFixed(3)}</span></td>
-          <td><span className="model-details-info-type">Δ{this.props.performanceMetric}</span>&nbsp;<span className="model-details-info-data">{(deltaPerf >= 0 ? "+" : "-") + deltaPerf.toFixed(3)}%</span></td>
+          <td><span className="model-details-info-type">Δ{this.props.performanceMetric}</span>&nbsp;<span className="model-details-info-data">{(deltaPerf >= 0 ? "+" : "") + deltaPerf.toFixed(3)}%</span></td>
         </tr>
         <tr className="model-details-row">
           <td><span className="model-details-info-type">BEC</span>&nbsp;<span className="model-details-info-data">{this.props.bec.toFixed(3)}</span></td>
