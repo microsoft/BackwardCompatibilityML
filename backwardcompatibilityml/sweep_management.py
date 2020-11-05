@@ -50,6 +50,12 @@ class SweepManager(object):
             If not specified then accuracy is used.
         lambda_c_stepsize: The increments of lambda_c to use as we sweep the parameter
             space between 0.0 and 1.0.
+        get_instance_metadata: A function that returns a text string representation
+            of some metadata corresponding to the instance id. It should be
+            a function of the form:
+            get_instance_metadata(instance_id)
+                instance_id: An integer instance id
+            And should return a string.
         device: A string with values either "cpu" or "cuda" to indicate the
             device that Pytorch is performing training on. By default this
             value is "cpu". But in case your models reside on the GPU, make sure
@@ -66,6 +72,7 @@ class SweepManager(object):
                  performance_metric=model_accuracy,
                  get_instance_data_by_id=None,
                  get_instance_label_by_id=None,
+                 get_instance_metadata=None,
                  device="cpu"):
         self.folder_name = folder_name
         self.number_of_epochs = number_of_epochs
@@ -85,6 +92,7 @@ class SweepManager(object):
         self.strict_imitation_loss_kwargs = strict_imitation_loss_kwargs
         self.get_instance_data_by_id = get_instance_data_by_id
         self.get_instance_label_by_id = get_instance_label_by_id
+        self.get_instance_metadata = get_instance_metadata
         self.device = device
         self.last_sweep_status = 0.0
         self.percent_complete_queue = Queue()
@@ -101,6 +109,7 @@ class SweepManager(object):
                 "percent_complete_queue": self.percent_complete_queue,
                 "new_error_loss_kwargs": self.new_error_loss_kwargs,
                 "strict_imitation_loss_kwargs": self.strict_imitation_loss_kwargs,
+                "get_instance_metadata": self.get_instance_metadata,
                 "device": self.device
             })
 
@@ -116,6 +125,7 @@ class SweepManager(object):
             lambda_c_stepsize=self.lambda_c_stepsize, percent_complete_queue=self.percent_complete_queue,
             new_error_loss_kwargs=self.new_error_loss_kwargs,
             strict_imitation_loss_kwargs=self.strict_imitation_loss_kwargs,
+            get_instance_metadata=self.get_instance_metadata,
             device=self.device)
 
     def get_sweep_status(self):

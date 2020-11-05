@@ -13,7 +13,8 @@ type IncompatiblePointDistributionState = {
 
 type IncompatiblePointDistributionProps = {
   selectedDataPoint: any,
-  pageSize?: number
+  pageSize?: number,
+  filterByInstanceIds: any
 }
 
 class IncompatiblePointDistribution extends Component<IncompatiblePointDistributionProps, IncompatiblePointDistributionState> {
@@ -137,7 +138,10 @@ class IncompatiblePointDistribution extends Component<IncompatiblePointDistribut
          .attr("x", function(d) { return xScale(d.class); })
          .attr("y", function(d) { return yScale(d.errorInstanceIds.length/totalErrors * 100); })
          .attr("width", xScale.bandwidth())
-         .attr("height", function(d) { return h - yScale(d.errorInstanceIds.length/totalErrors * 100); });
+         .attr("height", function(d) { return h - yScale(d.errorInstanceIds.length/totalErrors * 100); })
+         .on("click", function(d) {
+           _this.props.filterByInstanceIds(d.errorInstanceIds);
+         });
       }
   }
 

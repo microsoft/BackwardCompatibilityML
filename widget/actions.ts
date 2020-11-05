@@ -122,6 +122,14 @@ function startSweep() {
     }
 }
 
+function filterByInstanceIds(filterInstances) {
+  return {
+    type: "FILTER_BY_INSTANCE_IDS",
+    filterInstances: filterInstances
+  }
+}
+
+
 export {
   toggleTraining,
   toggleTesting,
@@ -131,5 +139,6 @@ export {
   getTrainingAndTestingData,
   getModelEvaluationData,
   getSweepStatus,
-  startSweep
+  startSweep,
+  filterByInstanceIds
 };
