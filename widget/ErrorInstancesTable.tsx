@@ -78,10 +78,8 @@ class ErrorInstancesTable extends Component<ErrorInstancesTableProps, ErrorInsta
     ];
 
     var errorInstances = this.props.selectedDataPoint.error_instances;
-    console.log(this.props.filterInstances);
     if (this.props.filterInstances != null) {
       errorInstances = this.props.selectedDataPoint.error_instances.filter(errorInstance => {
-        console.log(errorInstance.instance_id, (this.props.filterInstances.indexOf(errorInstance.instance_id) != -1));
         return (this.props.filterInstances.indexOf(errorInstance.instance_id) != -1)
       });
     }

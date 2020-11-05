@@ -326,6 +326,12 @@ def get_all_error_instance_indices(h1, h2, batch_ids, batched_evaluation_data, b
         batch_ids: A list of the instance ids in the batch.
         batched_evaluation_data: A single batch of input data to be passed to our model.
         batched_evaluation_target: A single batch of the corresponding output targets.
+        get_instance_metadata: A function that returns a text string representation
+            of some metadata corresponding to the instance id. It should be
+            a function of the form:
+            get_instance_metadata(instance_id)
+                instance_id: An integer instance id
+            And should return a string.
         device: A string with values either "cpu" or "cuda" to indicate the
             device that Pytorch is performing training on. By default this
             value is "cpu". But in case your models reside on the GPU, make sure
@@ -503,6 +509,12 @@ def evaluate_model_performance_and_compatibility_on_dataset(h1, h2, dataset, per
         h1: The reference model being used.
         h2: The model being traind / updated.
         performance_metric: Performance metric to be used when evaluating the model.
+        get_instance_metadata: A function that returns a text string representation
+            of some metadata corresponding to the instance id. It should be
+            a function of the form:
+            get_instance_metadata(instance_id)
+                instance_id: An integer instance id
+            And should return a string.
         device: A string with values either "cpu" or "cuda" to indicate the
             device that Pytorch is performing training on. By default this
             value is "cpu". But in case your models reside on the GPU, make sure
@@ -729,6 +741,12 @@ def compatibility_sweep(sweeps_folder_path, number_of_epochs, h1, h2,
             space between 0.0 and 1.0.
         percent_complete_queue: Optional thread safe queue to use for logging the
             status of the sweep in terms of the percentage complete.
+        get_instance_metadata: A function that returns a text string representation
+            of some metadata corresponding to the instance id. It should be
+            a function of the form:
+            get_instance_metadata(instance_id)
+                instance_id: An integer instance id
+            And should return a string.
         device: A string with values either "cpu" or "cuda" to indicate the
             device that Pytorch is performing training on. By default this
             value is "cpu". But in case your models reside on the GPU, make sure
