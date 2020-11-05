@@ -22,7 +22,8 @@ type ErrorInstancesTableState = {
 
 type ErrorInstancesTableProps = {
   selectedDataPoint: any,
-  pageSize?: number
+  pageSize?: number,
+  filterInstances: number[]
 }
 
 class ErrorInstancesTable extends Component<ErrorInstancesTableProps, ErrorInstancesTableState> {
@@ -54,27 +55,41 @@ class ErrorInstancesTable extends Component<ErrorInstancesTableProps, ErrorInsta
     }
     var columns = [
       {
-        key: 'instanceId',
-        name: 'Instance',
-        fieldName: 'instance_id',
-        minWidth: 100,
-        maxWidth: 100,
-        isResizable: false ,
+        key: 'instanceImage',
+        name: '',
+        minWidth: 50,
+        maxWidth: 50,
+        isResizable: false,
         onRender: (instance) => {
           return (<img src={`${apiBaseUrl}/api/v1/instance_data/${instance.instance_id}`} />);
         }
+      },
+      {
+        key: 'instanceData',
+        name: 'Instance',
+        fieldName: 'metadata',
+        minWidth: 100,
+        maxWidth: 100,
+        isResizable: false
       },
       { key: 'h1Prediction', name: 'h1 Prediction', fieldName: 'h1_prediction', minWidth: 100, maxWidth: 100, isResizable: false },
       { key: 'h2Prediction', name: 'h2 Prediction', fieldName: 'h2_prediction', minWidth: 100, maxWidth: 100, isResizable: false },
       { key: 'groundTruth', name: 'Ground Truth', fieldName: 'ground_truth', minWidth: 100, maxWidth: 100, isResizable: false },
     ];
 
+    var errorInstances = this.props.selectedDataPoint.error_instances;
+    if (this.props.filterInstances != null) {
+      errorInstances = this.props.selectedDataPoint.error_instances.filter(errorInstance => {
+        return (this.props.filterInstances.indexOf(errorInstance.instance_id) != -1)
+      });
+    }
+
     var items = [];
     for(var i=(this.state.page * this.props.pageSize);
         i < Math.min((this.state.page * this.props.pageSize) + this.props.pageSize,
-                     this.props.selectedDataPoint.error_instances.length);
+                     errorInstances.length);
         i++) {
-      items.push(this.props.selectedDataPoint.error_instances[i]);
+      items.push(errorInstances[i]);
     }
 
     return (

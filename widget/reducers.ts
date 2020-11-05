@@ -5,6 +5,7 @@ const rawInitialState = {
    data: null,
    sweepStatus: null,
    selectedDataPoint: null,
+   filterInstances: null,
    training: true,
    testing: true,
    newError: true,
@@ -58,6 +59,9 @@ function rootReducer(state = initialState, action) {
         case "REQUEST_SWEEP_STATUS_FAILED":
           console.log("Error: ", action.error);
           return Object.assign({}, state, {error: "Failed to get sweep status"});
+
+        case "FILTER_BY_INSTANCE_IDS":
+          return Object.assign({}, state, {filterInstances: action.filterInstances});
 
         default:
             return state

@@ -313,7 +313,8 @@ def get_error_instance_indices(model, batched_evaluation_data, batched_evaluatio
         return model_diff.nonzero().view(-1).tolist()
 
 
-def get_all_error_instance_indices(h1, h2, batched_evaluation_data, batched_evaluation_target,
+def get_all_error_instance_indices(h1, h2, batch_ids, batched_evaluation_data, batched_evaluation_target,
+                                   get_instance_metadata=None,
                                    device="cpu"):
     """
     Return the list of indices of instances from batched_evaluation_data on which the
@@ -322,8 +323,15 @@ def get_all_error_instance_indices(h1, h2, batched_evaluation_data, batched_eval
     Args:
         h1: The baseline model.
         h2: The new updated model.
+        batch_ids: A list of the instance ids in the batch.
         batched_evaluation_data: A single batch of input data to be passed to our model.
         batched_evaluation_target: A single batch of the corresponding output targets.
+        get_instance_metadata: A function that returns a text string representation
+            of some metadata corresponding to the instance id. It should be
+            a function of the form:
+            get_instance_metadata(instance_id)
+                instance_id: An integer instance id
+            And should return a string.
         device: A string with values either "cpu" or "cuda" to indicate the
             device that Pytorch is performing training on. By default this
             value is "cpu". But in case your models reside on the GPU, make sure
@@ -344,10 +352,16 @@ def get_all_error_instance_indices(h1, h2, batched_evaluation_data, batched_eval
         h1_error_instance_ids = h1_diff.nonzero().view(-1).tolist()
         h2_error_instance_ids = h2_diff.nonzero().view(-1).tolist()
         error_instance_ids = list(set(h1_error_instance_ids).union(set(h2_error_instance_ids)))
+        error_instances_metadata = [""] * len(error_instance_ids)
+        if get_instance_metadata is not None:
+            error_instances_metadata = list(map(get_instance_metadata, error_instance_ids))
+        error_instance_batch_ids = []
         h1_predictions = []
         h2_predictions = []
         instance_ground_truths = []
         if len(error_instance_ids) > 0:
+            error_instance_batch_ids = torch.tensor(batch_ids).index_select(
+                0, torch.tensor(error_instance_ids)).tolist()
             h1_predictions = torch.argmax(h1_output_logsoftmax, 1).index_select(
                 0, torch.tensor(error_instance_ids).to(device)).tolist()
             h2_predictions = torch.argmax(h2_output_logsoftmax, 1).index_select(
@@ -355,7 +369,8 @@ def get_all_error_instance_indices(h1, h2, batched_evaluation_data, batched_eval
             instance_ground_truths = batched_evaluation_target.index_select(
                 0, torch.tensor(error_instance_ids).to(device)).tolist()
 
-        return list(zip(error_instance_ids,
+        return list(zip(error_instance_batch_ids,
+                    error_instances_metadata,
                     h1_predictions,
                     h2_predictions,
                     instance_ground_truths))
@@ -487,12 +502,19 @@ def compatibility_scores(h1, h2, dataset, device="cpu"):
 
 
 def evaluate_model_performance_and_compatibility_on_dataset(h1, h2, dataset, performance_metric,
+                                                            get_instance_metadata=None,
                                                             device="cpu"):
     """
     Args:
         h1: The reference model being used.
         h2: The model being traind / updated.
         performance_metric: Performance metric to be used when evaluating the model.
+        get_instance_metadata: A function that returns a text string representation
+            of some metadata corresponding to the instance id. It should be
+            a function of the form:
+            get_instance_metadata(instance_id)
+                instance_id: An integer instance id
+            And should return a string.
         device: A string with values either "cpu" or "cuda" to indicate the
             device that Pytorch is performing training on. By default this
             value is "cpu". But in case your models reside on the GPU, make sure
@@ -518,7 +540,8 @@ def evaluate_model_performance_and_compatibility_on_dataset(h1, h2, dataset, per
         h2_error_instance_ids_by_class =\
             get_error_instance_ids_by_class(h2, batch_ids, data, target, device=device)
         all_errors = get_all_error_instance_indices(
-            h1, h2, data, target, device=device)
+            h1, h2, batch_ids, data, target,
+            get_instance_metadata=get_instance_metadata, device=device)
         all_error_instances += all_errors
         h1_dataset_error_instance_ids += h1_error_count_batch
         h2_dataset_error_instance_ids += h2_error_count_batch
@@ -539,9 +562,10 @@ def evaluate_model_performance_and_compatibility_on_dataset(h1, h2, dataset, per
     h2_performance = performance_metric(h2, dataset, device)
 
     all_error_instances_results = []
-    for error_instance_id, h1_prediction, h2_prediction, ground_truth in all_error_instances:
+    for error_instance_id, error_instance_metadata, h1_prediction, h2_prediction, ground_truth in all_error_instances:
         all_error_instances_results.append({
             "instance_id": error_instance_id,
+            "metadata": error_instance_metadata,
             "h1_prediction": h1_prediction,
             "h2_prediction": h2_prediction,
             "ground_truth": ground_truth
@@ -679,6 +703,7 @@ def compatibility_sweep(sweeps_folder_path, number_of_epochs, h1, h2,
                         lambda_c_stepsize=0.25, percent_complete_queue=None,
                         new_error_loss_kwargs=None,
                         strict_imitation_loss_kwargs=None,
+                        get_instance_metadata=None,
                         device="cpu"):
     """
     This function trains a new model using the backward compatibility loss function
@@ -716,6 +741,12 @@ def compatibility_sweep(sweeps_folder_path, number_of_epochs, h1, h2,
             space between 0.0 and 1.0.
         percent_complete_queue: Optional thread safe queue to use for logging the
             status of the sweep in terms of the percentage complete.
+        get_instance_metadata: A function that returns a text string representation
+            of some metadata corresponding to the instance id. It should be
+            a function of the form:
+            get_instance_metadata(instance_id)
+                instance_id: An integer instance id
+            And should return a string.
         device: A string with values either "cpu" or "cuda" to indicate the
             device that Pytorch is performing training on. By default this
             value is "cpu". But in case your models reside on the GPU, make sure
@@ -749,6 +780,7 @@ def compatibility_sweep(sweeps_folder_path, number_of_epochs, h1, h2,
         training_set_performance_and_compatibility =\
             evaluate_model_performance_and_compatibility_on_dataset(
                 h1, h2_new_error, training_set, performance_metric,
+                get_instance_metadata=get_instance_metadata,
                 device=device)
         training_set_performance_and_compatibility["lambda_c"] = lambda_c
         training_set_performance_and_compatibility["training"] = True
@@ -774,6 +806,7 @@ def compatibility_sweep(sweeps_folder_path, number_of_epochs, h1, h2,
         testing_set_performance_and_compatibility =\
             evaluate_model_performance_and_compatibility_on_dataset(
                 h1, h2_new_error, test_set, performance_metric,
+                get_instance_metadata=get_instance_metadata,
                 device=device)
         testing_set_performance_and_compatibility["lambda_c"] = lambda_c
         testing_set_performance_and_compatibility["training"] = False
@@ -809,6 +842,7 @@ def compatibility_sweep(sweeps_folder_path, number_of_epochs, h1, h2,
         training_set_performance_and_compatibility =\
             evaluate_model_performance_and_compatibility_on_dataset(
                 h1, h2_strict_imitation, training_set, performance_metric,
+                get_instance_metadata=get_instance_metadata,
                 device=device)
         training_set_performance_and_compatibility["lambda_c"] = lambda_c
         training_set_performance_and_compatibility["training"] = True
@@ -834,6 +868,7 @@ def compatibility_sweep(sweeps_folder_path, number_of_epochs, h1, h2,
         testing_set_performance_and_compatibility =\
             evaluate_model_performance_and_compatibility_on_dataset(
                 h1, h2_new_error, test_set, performance_metric,
+                get_instance_metadata=get_instance_metadata,
                 device=device)
         testing_set_performance_and_compatibility["lambda_c"] = lambda_c
         testing_set_performance_and_compatibility["training"] = False
