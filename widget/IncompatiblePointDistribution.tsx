@@ -146,7 +146,7 @@ class IncompatiblePointDistribution extends Component<IncompatiblePointDistribut
          .attr("width", xScale.bandwidth())
          .attr("height", function(d) { return h - yScale(d.incompatibleInstanceIds.length/totalIncompatible * 100); })
          .on("click", function(d) {
-           _this.props.filterByInstanceIds(d.errorInstanceIds);
+           _this.props.filterByInstanceIds(d.incompatibleInstanceIds);
          });
       }
   }
