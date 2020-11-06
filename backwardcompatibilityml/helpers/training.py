@@ -568,7 +568,6 @@ def evaluate_model_performance_and_compatibility_on_dataset(h1, h2, dataset, per
 
     h1h2_ds_incompatible_instance_ids_by_class = []
     for class_label, incompatible_instance_ids in h1h2_dataset_incompatible_instance_ids_by_class.items():
-        print(class_label, incompatible_instance_ids, sep=" ;;;;; ")
         h1h2_ds_incompatible_instance_ids_by_class.append({
             "class": class_label,
             "incompatibleInstanceIds": incompatible_instance_ids
