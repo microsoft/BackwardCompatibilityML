@@ -75,28 +75,34 @@ class IncompatiblePointDistribution extends Component<IncompatiblePointDistribut
 
     if (this.props.selectedDataPoint != null) {
       // Sort the data into the dataRows based on the ordering of the sorted classes
-      var totalErrors = 0;
+      var totalIncompatible = 0;
       var startI = this.state.page * this.props.pageSize;
       var endI = Math.min(startI + this.props.pageSize, this.props.selectedDataPoint.sorted_classes.length);
       for (var i = startI; i < endI; i++) {
         var instanceClass = this.props.selectedDataPoint.sorted_classes[i];
-        var dataRow = this.props.selectedDataPoint.h2_error_instance_ids_by_class.filter(
+        var dataRow = this.props.selectedDataPoint.h2_incompatible_instance_ids_by_class.filter(
           dataDict => (dataDict["class"] == instanceClass)).pop();
-        totalErrors += dataRow["errorInstanceIds"].length;
+        if (dataRow) {
+          totalIncompatible += dataRow["incompatibleInstanceIds"]?.length ?? 0;
+        }
       }
 
       // We add the following so that we do not get a divide by zero
-      // error later on if there are no errors.
-      if (totalErrors == 0) {
-        totalErrors = 1;
+      // error later on if there are no incompatible points.
+      if (totalIncompatible == 0) {
+        totalIncompatible = 1;
       }
 
       var dataRows = [];
       for (var i=startI; i < endI; i++) {
         var instanceClass = this.props.selectedDataPoint.sorted_classes[i];
-        var dataRow = this.props.selectedDataPoint.h2_error_instance_ids_by_class.filter(
+        var dataRow = this.props.selectedDataPoint.h2_incompatible_instance_ids_by_class.filter(
           dataDict => (dataDict["class"] == instanceClass)).pop();
-        dataRows.push(dataRow);
+        if (dataRow) {
+          dataRows.push(dataRow);
+        } else {
+          dataRows.push({class: instanceClass, incompatibleInstanceIds: []})
+        }
       }
 
       var xScale = d3.scaleBand().range([0, w]).padding(0.4),
@@ -136,11 +142,11 @@ class IncompatiblePointDistribution extends Component<IncompatiblePointDistribut
          .enter().append("rect")
          .attr("class", "bar")
          .attr("x", function(d) { return xScale(d.class); })
-         .attr("y", function(d) { return yScale(d.errorInstanceIds.length/totalErrors * 100); })
+         .attr("y", function(d) { return yScale(d.incompatibleInstanceIds.length/totalIncompatible * 100); })
          .attr("width", xScale.bandwidth())
-         .attr("height", function(d) { return h - yScale(d.errorInstanceIds.length/totalErrors * 100); })
+         .attr("height", function(d) { return h - yScale(d.incompatibleInstanceIds.length/totalIncompatible * 100); })
          .on("click", function(d) {
-           _this.props.filterByInstanceIds(d.errorInstanceIds);
+           _this.props.filterByInstanceIds(d.incompatibleInstanceIds);
          });
       }
   }
