@@ -553,7 +553,9 @@ def evaluate_model_performance_and_compatibility_on_dataset(h1, h2, dataset, per
     h1h2_dataset_incompatible_instance_ids_by_class = {}
     classes = set()
     all_error_instances = []
+    dataset_size = 0
     for batch_ids, data, target in dataset:
+        dataset_size += len(batch_ids)
         classes = classes.union(target.tolist())
         h1_error_count_batch, h2_error_count_batch, h1_and_h2_error_count_batch =\
             get_model_error_overlap(h1, h2, batch_ids, data, target, device=device)
@@ -599,7 +601,8 @@ def evaluate_model_performance_and_compatibility_on_dataset(h1, h2, dataset, per
         "h2_performance": h2_performance,
         "btc": btc,
         "bec": bec,
-        "error_instances": all_error_instances_results
+        "error_instances": all_error_instances_results,
+        "dataset_size": dataset_size
     }
 
 
