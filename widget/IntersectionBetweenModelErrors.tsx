@@ -38,7 +38,8 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      selectedDataPoint: nextProps.selectedDataPoint
+      selectedDataPoint: nextProps.selectedDataPoint,
+      regionSelected: null
     });
   }
 
@@ -283,16 +284,6 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
                         Math.acos((Math.pow(d, 2) + Math.pow(Ra, 2) - Math.pow(Rb, 2))/(2 * d *Ra)), false);
         progressPath.closePath();
 
-        function getRegionStrokeWidth(regionName) {
-          if ((_this.state.regionSelected == regionName) && (regionName == "intersection")) {
-            return "3px";
-          } else if (_this.state.regionSelected == regionName) {
-            return "2px";
-          } else {
-            return "1px";
-          }
-        }
-
         function getRegionFill(regionName) {
           if ((regionName == "intersection") && !(_this.state.regionSelected == "intersection")) {
             return "rgba(241, 241, 127, 0.8)";
@@ -312,13 +303,11 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
         // Draw and style the Intersection region
         path.attr("d", intersectionPath)
           .attr("stroke", "black")
-          .attr("stroke-width", getRegionStrokeWidth("intersection"))
+          .attr("stroke-width", "1px")
           .attr("fill", getRegionFill("intersection"))
             .on("mouseover", function() {
               tooltip.text(`${ab} (${(abProportion * 100).toFixed(3)}%)`)
                 .style("opacity", 0.8);
-
-              //bringToTop("intersectionRaRb");
 
               d3.select(this).attr("stroke-width", "3px");
             })
@@ -330,7 +319,7 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
             })
             .on("mouseout", function() {
               tooltip.style("opacity", 0);
-              d3.select(this).attr("stroke-width", getRegionStrokeWidth("intersection"));
+              d3.select(this).attr("stroke-width", "1px");
             })
             .on("click", function() {
               _this.props.filterByInstanceIds(errorPartition[2]);
@@ -342,13 +331,11 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
         // Draw and style the Regress region
         rPath.attr("d", regressPath)
           .attr("stroke", "black")
-          .attr("stroke-width", getRegionStrokeWidth("regress"))
+          .attr("stroke-width", "1px")
           .attr("fill", getRegionFill("regress"))
           .on("mouseover", function() {
             tooltip.text(`${regressSize} (${(regressProportion * 100).toFixed(3)}%)`)
               .style("opacity", 0.8);
-
-            //bringToTop("Ra");
 
             d3.select(this).attr("stroke-width", "2px");
           })
@@ -360,7 +347,7 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
           })
           .on("mouseout", function() {
             tooltip.style("opacity", 0);
-            d3.select(this).attr("stroke-width", getRegionStrokeWidth("regress"));
+            d3.select(this).attr("stroke-width", "1px");
           })
           .on("click", function() {
             _this.props.filterByInstanceIds(regress);
@@ -372,13 +359,11 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
         // Draw and style the Progress region
         pPath.attr("d", progressPath)
           .attr("stroke", "black")
-          .attr("stroke-width", getRegionStrokeWidth("progress"))
+          .attr("stroke-width", "1px")
           .attr("fill", getRegionFill("progress"))
           .on("mouseover", function() {
             tooltip.text(`${progressSize} (${(progressProportion * 100).toFixed(3)}%)`)
               .style("opacity", 0.8);
-
-            //bringToTop("Rb");
 
             d3.select(this).attr("stroke-width", "2px");
           })
@@ -390,7 +375,7 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
           })
           .on("mouseout", function() {
             tooltip.style("opacity", 0);
-            d3.select(this).attr("stroke-width", getRegionStrokeWidth("progress"));
+            d3.select(this).attr("stroke-width", "1px");
           })
           .on("click", function() {
             _this.props.filterByInstanceIds(progress);
