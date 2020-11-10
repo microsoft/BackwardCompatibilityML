@@ -14,6 +14,7 @@ import random
 from backwardcompatibilityml import loss as bcloss
 from backwardcompatibilityml.helpers import training
 from backwardcompatibilityml.helpers.models import LogisticRegression, MLPClassifier
+from backwardcompatibilityml.metrics import model_accuracy
 
 
 class TestLossFunctions(object):
@@ -140,9 +141,9 @@ class TestLossFunctions(object):
             self.batch_size_train, self.batch_size_test)
 
         evaluation_0 = training.evaluate_model_performance_and_compatibility_on_dataset(
-            h1, h2_0, self.testing_set)
+            h1, h2_0, self.testing_set, model_accuracy)
         evaluation_1 = training.evaluate_model_performance_and_compatibility_on_dataset(
-            h1, h2_1, self.testing_set)
+            h1, h2_1, self.testing_set, model_accuracy)
 
         assert(evaluation_0["h2_performance"] >= h1_accuracy)
 
