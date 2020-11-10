@@ -6,36 +6,50 @@
 <html>
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="stylesheet" href="css/bootstrap-tour.min.css">
-  <link rel="stylesheet" href="css/codemirror.css">
-  <link rel="stylesheet" href="css/custom.css">
-  <link rel="stylesheet" href="css/jquery.typeahead.min.css">
-  <link rel="stylesheet" href="css/jquery-ui.min.css">
-  <link rel="stylesheet" href="css/override.css">
-  <link rel="stylesheet" href="css/style.min.css">
-  <title>BCML widget</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="css/bootstrap-tour.min.css">
+    <link rel="stylesheet" href="css/codemirror.css">
+    <link rel="stylesheet" href="css/custom.css">
+    <link rel="stylesheet" href="css/jquery.typeahead.min.css">
+    <link rel="stylesheet" href="css/jquery-ui.min.css">
+    <link rel="stylesheet" href="css/override.css">
+    <link rel="stylesheet" href="css/style.min.css">
+    <title>BCML widget</title>
 </head>
 
-<div class="container">
-    <div id="widget">
-    </div>
-    <script>
-        var data = null;
-        window.API_SERVICE_ENVIRONMENT = {environment_type: "local", base_url: "", port: 5000};
-        window.WIDGET_STATE = {
-            data: data,
-            sweepStatus: null,
-            selectedDataPoint: null,
-            training: true,
-            testing: true,
-            newError: true,
-            strictImitation: true,
-            error: null,
-            loading: false
-        };
-    </script>
-</div>
+<body class="notebook_app command_mode ms-Fabric--isFocusHidden">
+    <div id="notebook">
+        <div class="container" id="notebook-container">
+            <div class="cell code_cell rendered selected">
+                <div class="output_wrapper">
+                    <div class="output">
+                        <div class="output_area">
+                            <div class="prompt"></div>
+                            <div class="output_subarea output_html rendered_html">
+                                <div id="widget">
+                                </div>
+                                <script>
+                                    var data = null;
+                                    window.API_SERVICE_ENVIRONMENT = { environment_type: "local", base_url: "", port: 5000 };
+                                    window.WIDGET_STATE = {
+                                        data: data,
+                                        sweepStatus: null,
+                                        selectedDataPoint: null,
+                                        training: true,
+                                        testing: true,
+                                        newError: true,
+                                        strictImitation: true,
+                                        error: null,
+                                        loading: false
+                                    };
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</body>
 
 </html>

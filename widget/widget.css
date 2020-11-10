@@ -64,7 +64,7 @@ label {
   padding-right:20px;
   padding-top: 20px;
   padding-bottom: 39px;
-  bottom: 27px;
+  vertical-align: top;
 }
 
 .plot-distribution {
@@ -225,4 +225,10 @@ label {
 .highlighted-bar {
   stroke-width: 2;
   stroke: rgb(0,0,0);
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
 }
