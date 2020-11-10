@@ -8,6 +8,7 @@ import * as d3 from "d3";
 
 type IncompatiblePointDistributionState = {
   selectedDataPoint: any,
+  highlightedClass?: number,
   page: number
 }
 
@@ -28,6 +29,7 @@ class IncompatiblePointDistribution extends Component<IncompatiblePointDistribut
 
     this.state = {
       selectedDataPoint: this.props.selectedDataPoint,
+      highlightedClass: null,
       page: 0
     };
 
@@ -145,8 +147,10 @@ class IncompatiblePointDistribution extends Component<IncompatiblePointDistribut
          .attr("y", function(d) { return yScale(d.incompatibleInstanceIds.length/totalIncompatible * 100); })
          .attr("width", xScale.bandwidth())
          .attr("height", function(d) { return h - yScale(d.incompatibleInstanceIds.length/totalIncompatible * 100); })
+         .classed("highlighted-bar", function(d) { return d.class == _this.state.highlightedClass })
          .on("click", function(d) {
            _this.props.filterByInstanceIds(d.incompatibleInstanceIds);
+           _this.setState({ highlightedClass: d.class });
          });
       }
   }

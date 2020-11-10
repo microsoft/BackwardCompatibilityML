@@ -221,3 +221,8 @@ label {
   font-size: 10px;
   font-weight: normal;
 }
+
+.highlighted-bar {
+  stroke-width: 2;
+  stroke: rgb(0,0,0);
+}
