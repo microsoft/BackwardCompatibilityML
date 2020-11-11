@@ -226,9 +226,3 @@ label {
   stroke-width: 2;
   stroke: rgb(0,0,0);
 }
-
-.row {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-}
