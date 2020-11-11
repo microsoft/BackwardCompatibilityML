@@ -216,8 +216,7 @@ class BCKLDivergenceLoss(nn.Module):
 
         lambda_c = 0.5 (regularization parameter)
         h2 = MyNewModel() (this may be the same model type as MyModel)
-        bcloss = BCKLDivergenceLoss(
-            h1, h2, lambda_c, num_classes=num_classes)
+        bcloss = BCKLDivergenceLoss(h1, h2, lambda_c, num_classes=num_classes)
 
         for x, y in training_data:
             loss = bcloss(x, y)
