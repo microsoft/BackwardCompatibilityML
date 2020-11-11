@@ -134,7 +134,7 @@ class BCCrossEntropyLoss(nn.Module):
 
 class BCBinaryCrossEntropyLoss(nn.Module):
     """
-    Backward Compatibility Cross Entropy Loss
+    Backward Compatibility Binary Cross Entropy Loss
 
     This class implements the backward compatibility loss function
     with the underlying loss function being the Cross Entropy loss.

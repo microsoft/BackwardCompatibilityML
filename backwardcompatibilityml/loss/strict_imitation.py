@@ -141,7 +141,7 @@ class StrictImitationCrossEntropyLoss(nn.Module):
 
 class StrictImitationBinaryCrossEntropyLoss(nn.Module):
     """
-    Strict Imitation Cross Entropy Loss
+    Strict Imitation Binary Cross Entropy Loss
 
     This class implements the strict imitation loss function
     with the underlying loss function being the Cross Entropy loss.
