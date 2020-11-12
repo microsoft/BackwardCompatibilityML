@@ -46,6 +46,7 @@ class IncompatiblePointDistribution extends Component<IncompatiblePointDistribut
   componentWillReceiveProps(nextProps) {
     this.setState({
       selectedDataPoint: nextProps.selectedDataPoint,
+      highlightedClass: null
     });
   }
 
