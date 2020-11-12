@@ -31,23 +31,23 @@ function rootReducer(state = initialState, action) {
           return Object.assign({}, state, {strictImitation: !state.strictImitation});
 
         case "SELECT_DATA_POINT":
-          return Object.assign({}, state, {selectedDataPoint: action.dataPoint});
+          return Object.assign({}, state, {filterInstances: null, selectedDataPoint: action.dataPoint});
 
         case "REQUEST_TRAINING_AND_TESTING_DATA":
-          return Object.assign({}, state, {loading: true});
+          return Object.assign({}, state, {filterInstances: null, loading: true});
 
         case "REQUEST_TRAINING_AND_TESTING_DATA_SUCCEEDED":
-          return Object.assign({}, state, {data: action.data, loading: false, error: null});
+          return Object.assign({}, state, {filterInstances: null, data: action.data, loading: false, error: null});
 
         case "REQUEST_TRAINING_AND_TESTING_DATA_FAILED":
           console.log("Error: ", action.error);
           return Object.assign({}, state, {error: "Failed to load training and testing data", loading: false});
 
         case "REQUEST_MODEL_EVALUATION_DATA":
-          return Object.assign({}, state, {loading: true});
+          return Object.assign({}, state, {filterInstances: null, loading: true});
 
         case "REQUEST_MODEL_EVALUATION_DATA_SUCCEEDED":
-          return Object.assign({}, state, {selectedDataPoint: action.evaluationData, loading: false});
+          return Object.assign({}, state, {filterInstances: null, selectedDataPoint: action.evaluationData, loading: false});
 
         case "REQUEST_MODEL_EVALUATION_DATA_FAILED":
           console.log("Error: ", action.error);
