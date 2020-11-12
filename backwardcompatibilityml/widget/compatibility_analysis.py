@@ -135,12 +135,7 @@ def init_app_routes(app, sweep_manager):
     @app.route("/api/v1/instance_data/<int:instance_id>")
     @http.no_cache
     def get_instance_data(instance_id):
-        return sweep_manager.get_instance_data(instance_id)
-
-    @app.route("/api/v1/instance_label/<int:instance_id>")
-    @http.no_cache
-    def get_instance_label(instance_id):
-        return sweep_manager.get_instance_label(instance_id)
+        return sweep_manager.get_instance_image(instance_id)
 
 
 class CompatibilityAnalysis(object):
@@ -198,6 +193,12 @@ class CompatibilityAnalysis(object):
             If unspecified, then accuracy is used.
         port: An integer value to indicate the port to which the Flask service
             should bind.
+        get_instance_image_by_id: A function that returns an image representation
+            of the data corresponding to the instance id, in PNG format. It should be
+            a function of the form:
+            get_instance_image_by_id(instance_id)
+                instance_id: An integer instance id
+            And should return a PNG image.
         get_instance_metadata: A function that returns a text string representation
             of some metadata corresponding to the instance id. It should be
             a function of the form:
@@ -218,8 +219,7 @@ class CompatibilityAnalysis(object):
                  performance_metric=model_accuracy,
                  port=None, new_error_loss_kwargs=None,
                  strict_imitation_loss_kwargs=None,
-                 get_instance_data_by_id=None,
-                 get_instance_label_by_id=None,
+                 get_instance_image_by_id=None,
                  get_instance_metadata=None,
                  device="cpu"):
         if OptimizerClass is None:
@@ -253,8 +253,7 @@ class CompatibilityAnalysis(object):
             new_error_loss_kwargs=new_error_loss_kwargs,
             strict_imitation_loss_kwargs=strict_imitation_loss_kwargs,
             performance_metric=performance_metric,
-            get_instance_data_by_id=get_instance_data_by_id,
-            get_instance_label_by_id=get_instance_label_by_id,
+            get_instance_image_by_id=get_instance_image_by_id,
             get_instance_metadata=get_instance_metadata,
             device=device)
 
