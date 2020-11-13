@@ -169,18 +169,22 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
     if (this.state.selectedDataPoint != null) {
       //var selectedDataPoint = this.state.selectedDataPoint;
       var errorPartition = this.state.selectedDataPoint.models_error_overlap;
+
       var a = errorPartition[0].length;
       var b = errorPartition[1].length;
       var ab = errorPartition[2].length;
 
       // Error instance ids of regress instances
-      var regress = errorPartition[0].filter(instanceId => (errorPartition[2].indexOf(instanceId) == -1));
+      var regress = errorPartition[1].filter(instanceId => (errorPartition[2].indexOf(instanceId) == -1));
       // Error instance ids of progress instances
-      var progress = errorPartition[1].filter(instanceId => (errorPartition[2].indexOf(instanceId) == -1));
+      var progress = errorPartition[0].filter(instanceId => (errorPartition[2].indexOf(instanceId) == -1));
       var regressSize = regress.length;
       var regressProportion = regressSize / this.state.selectedDataPoint.dataset_size;
       var progressSize = progress.length;
       var progressProportion = progressSize / this.state.selectedDataPoint.dataset_size;
+      var intersection = errorPartition[2];
+      var intersectionSize = intersection.length;
+      var intersectionProportion = intersectionSize / this.state.selectedDataPoint.dataset_size;
 
       var totalErrors = a + b - ab
       var aProportion = 0.0
@@ -265,13 +269,17 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
         } else if ((regionName == "intersection") && (_this.state.regionSelected == "intersection")) {
           return "rgba(141, 141, 27, 0.8)";
         } else if((regionName == "progress") && !(_this.state.regionSelected == "progress")) {
-          return "rgba(206, 160, 205, 0.8)";
-        } else if ((regionName == "progress") && (_this.state.regionSelected == "progress")) {
-          return "rgba(106, 60, 105, 0.8)";
-        } else if ((regionName == "regress") && !(_this.state.regionSelected == "regress")) {
+          // return "rgba(206, 160, 205, 0.8)";
           return "rgba(175, 227, 141, 0.8)";
-        } else if ((regionName == "regress") && (_this.state.regionSelected == "regress")) {
+        } else if ((regionName == "progress") && (_this.state.regionSelected == "progress")) {
+          // return "rgba(106, 60, 105, 0.8)";
           return "rgba(75, 127, 41, 0.8)";
+        } else if ((regionName == "regress") && !(_this.state.regionSelected == "regress")) {
+          // return "rgba(175, 227, 141, 0.8)";
+          return "rgba(206, 160, 205, 0.8)";
+        } else if ((regionName == "regress") && (_this.state.regionSelected == "regress")) {
+          // return "rgba(75, 127, 41, 0.8)";
+          return "rgba(106, 60, 105, 0.8)";
         }
       }
 
@@ -312,25 +320,25 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
 
           // Draw the path that demarcates the boundary of the Regress region
           var rPath = areas.append("path");
-          var regressPath = d3.path();
-          regressPath.arc(xCenter2, yCenter, Rb,
+          var progressPath = d3.path();
+          progressPath.arc(xCenter2, yCenter, Rb,
                           Math.PI + Math.acos((Math.pow(d, 2) + Math.pow(Rb, 2) - Math.pow(Ra, 2))/(2 * d *Rb)),
                           Math.PI - Math.acos((Math.pow(d, 2) + Math.pow(Rb, 2) - Math.pow(Ra, 2))/(2 * d *Rb)), true);
-          regressPath.arc(xCenter, yCenter, Ra,
+          progressPath.arc(xCenter, yCenter, Ra,
                            Math.acos((Math.pow(d, 2) + Math.pow(Ra, 2) - Math.pow(Rb, 2))/(2 * d *Ra)),
                           -Math.acos((Math.pow(d, 2) + Math.pow(Ra, 2) - Math.pow(Rb, 2))/(2 * d *Ra)), false);
-          regressPath.closePath();
+          progressPath.closePath();
 
           // Draw the path that demarcates the boundary of the Progress region
           var pPath = areas.append("path");
-          var progressPath = d3.path();
-          progressPath.arc(xCenter2, yCenter, Rb,
+          var regressPath = d3.path();
+          regressPath.arc(xCenter2, yCenter, Rb,
                           Math.PI - Math.acos((Math.pow(d, 2) + Math.pow(Rb, 2) - Math.pow(Ra, 2))/(2 * d *Rb)),
                           Math.PI + Math.acos((Math.pow(d, 2) + Math.pow(Rb, 2) - Math.pow(Ra, 2))/(2 * d *Rb)), true);
-          progressPath.arc(xCenter, yCenter, Ra,
+          regressPath.arc(xCenter, yCenter, Ra,
                           -Math.acos((Math.pow(d, 2) + Math.pow(Ra, 2) - Math.pow(Rb, 2))/(2 * d *Ra)),
                           Math.acos((Math.pow(d, 2) + Math.pow(Ra, 2) - Math.pow(Rb, 2))/(2 * d *Ra)), false);
-          progressPath.closePath();
+          regressPath.closePath();
 
           // Draw and style the Intersection region
           path.attr("d", intersectionPath)
@@ -338,7 +346,7 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
             .attr("stroke-width", "1px")
             .attr("fill", getRegionFill("intersection"))
               .on("mouseover", function() {
-                tooltip.text(`${ab} (${(abProportion * 100).toFixed(3)}%)`)
+                tooltip.text(`${intersectionSize} (${(intersectionProportion * 100).toFixed(3)}%)`)
                   .style("opacity", 0.8);
 
                 d3.select(this).attr("stroke-width", "3px");
@@ -354,7 +362,7 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
                 d3.select(this).attr("stroke-width", "1px");
               })
               .on("click", function() {
-                _this.props.filterByInstanceIds(errorPartition[2]);
+                _this.props.filterByInstanceIds(intersection);
                 _this.setState({
                   regionSelected: "intersection"
                 });
@@ -432,11 +440,11 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
                   "translate(" +
                   xCenter + "," +
                   yCenter + ")")
-              .attr("fill", yellow)
+              .attr("fill", getRegionFill("intersection"))
               .attr("stroke", "black")
               .attr("stroke-width", "1px")
               .on("mouseover", function() {
-                tooltip.text(`${a} (${(abProportion * 100).toFixed(0)}%)`)
+                tooltip.text(`${intersectionSize} (${(intersectionProportion * 100).toFixed(0)}%)`)
                   .style("opacity", 0.8);
                 d3.select(this).attr("stroke-width", "2px");
               })
@@ -451,7 +459,10 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
                 d3.select(this).attr("stroke-width", "1px");
               })
               .on("click", function() {
-                _this.props.filterByInstanceIds(errorPartition[2]);
+                _this.props.filterByInstanceIds(intersection);
+                _this.setState({
+                  regionSelected: "intersection"
+                });
               });
         } else if (d <= Math.abs(Ra - Rb) && (Ra > Rb)) {
           // This is the case when one circle is completely contained within the other.
@@ -469,7 +480,7 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
               .attr("stroke", "black")
               .attr("stroke-width", "1px")
               .on("mouseover", function() {
-                tooltip.text(`${a} (${(abProportion * 100).toFixed(0)}%)`)
+                tooltip.text(`${intersectionSize} (${(intersectionProportion * 100).toFixed(0)}%)`)
                   .style("opacity", 0.8);
                 d3.select(this).attr("stroke-width", "2px");
               })
@@ -484,7 +495,7 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
                 d3.select(this).attr("stroke-width", "1px");
               })
               .on("click", function() {
-                _this.props.filterByInstanceIds(errorPartition[2]);
+                _this.props.filterByInstanceIds(intersection);
                 _this.setState({
                   regionSelected: "intersection"
                 })
@@ -540,7 +551,7 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
               .attr("stroke", "black")
               .attr("stroke-width", "1px")
               .on("mouseover", function() {
-                tooltip.text(`${a} (${(abProportion * 100).toFixed(0)}%)`)
+                tooltip.text(`${intersectionSize} (${(intersectionProportion * 100).toFixed(0)}%)`)
                   .style("opacity", 0.8);
                 d3.select(this).attr("stroke-width", "2px");
               })
@@ -555,7 +566,7 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
                 d3.select(this).attr("stroke-width", "1px");
               })
               .on("click", function() {
-                _this.props.filterByInstanceIds(errorPartition[2]);
+                _this.props.filterByInstanceIds(intersection);
                 _this.setState({
                   regionSelected: "intersection"
                 })
@@ -609,11 +620,11 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
                   "translate(" +
                   xCenter + "," +
                   yCenter + ")")
-              .attr("fill", "rgba(175, 227, 141, 0.8)")
+              .attr("fill", getRegionFill("progress"))
               .attr("stroke", "black")
               .attr("stroke-width", "1px")
               .on("mouseover", function() {
-                tooltip.text(`${a} (${(aProportion * 100).toFixed(0)}%)`)
+                tooltip.text(`${progressSize} (${(progressProportion * 100).toFixed(0)}%)`)
                   .style("opacity", 0.8);
                 d3.select(this).attr("stroke-width", "2px");
               })
@@ -628,7 +639,10 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
                 d3.select(this).attr("stroke-width", "1px");
               })
               .on("click", function() {
-                _this.props.filterByInstanceIds(errorPartition[0]);
+                _this.props.filterByInstanceIds(progress);
+                _this.setState({
+                  regionSelected: "progress"
+                });
               });
 
           areas.append("circle")
@@ -637,11 +651,11 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
                   "translate(" +
                   xCenter2 + "," +
                   yCenter + ")")
-              .attr("fill", "rgba(206, 160, 205, 0.8)")
+              .attr("fill", getRegionFill("regress"))
               .attr("stroke", "black")
               .attr("stroke-width", "1px")
               .on("mouseover", function() {
-                tooltip.text(`${b} (${(bProportion * 100).toFixed(0)}%)`)
+                tooltip.text(`${regressSize} (${(regressProportion * 100).toFixed(0)}%)`)
                   .style("opacity", 0.8);
                 d3.select(this).attr("stroke-width", "2px");
               })
@@ -656,7 +670,10 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
                 d3.select(this).attr("stroke-width", "1px");
               })
               .on("click", function() {
-                _this.props.filterByInstanceIds(errorPartition[1]);
+                _this.props.filterByInstanceIds(regress);
+                _this.setState({
+                  regionSelected: "regress"
+                });
               });
         }
       }
