@@ -50,10 +50,15 @@ class SweepManager(object):
             If not specified then accuracy is used.
         lambda_c_stepsize: The increments of lambda_c to use as we sweep the parameter
             space between 0.0 and 1.0.
+        get_instance_image_by_id: A function that returns an image representation of the data corresponding to the instance id, in PNG format. It should be a function of the form:
+                get_instance_image_by_id(instance_id)
+                    instance_id: An integer instance id
+
+            And should return a PNG image.
         get_instance_metadata: A function that returns a text string representation of some metadata corresponding to the instance id. It should be a function of the form:
                 get_instance_metadata(instance_id)
                     instance_id: An integer instance id
-                    
+
             And should return a string.
         device: A string with values either "cpu" or "cuda" to indicate the
             device that Pytorch is performing training on. By default this
@@ -69,8 +74,7 @@ class SweepManager(object):
                  new_error_loss_kwargs=None,
                  strict_imitation_loss_kwargs=None,
                  performance_metric=model_accuracy,
-                 get_instance_data_by_id=None,
-                 get_instance_label_by_id=None,
+                 get_instance_image_by_id=None,
                  get_instance_metadata=None,
                  device="cpu"):
         self.folder_name = folder_name
@@ -89,8 +93,7 @@ class SweepManager(object):
         self.lambda_c_stepsize = lambda_c_stepsize
         self.new_error_loss_kwargs = new_error_loss_kwargs
         self.strict_imitation_loss_kwargs = strict_imitation_loss_kwargs
-        self.get_instance_data_by_id = get_instance_data_by_id
-        self.get_instance_label_by_id = get_instance_label_by_id
+        self.get_instance_image_by_id = get_instance_image_by_id
         self.get_instance_metadata = get_instance_metadata
         self.device = device
         self.last_sweep_status = 0.0
@@ -154,10 +157,10 @@ class SweepManager(object):
 
         return evaluation_data
 
-    def get_instance_data(self, instance_id):
-        get_instance_data_by_id = self.get_instance_data_by_id
-        if get_instance_data_by_id is not None:
-            return get_instance_data_by_id(instance_id)
+    def get_instance_image(self, instance_id):
+        get_instance_image_by_id = self.get_instance_image_by_id
+        if get_instance_image_by_id is not None:
+            return get_instance_image_by_id(instance_id)
 
         # Generate a blank white PNG image as the default
         data = np.uint8(np.zeros((30, 30)) + 255)
@@ -167,10 +170,3 @@ class SweepManager(object):
         img_bytes.seek(0)
 
         return send_file(img_bytes, mimetype="image/png")
-
-    def get_instance_label(self, instance_id):
-        get_instance_label_by_id = self.get_instance_label_by_id
-        if get_instance_label_by_id is not None:
-            return get_instance_label_by_id(instance_id)
-
-        return {}
