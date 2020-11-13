@@ -1,9 +1,13 @@
 ﻿Notebook name,Framework,Dataset,Network,Optimizer,Backward Compatibility Dissonance Function,Backward Compatibility Loss Function,Uses CompatibilityAnalysis widget
-bcnllloss,PyTorch,MNIST,Custom,SGD,New Error,NLLLoss,N
-compatibility-analysis,PyTorch,MNIST,Custom,SGD,New Error & Strict Imitation,CrossEntropyLoss,Y
-compatibility-analysis-adult,PyTorch,UCI Adult Data Set,LogisticRegression & MLPClassifier,SGD,New Error & Strict Imitation,CrossEntropyLoss,Y
-compatibility-analysis-cifar10-resnet18,PyTorch,CIFAR10,Custom & RESNet 18,SGD,New Error & Strict Imitation,CrossEntropyLoss,Y
-compatibility-analysis-cifar10-resnet18-pretrained,PyTorch,CIFAR10,Custom & RESNet 18 (pretrained),SGD,New Error & Strict Imitation,CrossEntropyLoss,Y
-compatibility-analysis-from-saved-data,PyTorch,MNIST,Custom,SGD,New Error & Strict Imitation,CrossEntropyLoss,Y
-si_cross_entropy_loss,PyTorch,MNIST,Custom,SGD,Strict Imitation,CrossEntropyLoss,N
-si_nllloss,PyTorch,MNIST,Custom,SGD,Strict Imitation,NLLLoss,N
+bcbinary_cross_entropy,PyTorch,UCI Adult Data Set,LogisticRegression,SGD,New Error,Binary Cross-entropy Loss,N
+bckldivergence,PyTorch,MNIST,Custom,SGD,New Error,Kullback–Leibler Divergence Loss,N
+bcnllloss,PyTorch,MNIST,Custom,SGD,New Error,Negative Log Likelihood Loss,N
+compatibility-analysis,PyTorch,MNIST,Custom,SGD,New Error & Strict Imitation,Cross-entropy Loss,Y
+compatibility-analysis-adult,PyTorch,UCI Adult Data Set,LogisticRegression,SGD,New Error & Strict Imitation,Cross-entropy Loss,Y
+compatibility-analysis-adult-kldiv,PyTorch,UCI Adult Data Set,LogisticRegression,SGD,New Error & Strict Imitation,Kullback–Leibler Divergence Loss,Y
+compatibility-analysis-cifar10-resnet18,PyTorch,CIFAR10,Custom & RESNet 18,SGD,New Error & Strict Imitation,Cross-entropy Loss,Y
+compatibility-analysis-cifar10-resnet18-pretrained,PyTorch,CIFAR10,Custom & RESNet 18 (pretrained),SGD,New Error & Strict Imitation,Cross-entropy Loss,Y
+compatibility-analysis-from-saved-data,PyTorch,MNIST,Custom,SGD,New Error & Strict Imitation,Cross-entropy Loss,Y
+compatibility-analysis-kldiv,PyTorch,MNIST,Custom,SGD,New Error & Strict Imitation,Kullback–Leibler Divergence Loss,Y
+si_cross_entropy_loss,PyTorch,MNIST,Custom,SGD,Strict Imitation,Cross-entropy Loss,N
+si_nllloss,PyTorch,MNIST,Custom,SGD,Strict Imitation,Negative Log Likelihood Loss,N

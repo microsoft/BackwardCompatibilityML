@@ -71,10 +71,10 @@ class BCNLLLoss(nn.Module):
 
 class BCCrossEntropyLoss(nn.Module):
     """
-    Backward Compatibility Cross Entropy Loss
+    Backward Compatibility Cross-entropy Loss
 
     This class implements the backward compatibility loss function
-    with the underlying loss function being the Cross Entropy loss.
+    with the underlying loss function being the cross-entropy loss.
 
     Example usage:
         h1 = MyModel()
@@ -134,10 +134,10 @@ class BCCrossEntropyLoss(nn.Module):
 
 class BCBinaryCrossEntropyLoss(nn.Module):
     """
-    Backward Compatibility Cross Entropy Loss
+    Backward Compatibility Binary Cross-entropy Loss
 
     This class implements the backward compatibility loss function
-    with the underlying loss function being the Cross Entropy loss.
+    with the underlying loss function being the cross-entropy loss.
 
     Example usage:
         h1 = MyModel()
@@ -216,8 +216,7 @@ class BCKLDivergenceLoss(nn.Module):
 
         lambda_c = 0.5 (regularization parameter)
         h2 = MyNewModel() (this may be the same model type as MyModel)
-        bcloss = BCKLDivergenceLoss(
-            h1, h2, lambda_c, num_classes=num_classes)
+        bcloss = BCKLDivergenceLoss(h1, h2, lambda_c, num_classes=num_classes)
 
         for x, y in training_data:
             loss = bcloss(x, y)
