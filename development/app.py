@@ -183,7 +183,7 @@ def mnist_sweep():
         img = img / 2 + 0.5
         return img
 
-    def get_instance_data(instance_id):
+    def get_instance_image(instance_id):
         img_bytes = io.BytesIO()
         data = np.reshape(
             np.uint8(np.transpose((unnormalize(dataset[instance_id][1])), (1, 2, 0)).numpy() * 255),
@@ -204,8 +204,8 @@ def mnist_sweep():
                           NewErrorLossClass=bcloss.BCCrossEntropyLoss,
                           StrictImitationLossClass=bcloss.StrictImitationCrossEntropyLoss,
                           lambda_c_stepsize=0.25,
-                          get_instance_data_by_id=get_instance_data,
-                          get_instance_label_by_id=get_instance_label,
+                          get_instance_image_by_id=get_instance_image,
+                          get_instance_metadata=get_instance_label,
                           device="cuda")
 
 
