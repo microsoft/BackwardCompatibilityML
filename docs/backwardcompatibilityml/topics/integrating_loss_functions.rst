@@ -6,15 +6,15 @@ Integrating the Backward Compatibility ML Loss Functions
 We have implemented the following compatibility loss functions:
 
 1. ``BCNLLLoss`` - Backward Compatibility Negative Log Likelihood Loss
-2. ``BCCrossEntropyLoss``- Backward Compatibility Cross Entropy Loss
-3. ``BCBinaryCrossEntropyLoss`` - Backward Compatibility Binary Cross Entropy Loss
+2. ``BCCrossEntropyLoss``- Backward Compatibility Cross-entropy Loss
+3. ``BCBinaryCrossEntropyLoss`` - Backward Compatibility Binary Cross-entropy Loss
 4. ``BCKLDivergenceLoss`` - Backward Compatibility Kullback–Leibler Divergence Loss
 
 And the following strict imitation loss functions:
 
 1. ``StrictImitationNLLLoss`` - Strict Imitation Negative Log Likelihood Loss
-2. ``StrictImitationCrossEntropyLoss`` - Strict Imitation Cross Entropy Loss
-3. ``StrictImitationBinaryCrossEntropyLoss`` - Strict Imitation Binary Cross Entropy Loss
+2. ``StrictImitationCrossEntropyLoss`` - Strict Imitation Cross-entropy Loss
+3. ``StrictImitationBinaryCrossEntropyLoss`` - Strict Imitation Binary Cross-entropy Loss
 4. ``StrictImitationKLDivergenceLoss`` - Strict Imitation Kullback–Leibler Divergence Loss
 
 Both these sets of loss functions are implemented along the lines of
