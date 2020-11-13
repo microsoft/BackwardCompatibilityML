@@ -3,6 +3,8 @@
 
 import os
 import copy
+import io
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -13,6 +15,8 @@ from backwardcompatibilityml import loss as bcloss
 from backwardcompatibilityml.helpers import training
 from backwardcompatibilityml.helpers.models import LogisticRegression, MLPClassifier
 from backwardcompatibilityml.widget.compatibility_analysis import CompatibilityAnalysis
+from flask import send_file
+from PIL import Image
 from rai_core_flask.flask_helper import FlaskHelper
 
 
@@ -175,13 +179,34 @@ def mnist_sweep():
 
     h2 = copy.deepcopy(h1)
 
+    def unnormalize(img):
+        img = img / 2 + 0.5
+        return img
+
+    def get_instance_image(instance_id):
+        img_bytes = io.BytesIO()
+        data = np.reshape(
+            np.uint8(np.transpose((unnormalize(dataset[instance_id][1])), (1, 2, 0)).numpy() * 255),
+            (28, 28))
+        img = Image.fromarray(data)
+        img.save(img_bytes, format="PNG")
+        img_bytes.seek(0)
+        return send_file(img_bytes, mimetype='image/png')
+
+    def get_instance_label(instance_id):
+        label = data_loader[instance_id][2].item()
+        return {"label": label}
+
     CompatibilityAnalysis(sweeps_folder, n_epochs, h1, h2, train_loader, test_loader,
                           batch_size_train, batch_size_test,
                           OptimizerClass=optim.SGD,
                           optimizer_kwargs={"lr": learning_rate, "momentum": momentum},
                           NewErrorLossClass=bcloss.BCCrossEntropyLoss,
                           StrictImitationLossClass=bcloss.StrictImitationCrossEntropyLoss,
-                          lambda_c_stepsize=0.25, device="cuda")
+                          lambda_c_stepsize=0.25,
+                          get_instance_image_by_id=get_instance_image,
+                          get_instance_metadata=get_instance_label,
+                          device="cuda")
 
 
 mnist_sweep()
