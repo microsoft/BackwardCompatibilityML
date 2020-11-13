@@ -77,10 +77,10 @@ class StrictImitationNLLLoss(nn.Module):
 
 class StrictImitationCrossEntropyLoss(nn.Module):
     """
-    Strict Imitation Cross Entropy Loss
+    Strict Imitation Cross-entropy Loss
 
     This class implements the strict imitation loss function
-    with the underlying loss function being the Cross Entropy loss.
+    with the underlying loss function being the cross-entropy loss.
 
     Example usage:
         h1 = MyModel()
@@ -141,10 +141,10 @@ class StrictImitationCrossEntropyLoss(nn.Module):
 
 class StrictImitationBinaryCrossEntropyLoss(nn.Module):
     """
-    Strict Imitation Cross Entropy Loss
+    Strict Imitation Binary Cross-entropy Loss
 
     This class implements the strict imitation loss function
-    with the underlying loss function being the Cross Entropy loss.
+    with the underlying loss function being the cross-entropy loss.
 
     Example usage:
         h1 = MyModel()
@@ -183,10 +183,10 @@ class StrictImitationBinaryCrossEntropyLoss(nn.Module):
     def dissonance(self, h1_output_sigmoid, h2_output_sigmoid):
         # Todo: (Xavier) Document that the reason we calculate the
         # dissonance using Negative Log Likelihood is due to the fact
-        # that the Pytorch Binary Cross Entropy loss function accepts
+        # that the Pytorch Binary Cross-entropy loss function accepts
         # parameters (input, target) where input is a sigmoid and target
-        # is a class label. So that if implemented using Binary Cross
-        # Entropy Loss, we would be calculating the same dissonance as
+        # is a class label. So that if implemented using Binary Cross-entropy
+        # Loss, we would be calculating the same dissonance as
         # the New Error loss.
         nll = torch.sum(
             -1 * h1_output_sigmoid * h2_output_sigmoid.log() + (

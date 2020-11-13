@@ -14,6 +14,14 @@ Subpackages
 Submodules
 ----------
 
+backwardcompatibilityml.metrics module
+--------------------------------------
+
+.. automodule:: backwardcompatibilityml.metrics
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 backwardcompatibilityml.scores module
 -------------------------------------
 
