@@ -25,7 +25,7 @@ copyright = '2020, Microsoft'
 author = 'Besmira Nushi, Ece Kamar, Xavier Fernandes, Juan Lema, Megha Srivastava, Gagan Bansal, Dean Carignan'
 
 # The full version, including alpha/beta/rc tags
-release = '1.1.0'
+release = '1.2.0'
 
 
 # -- General configuration ---------------------------------------------------
