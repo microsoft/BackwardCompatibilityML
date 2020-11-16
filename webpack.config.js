@@ -59,7 +59,7 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: ['*', '.js', '.jsx', '*.ts', '*.tsx']
+    extensions: ['.ts', '.tsx', '.js', '.jsx']
   },
   output: {
     path: path.resolve(__dirname, 'backwardcompatibilityml/widget/resources'),

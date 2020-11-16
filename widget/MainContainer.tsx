@@ -3,14 +3,14 @@
 
 import React from "react";
 import ReactDOM from "react-dom";
-import PerformanceCompatibility from "./PerformanceCompatibility.tsx";
-import Legend from "./Legend.tsx";
-import IntersectionBetweenModelErrors from "./IntersectionBetweenModelErrors.tsx";
-import IncompatiblePointDistribution from "./IncompatiblePointDistribution.tsx";
-import ErrorInstancesTable from "./ErrorInstancesTable.tsx";
-import DataSelector from "./DataSelector.tsx"
-import SweepManager from "./SweepManager.tsx";
-import SelectedModelDetails from "./SelectedModelDetails.tsx";
+import PerformanceCompatibility from "./PerformanceCompatibility";
+import Legend from "./Legend";
+import IntersectionBetweenModelErrors from "./IntersectionBetweenModelErrors";
+import IncompatiblePointDistribution from "./IncompatiblePointDistribution";
+import ErrorInstancesTable from "./ErrorInstancesTable";
+import DataSelector from "./DataSelector"
+import SweepManager from "./SweepManager";
+import SelectedModelDetails from "./SelectedModelDetails";
 import { bindActionCreators } from "redux";
 import { connect } from 'react-redux';
 import {
@@ -24,7 +24,7 @@ import {
   getSweepStatus,
   startSweep,
   filterByInstanceIds
-} from './actions.ts';
+} from './actions';
 
 
 function Container({

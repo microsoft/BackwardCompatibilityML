@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { makeGetCall, makePostCall } from "./api.ts";
+import { makeGetCall, makePostCall } from "./api";
 
 
 function toggleTraining() {

@@ -4,7 +4,7 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import * as d3 from "d3";
-import { bisect } from "./optimization.tsx";
+import { bisect } from "./optimization";
 
 
 function calculateCircleRadiiAndDistance(a, b, ab, datasetSize) {

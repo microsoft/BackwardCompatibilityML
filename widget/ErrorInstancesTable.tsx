@@ -12,7 +12,7 @@ import {
 } from "office-ui-fabric-react/lib/DetailsList";
 import { DefaultButton } from 'office-ui-fabric-react';
 import { Fabric } from "office-ui-fabric-react/lib/Fabric";
-import { apiBaseUrl } from "./api.ts";
+import { apiBaseUrl } from "./api";
 
 
 type ErrorInstancesTableState = {
@@ -100,6 +100,7 @@ class ErrorInstancesTable extends Component<ErrorInstancesTableProps, ErrorInsta
           columns={columns}
         />
         <DefaultButton
+          aria-label="previous error page"
           text="Previous"
           onClick={() => {
             this.setState({
@@ -107,7 +108,9 @@ class ErrorInstancesTable extends Component<ErrorInstancesTableProps, ErrorInsta
             })
           }}
         />
+        <span aria-label="error page number">{this.state.page+1}</span>
         <DefaultButton
+          aria-label="next error page"
           text="Next"
           onClick={() => {
             this.setState({

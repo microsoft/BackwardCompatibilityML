@@ -5,8 +5,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
-import rootReducer from './reducers.ts'
-import MainContainer from "./MainContainer.tsx";
+import rootReducer from './reducers'
+import MainContainer from "./MainContainer";
 import { createLogger } from 'redux-logger';
 import thunkMiddleware from 'redux-thunk';
 import "./widget.css";
