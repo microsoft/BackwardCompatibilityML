@@ -208,16 +208,12 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
         } else if ((regionName == "intersection") && (_this.state.regionSelected == "intersection")) {
           return "rgba(141, 141, 27, 0.8)";
         } else if((regionName == "progress") && !(_this.state.regionSelected == "progress")) {
-          // return "rgba(206, 160, 205, 0.8)";
           return "rgba(175, 227, 141, 0.8)";
         } else if ((regionName == "progress") && (_this.state.regionSelected == "progress")) {
-          // return "rgba(106, 60, 105, 0.8)";
           return "rgba(75, 127, 41, 0.8)";
         } else if ((regionName == "regress") && !(_this.state.regionSelected == "regress")) {
-          // return "rgba(175, 227, 141, 0.8)";
           return "rgba(206, 160, 205, 0.8)";
         } else if ((regionName == "regress") && (_this.state.regionSelected == "regress")) {
-          // return "rgba(75, 127, 41, 0.8)";
           return "rgba(106, 60, 105, 0.8)";
         }
       }
