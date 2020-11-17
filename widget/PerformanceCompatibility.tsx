@@ -4,6 +4,7 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import * as d3 from "d3";
+import { IconButton } from 'office-ui-fabric-react/lib/Button';
 
 
 type PerformanceCompatibilityState = {
@@ -265,9 +266,15 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
   render() {
     let classes = `plot plot-${this.props.compatibilityScoreType}`;
     return (
-      <div className={classes} ref={this.node} id={`scatterplot-${this.props.compatibilityScoreType}`}>
-        <div className="tooltip" id={`lambdactooltip-${this.props.compatibilityScoreType}`} />
-      </div>
+      <React.Fragment>
+        <div className={classes} ref={this.node} id={`scatterplot-${this.props.compatibilityScoreType}`}>
+          <div className="tooltip" id={`lambdactooltip-${this.props.compatibilityScoreType}`} />
+          <div className="chart-title-row">
+            <div>BTC</div>
+            <IconButton iconProps={{ iconName: 'Info' }} title="info" ariaLabel="info" />
+          </div>
+        </div>
+      </React.Fragment>
     );
   }
 }

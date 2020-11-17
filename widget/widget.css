@@ -226,3 +226,11 @@ label {
   stroke-width: 2;
   stroke: rgb(0,0,0);
 }
+
+.chart-title-row {
+  display: flex;
+  background-color: white;
+  flex-direction: row;
+  justify-content: center;
+  margin-top: 5px;
+}
