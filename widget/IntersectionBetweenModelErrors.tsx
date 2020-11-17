@@ -202,11 +202,31 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
       var red = "rgba(206, 160, 205, 0.8)";
       var yellow = "rgba(241, 241, 127, 0.8)";
 
+      function getRegionFill(regionName) {
+        if ((regionName == "intersection") && !(_this.state.regionSelected == "intersection")) {
+          return "rgba(241, 241, 127, 0.8)";
+        } else if ((regionName == "intersection") && (_this.state.regionSelected == "intersection")) {
+          return "rgba(141, 141, 27, 0.8)";
+        } else if((regionName == "progress") && !(_this.state.regionSelected == "progress")) {
+          // return "rgba(206, 160, 205, 0.8)";
+          return "rgba(175, 227, 141, 0.8)";
+        } else if ((regionName == "progress") && (_this.state.regionSelected == "progress")) {
+          // return "rgba(106, 60, 105, 0.8)";
+          return "rgba(75, 127, 41, 0.8)";
+        } else if ((regionName == "regress") && !(_this.state.regionSelected == "regress")) {
+          // return "rgba(175, 227, 141, 0.8)";
+          return "rgba(206, 160, 205, 0.8)";
+        } else if ((regionName == "regress") && (_this.state.regionSelected == "regress")) {
+          // return "rgba(75, 127, 41, 0.8)";
+          return "rgba(106, 60, 105, 0.8)";
+        }
+      }
+
       // Draw the legend of the Vnn diagram
       var legendEntries = [
-        {"label": "Progress", "color": green},
-        {"label": "Regress", "color": red},
-        {"label": "Common", "color": yellow},
+        {"label": "Progress", "name": "progress", "color": green},
+        {"label": "Regress", "name": "regress", "color": red},
+        {"label": "Common", "name": "intersection", "color": yellow},
       ];
       var vennLegend = svg.append("g").attr("id", "vennlegend");
       vennLegend.append("rect")
@@ -214,21 +234,27 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
         .attr("width", "10px")
         .attr("height", "10px")
         .attr("x", "10px")
-        .attr("y", "5px");
+        .attr("y", "5px")
+        .attr("stroke", "black")
+        .attr("stroke-width", "0px");
 
       vennLegend.append("rect")
         .attr("id", "regress")
         .attr("width", "10px")
         .attr("height", "10px")
         .attr("x", "90px")
-        .attr("y", "5px");
+        .attr("y", "5px")
+        .attr("stroke", "black")
+        .attr("stroke-width", "0px");
 
       vennLegend.append("rect")
         .attr("id", "commonerror")
         .attr("width", "10px")
         .attr("height", "10px")
         .attr("x", "170px")
-        .attr("y", "5px");
+        .attr("y", "5px")
+        .attr("stroke", "black")
+        .attr("stroke-width", "0px");
 
       vennLegend.append("text")
         .attr("x", "25px")
@@ -253,8 +279,33 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
 
       vennLegend.selectAll("rect")
         .data(legendEntries)
+        .attr("stroke-width", function(d) {
+          if (_this.state.regionSelected == d["name"]) {
+            return "1px";
+          } else {
+            return "0px";
+          }
+        })
         .attr("fill", function(d) {
-          return d["color"];
+          return getRegionFill(d["name"]);
+        })
+        .on("click", function(d) {
+          _this.setState({
+            regionSelected: d["name"]
+          });
+        })
+        .on("mouseover", function() {
+          d3.select(this).attr("stroke-width", "2px");
+        })
+        .on("mouseout", function() {
+          d3.select(this)
+            .attr("stroke-width", function(d) {
+              if (_this.state.regionSelected == d["name"]) {
+                return "1px";
+              } else {
+                return "0px";
+              }
+            });
         });
 
       vennLegend.selectAll("text")
@@ -262,26 +313,6 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
         .text(function(d) {
           return d["label"];
         });
-
-      function getRegionFill(regionName) {
-        if ((regionName == "intersection") && !(_this.state.regionSelected == "intersection")) {
-          return "rgba(241, 241, 127, 0.8)";
-        } else if ((regionName == "intersection") && (_this.state.regionSelected == "intersection")) {
-          return "rgba(141, 141, 27, 0.8)";
-        } else if((regionName == "progress") && !(_this.state.regionSelected == "progress")) {
-          // return "rgba(206, 160, 205, 0.8)";
-          return "rgba(175, 227, 141, 0.8)";
-        } else if ((regionName == "progress") && (_this.state.regionSelected == "progress")) {
-          // return "rgba(106, 60, 105, 0.8)";
-          return "rgba(75, 127, 41, 0.8)";
-        } else if ((regionName == "regress") && !(_this.state.regionSelected == "regress")) {
-          // return "rgba(175, 227, 141, 0.8)";
-          return "rgba(206, 160, 205, 0.8)";
-        } else if ((regionName == "regress") && (_this.state.regionSelected == "regress")) {
-          // return "rgba(75, 127, 41, 0.8)";
-          return "rgba(106, 60, 105, 0.8)";
-        }
-      }
 
       if (totalErrors > 0) {
         aProportion = a / this.state.selectedDataPoint.dataset_size;
