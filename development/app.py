@@ -194,8 +194,8 @@ def mnist_sweep():
         return send_file(img_bytes, mimetype='image/png')
 
     def get_instance_label(instance_id):
-        label = data_loader[instance_id][2].item()
-        return {"label": label}
+        label = dataset[instance_id][2].item()
+        return f'{label}'
 
     CompatibilityAnalysis(sweeps_folder, n_epochs, h1, h2, train_loader, test_loader,
                           batch_size_train, batch_size_test,
