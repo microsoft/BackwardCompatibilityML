@@ -4,7 +4,8 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import * as d3 from "d3";
-import { IconButton } from 'office-ui-fabric-react/lib/Button';
+import { InfoTooltip } from "./InfoTooltip.tsx"
+import { DirectionalHint } from 'office-ui-fabric-react/lib/Tooltip';
 
 
 type PerformanceCompatibilityState = {
@@ -30,6 +31,7 @@ type PerformanceCompatibilityProps = {
   selectDataPoint: (d: any) => void,
   getModelEvaluationData: (evaluationId: number) => void
 }
+
 
 class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, PerformanceCompatibilityState> {
   constructor(props) {
@@ -74,7 +76,7 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
     var body = d3.select(this.node.current);
     var data = this.state.data;
 
-    var margin = { top: 15, right: 15, bottom: 50, left: 55 }
+    var margin = { top: 15, right: 15, bottom: 20, left: 55 }
     var h = 250 - margin.top - margin.bottom
     var w = 320 - margin.left - margin.right
 
@@ -129,7 +131,7 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
 
     // SVG
     d3.select(`#${this.props.compatibilityScoreType}`).remove();
-    var svg = body.append('svg')
+    var svg = body.insert('svg', '.plot-title-row')
         .attr('id', this.props.compatibilityScoreType)
         .attr('height',h + margin.top + margin.bottom)
         .attr('width',w + margin.left + margin.right)
@@ -159,7 +161,6 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
         .attr('x',w/2)
         .attr('dy','.71em')
         .style('text-anchor','end')
-        .text(this.props.compatibilityScoreType.toUpperCase())
         .attr("font-family", "sans-serif")
         .attr("font-size", "20px")
         .attr("fill", "black");
@@ -263,19 +264,30 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
     drawCircles();
   }
 
+
   render() {
     let classes = `plot plot-${this.props.compatibilityScoreType}`;
+    let title = this.props.compatibilityScoreType.toUpperCase();
+    let message = "UNDEFINED";
+
+    if (title == "BTC") {
+      message = "Backward Trust Compatibility (BTC) describes the percentage of trust preserved after an update."
+    } else if (title == "BEC") {
+      message = "Backward Error Compatibility (BEC) captures the probability that a mistake made by the newly trained model is not new.​"
+    }
+
     return (
       <React.Fragment>
         <div className={classes} ref={this.node} id={`scatterplot-${this.props.compatibilityScoreType}`}>
           <div className="tooltip" id={`lambdactooltip-${this.props.compatibilityScoreType}`} />
-          <div className="chart-title-row">
-            <div>BTC</div>
-            <IconButton iconProps={{ iconName: 'Info' }} title="info" ariaLabel="info" />
+          <div className="plot-title-row">
+            {title}
+            <InfoTooltip message={message} direction={DirectionalHint.bottomCenter} />
           </div>
         </div>
       </React.Fragment>
     );
   }
+
 }
 export default PerformanceCompatibility;

@@ -4,6 +4,8 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import * as d3 from "d3";
+import { InfoTooltip } from "./InfoTooltip.tsx"
+import { DirectionalHint } from 'office-ui-fabric-react/lib/Tooltip';
 
 
 type IncompatiblePointDistributionState = {
@@ -58,7 +60,7 @@ class IncompatiblePointDistribution extends Component<IncompatiblePointDistribut
     var _this = this;
     var body = d3.select(this.node.current);
 
-    var margin = { top: 15, right: 15, bottom: 50, left: 55 }
+    var margin = { top: 5, right: 15, bottom: 50, left: 55 }
     var h = 250 - margin.top - margin.bottom
     var w = 250;
 
@@ -69,12 +71,6 @@ class IncompatiblePointDistribution extends Component<IncompatiblePointDistribut
         .attr('height',h + margin.top + margin.bottom)
         .attr('width',w + margin.left + margin.right)
         .attr('float', 'left');
-
-    svg.append("text")
-       .attr("x", margin.left + 20)
-       .attr("y", 15)
-       .attr("font-size", "10px")
-       .text("Distribution of Incompatible Points")
 
     if (this.props.selectedDataPoint != null) {
       // Sort the data into the dataRows based on the ordering of the sorted classes
@@ -112,7 +108,7 @@ class IncompatiblePointDistribution extends Component<IncompatiblePointDistribut
           yScale = d3.scaleLinear().range([h, 0]);
 
       var g = svg.append("g")
-                 .attr("transform", "translate(" + 55 + "," + 30 + ")");
+                 .attr("transform", "translate(" + 55 + "," + margin.top + ")");
 
         xScale.domain(dataRows.map(function(d) { return d.class; }));
         yScale.domain([0, 100]);
@@ -159,8 +155,13 @@ class IncompatiblePointDistribution extends Component<IncompatiblePointDistribut
   render() {
     let numClasses = this.props.selectedDataPoint?.sorted_classes?.length ?? 0;
     let numPages = Math.ceil(numClasses/this.props.pageSize) - 1;
+    const message = "Displays distribution of errors not made by the previous model as they occur across classes of the newly trained model.​";
     return (
       <div className="plot plot-distribution">
+        <div className="plot-title-row">
+          Distribution of Incompatible Points
+          <InfoTooltip message={message} direction={DirectionalHint.topCenter} />
+        </div>
         <div ref={this.node}/>
         <div className="page-button-row">
           <button onClick={() => {

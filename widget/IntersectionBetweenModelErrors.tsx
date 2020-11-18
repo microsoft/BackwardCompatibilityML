@@ -5,7 +5,8 @@ import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import * as d3 from "d3";
 import { bisect } from "./optimization.tsx";
-
+import { InfoTooltip } from "./InfoTooltip.tsx"
+import { DirectionalHint } from 'office-ui-fabric-react/lib/Tooltip';
 
 function calculateCircleRadiiAndDistance(a, b, ab, datasetSize) {
   let aProportion = a / datasetSize;
@@ -131,7 +132,7 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
     var _this = this;
     var body = d3.select(this.node.current);
 
-    var margin = { top: 15, right: 15, bottom: 50, left: 55 }
+    var margin = { top: 5, right: 15, bottom: 50, left: 55 }
     var h = 250 - margin.top - margin.bottom
     var w = 320 - margin.left - margin.right
 
@@ -144,18 +145,14 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
         .attr('height',h + margin.top + margin.bottom)
         .attr('width',w + margin.left + margin.right)
       .append('g')
-        .attr('transform',`translate(55,${margin.top + 15})`)
+        .attr('transform',`translate(55,${margin.top})`)
 
     svg.append('text')
       .attr('id','xAxisLabel')
       .attr('y', -20)
       .attr('x', 200)
       .attr('dy','.71em')
-      .style('text-anchor','end')
-      .text("Intersection Between Model Errors")
-      .attr("font-family", "sans-serif")
-      .attr("font-size", "10px")
-      .attr("fill", "black");
+      .style('text-anchor','end');
 
     svg.append("rect")
       .attr("x", 0)
@@ -791,8 +788,13 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
   }
 
   render() {
+    const message = "Displays the newly trained model’s error counts and percentages in relation to those of the previous model.";
     return (
       <div className="plot plot-venn" ref={this.node} id="venndiagramplot">
+        <div className="plot-title-row">
+          Intersection Between Model Errors
+          <InfoTooltip direction={DirectionalHint.topCenter} message={message}/>
+        </div>
         <div className="tooltip" id="venntooltip" />
       </div>
     );
