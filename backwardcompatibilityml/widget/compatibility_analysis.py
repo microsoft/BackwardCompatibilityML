@@ -256,7 +256,13 @@ class CompatibilityAnalysis(object):
             device=device)
 
         self.flask_service = FlaskHelper(ip="0.0.0.0", port=port)
-        init_app_routes(FlaskHelper.app, self.sweep_manager)
+        try:
+            init_app_routes(FlaskHelper.app, self.sweep_manager)
+        except Exception as e:
+            if (len(e.args) >= 1 and e.args[0].lower().find('view function mapping is overwriting') != -1):
+                FlaskHelper.app.logger.info('Caught endpoint remapping exception')
+            else:
+                pass
         api_service_environment = build_environment_params(self.flask_service.env)
         api_service_environment["port"] = self.flask_service.port
         html_string = render_widget_html(api_service_environment)
