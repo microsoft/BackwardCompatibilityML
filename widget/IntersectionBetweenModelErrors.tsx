@@ -225,78 +225,75 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
         {"label": "Common", "name": "intersection", "color": yellow},
       ];
       var vennLegend = svg.append("g").attr("id", "vennlegend");
+
+      vennLegend.append("text")
+        .attr("x", "25px")
+        .attr("y", "17px")
+        .attr("font-size", "10px")
+        .attr("text-anchor", "left")
+        .style("alignment-baseline", "middle")
+        .text(function() {
+          return "Progress";
+        });
+
+      vennLegend.append("text")
+        .attr("x", "105px")
+        .attr("y", "17px")
+        .attr("font-size", "10px")
+        .attr("text-anchor", "left")
+        .style("alignment-baseline", "middle")
+        .text(function() {
+          return "Regress";
+        });
+
+      vennLegend.append("text")
+        .attr("x", "180px")
+        .attr("y", "17px")
+        .attr("font-size", "10px")
+        .attr("text-anchor", "left")
+        .style("alignment-baseline", "middle")
+        .text(function() {
+          return "Intersection";
+        });
+
       vennLegend.append("rect")
         .attr("id", "progress")
         .attr("width", "10px")
         .attr("height", "10px")
         .attr("x", "10px")
-        .attr("y", "5px")
+        .attr("y", "10px")
         .attr("stroke", "black")
-        .attr("stroke-width", "0px");
+        .attr("stroke-width", "0px")
+        .attr("fill", function() {
+          return getRegionFill("progress");
+        });
 
       vennLegend.append("rect")
-        .attr("id", "regress")
-        .attr("width", "10px")
-        .attr("height", "10px")
-        .attr("x", "90px")
+        .attr("width", "65px")
+        .attr("height", "20px")
+        .attr("x", "5px")
         .attr("y", "5px")
+        .attr("fill", "rgba(255, 255, 255, 0.0)")
         .attr("stroke", "black")
-        .attr("stroke-width", "0px");
-
-      vennLegend.append("rect")
-        .attr("id", "commonerror")
-        .attr("width", "10px")
-        .attr("height", "10px")
-        .attr("x", "170px")
-        .attr("y", "5px")
-        .attr("stroke", "black")
-        .attr("stroke-width", "0px");
-
-      vennLegend.append("text")
-        .attr("x", "25px")
-        .attr("y", "12px")
-        .attr("font-size", "10px")
-        .attr("text-anchor", "left")
-        .style("alignment-baseline", "middle");
-
-      vennLegend.append("text")
-        .attr("x", "105px")
-        .attr("y", "12px")
-        .attr("font-size", "10px")
-        .attr("text-anchor", "left")
-        .style("alignment-baseline", "middle");
-
-      vennLegend.append("text")
-        .attr("x", "185px")
-        .attr("y", "12px")
-        .attr("font-size", "10px")
-        .attr("text-anchor", "left")
-        .style("alignment-baseline", "middle");
-
-      vennLegend.selectAll("rect")
-        .data(legendEntries)
         .attr("stroke-width", function(d) {
-          if (_this.state.regionSelected == d["name"]) {
+          if (_this.state.regionSelected == "progress") {
             return "1px";
           } else {
             return "0px";
           }
         })
-        .attr("fill", function(d) {
-          return getRegionFill(d["name"]);
-        })
-        .on("click", function(d) {
+        .on("click", function() {
           _this.setState({
-            regionSelected: d["name"]
+            regionSelected: "progress"
           });
         })
-        .on("mouseover", function() {
+        .on("mousemove", function() {
           d3.select(this).attr("stroke-width", "2px");
         })
         .on("mouseout", function() {
           d3.select(this)
-            .attr("stroke-width", function(d) {
-              if (_this.state.regionSelected == d["name"]) {
+            .attr("stroke-width", function() {
+              if (_this.state.regionSelected == "progress") {
                 return "1px";
               } else {
                 return "0px";
@@ -304,10 +301,94 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
             });
         });
 
-      vennLegend.selectAll("text")
-        .data(legendEntries)
-        .text(function(d) {
-          return d["label"];
+      vennLegend.append("rect")
+        .attr("id", "regress")
+        .attr("width", "10px")
+        .attr("height", "10px")
+        .attr("x", "90px")
+        .attr("y", "10px")
+        .attr("stroke", "black")
+        .attr("stroke-width", "0px")
+        .attr("fill", function() {
+          return getRegionFill("regress");
+        });
+
+      vennLegend.append("rect")
+        .attr("width", "65px")
+        .attr("height", "20px")
+        .attr("x", "85px")
+        .attr("y", "5px")
+        .attr("fill", "rgba(255, 255, 255, 0.0)")
+        .attr("stroke", "black")
+        .attr("stroke-width", function(d) {
+          if (_this.state.regionSelected == "regress") {
+            return "1px";
+          } else {
+            return "0px";
+          }
+        })
+        .on("click", function() {
+          _this.setState({
+            regionSelected: "regress"
+          });
+        })
+        .on("mouseover", function() {
+          d3.select(this).attr("stroke-width", "2px");
+        })
+        .on("mouseout", function() {
+          d3.select(this)
+            .attr("stroke-width", function() {
+              if (_this.state.regionSelected == "regress") {
+                return "1px";
+              } else {
+                return "0px";
+              }
+            });
+        });
+
+      vennLegend.append("rect")
+        .attr("id", "commonerror")
+        .attr("width", "10px")
+        .attr("height", "10px")
+        .attr("x", "165px")
+        .attr("y", "10px")
+        .attr("stroke", "black")
+        .attr("stroke-width", "0px")
+        .attr("fill", function() {
+          return getRegionFill("intersection");
+        });
+
+      vennLegend.append("rect")
+        .attr("width", "75px")
+        .attr("height", "20px")
+        .attr("x", "160px")
+        .attr("y", "5px")
+        .attr("fill", "rgba(255, 255, 255, 0.0)")
+        .attr("stroke", "black")
+        .attr("stroke-width", function(d) {
+          if (_this.state.regionSelected == "intersection") {
+            return "1px";
+          } else {
+            return "0px";
+          }
+        })
+        .on("click", function() {
+          _this.setState({
+            regionSelected: "intersection"
+          });
+        })
+        .on("mouseover", function() {
+          d3.select(this).attr("stroke-width", "2px");
+        })
+        .on("mouseout", function() {
+          d3.select(this)
+            .attr("stroke-width", function() {
+              if (_this.state.regionSelected == "intersection") {
+                return "1px";
+              } else {
+                return "0px";
+              }
+            });
         });
 
       if (totalErrors > 0) {
