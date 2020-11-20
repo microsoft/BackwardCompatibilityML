@@ -32,7 +32,7 @@ export const InfoTooltip: FunctionComponent<InfoTooltipProps> = ({ message, dire
     >
       <IconButton iconProps={{ iconName: 'Info' }}
                   aria-describedby={tooltipId}
-                  styles={{icon: {fontSize: '12px'}}}/>
+                  styles={{icon: {fontSize: '18px', color: "black"}}}/>
     </TooltipHost>
   );
 };
