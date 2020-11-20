@@ -10,7 +10,6 @@ import {
   SelectionMode,
   IColumn
 } from "office-ui-fabric-react/lib/DetailsList";
-import { DefaultButton } from 'office-ui-fabric-react';
 import { Fabric } from "office-ui-fabric-react/lib/Fabric";
 import { apiBaseUrl } from "./api.ts";
 
@@ -92,29 +91,30 @@ class ErrorInstancesTable extends Component<ErrorInstancesTableProps, ErrorInsta
       items.push(errorInstances[i]);
     }
 
+    const numPages = Math.ceil(this.props.selectedDataPoint.error_instances.length / this.props.pageSize);
+
     return (
-      <Fabric>
+      <Fabric styles={{root: {width: 700}}}>
         <DetailsList
           selectionMode={SelectionMode.none}
           items={items}
           columns={columns}
         />
-        <DefaultButton
-          text="Previous"
-          onClick={() => {
-            this.setState({
-              page: Math.max(0, this.state.page - 1)
-            })
-          }}
-        />
-        <DefaultButton
-          text="Next"
-          onClick={() => {
-            this.setState({
-              page: Math.min(this.state.page + 1, Math.ceil(this.props.selectedDataPoint.error_instances.length / this.props.pageSize))
-            })
-          }}
-        />
+        <div className="page-button-row">
+          <button
+            onClick={() => {
+              this.setState({
+                page: Math.max(0, this.state.page - 1)
+              })
+            }}>&lt;</button>
+          <span aria-label="error page number">{this.state.page+1} of {numPages+1}</span>
+          <button
+            onClick={() => {
+              this.setState({
+                page: Math.min(this.state.page + 1, numPages)
+              })
+            }}>&gt;</button>
+        </div>
       </Fabric>
     );
   }
