@@ -83,6 +83,8 @@ label {
   font-family: sans-serif;
   font-size: 10px;
   padding-left: 40px;
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
 .page-button-row {
@@ -111,6 +113,7 @@ label {
   justify-content: center;
   align-items: center;
   font-size: 10px;
+  padding-left: 37px;
 }
 
 .venn-legend-row-block {

@@ -181,7 +181,7 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
     var body = d3.select(this.node.current);
 
     var margin = { top: 5, right: 15, bottom: 50, left: 55 }
-    var h = 250 - margin.top - margin.bottom
+    var h = 220 - margin.top - margin.bottom
     var w = 320 - margin.left - margin.right
 
     var tooltip = d3.select("#venntooltip");
@@ -627,7 +627,7 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
           </div>
           <div id="commonerror-container" className={getBlockClass("intersection")} onClick={() => _this.setSelectedRegion("intersection")}>
             <div id="commonerror" className="venn-legend-color-box" style={{background: _this.state.intersectionFill}}/>
-            Intersection
+            Common
             <InfoTooltip direction={DirectionalHint.topCenter} message={intersectionInfo}/>
           </div>
         </div> : null }
