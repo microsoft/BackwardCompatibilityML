@@ -5,7 +5,10 @@ Using the Backward Compatibility ML Compatibility Analysis Widget
 
 The compatibility analysis widget can be used to quickly determine which loss
 function and value of |lambda|:sub:`c` performs best for your models. The widget will
-make a sweep of the possible values for |lambda|:sub:`c` and show a visualization of the
+train a new model ``h2`` using backward compatibility loss functions of your choice. 
+Refer to :ref:`Integrating the Backward Compatibility ML Loss Functions <integrating_loss_functions>` to see a list of the
+loss functions that are available. The widget will train ``h2`` several times with
+different values of |lambda|:sub:`c` and show a visualization of the
 results. We will discuss how to use the CompatibilityAnalysis API and how to interpret
 the resulting visualizations.
 
@@ -60,7 +63,8 @@ and ``StrictImitationCrossEntropyLoss`` loss functions will be used to train ``h
 ``lambda_c_stepsize`` has been set to a relatively large value of 0.50 to reduce runtime.
 The number of samples of |lambda|:sub:`c` in the sweep is inversely proportional to ``lambda_c_stepsize``.
 In other words, if ``lambda_c_stepsize`` is small, then the sweep will compute many samples,
-many points will be shown in the scatter plot, and the sweep will take longer to finish.
+many points will be shown in the scatter plot, and the sweep will take longer to finish. Finally,
+the device has been set to ``cuda``. It should be set to ``cpu`` if you do not have a GPU in your machine.
 
 Interpreting the Visualizations
 -------------------------------
