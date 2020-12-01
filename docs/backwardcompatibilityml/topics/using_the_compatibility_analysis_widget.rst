@@ -18,7 +18,7 @@ for the API, execute ``?CompatibilityAnalysis`` within a Jupyter notebook. The d
 In this article, we will reference the ``compatibility-analysis-cifar10-resnet18`` example notebook.
 You can find this notebook at ``./examples/compatibility-analysis-cifar10-resnet18`` from the
 BackwardCompatibilityML project root. This notebook uses the widget to compare the performance of 
-resnet18 with the following 6 layer network using the cifar10 dataset::
+resnet18 with the following six-layer network using the cifar10 dataset::
 
     class Net(nn.Module):
         
@@ -101,7 +101,7 @@ do not. This is what we would expect to see based on our definition of incompati
     :width: 700
 
 The CompatibilityAnalysis API contains two optional parameters, ``get_instance_metadata`` 
-and ``get_instance_image_by_id``, that make the data shown in the table more descriptive. 
+and ``get_instance_image_by_id``, which make the data shown in the table more descriptive. 
 Pictures will be shown in the table if ``get_instance_image_by_id`` is provided, and a
 descriptive label will be shown if ``get_instance_metadata`` is provided. 
 Both of these parameters are functions.
