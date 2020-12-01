@@ -85,7 +85,7 @@ The numeric values for BTC, BEC, model accuracy, and |lambda|:sub:`c` are shown 
 Below that table, there is a Venn diagram and a histogram that plot the errors made by each model.
 The Venn diagram shows the intersection of errors made by the previous model with errors made by the new model.
 The red region represents errors made only by the new model, the yellow region represents errors made by both models,
-and the green region represents error made only by the old model. The histogram breaks down incompatible data points by class.
+and the green region represents errors made only by the old model. The histogram breaks down incompatible data points by class.
 A point is considered incompatible if it was classified correctly by the old model but incorrectly by the new model. 
 Note that the histogram is paginated with five classes shown per page.
 
