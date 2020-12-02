@@ -6,7 +6,7 @@ import tensorflow.compat.v2 as tf
 
 class BCNewErrorCompatibilityModel(tf.keras.models.Sequential):
 
-    def __init__(self, *args, h1=None, lambda_c=None, **kwargs):
+    def __init__(self, *args, h1=None, lambda_c=0.0, **kwargs):
         """
         Args:
           h1: An existing tensorflow model that has been pre-trained,
@@ -16,6 +16,9 @@ class BCNewErrorCompatibilityModel(tf.keras.models.Sequential):
           dissonance is used to penalize the loss while training.
         """
         super(BCNewErrorCompatibilityModel, self).__init__(*args)
+
+        if h1 is None:
+            raise Exception("The parameter h1 is required.")
         self.h1 = h1
         self.lambda_c = lambda_c
 
