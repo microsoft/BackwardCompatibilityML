@@ -35,6 +35,8 @@ function Container({
   selectedDataPoint,
   selectedClass,
   selectedRegion,
+  setSelectedClass,
+  setSelectedRegion,
   filterInstances,
   training,
   testing,
