@@ -19,6 +19,8 @@ import {
   toggleNewError,
   toggleStrictImitation,
   selectDataPoint,
+  setSelectedClass,
+  setSelectedRegion,
   getTrainingAndTestingData,
   getModelEvaluationData,
   getSweepStatus,
@@ -31,6 +33,8 @@ function Container({
   data,
   sweepStatus,
   selectedDataPoint,
+  selectedClass,
+  selectedRegion,
   filterInstances,
   training,
   testing,
@@ -133,8 +137,8 @@ function Container({
             <SelectedModelDetails btc={selectedDataPoint.btc} bec={selectedDataPoint.bec} h1Performance={data.h1_performance} h2Performance={selectedDataPoint.h2_performance} performanceMetric={data.performance_metric} lambdaC={selectedDataPoint.lambda_c} />
             : null}
           <div className="row">
-            <IntersectionBetweenModelErrors selectedDataPoint={selectedDataPoint} filterByInstanceIds={filterByInstanceIds}/>
-            <IncompatiblePointDistribution selectedDataPoint={selectedDataPoint} filterByInstanceIds={filterByInstanceIds} />
+            <IntersectionBetweenModelErrors selectedDataPoint={selectedDataPoint} setSelectedRegion={setSelectedRegion} selectedRegion={selectedRegion} filterByInstanceIds={filterByInstanceIds}/>
+            <IncompatiblePointDistribution selectedDataPoint={selectedDataPoint} setSelectedClass={setSelectedClass} selectedClass={selectedClass} filterByInstanceIds={filterByInstanceIds} />
           </div>
           <div className="row">
             <ErrorInstancesTable selectedDataPoint={selectedDataPoint} filterInstances={filterInstances} />
@@ -148,6 +152,8 @@ function mapStateToProps (state) {
     data: state.data,
     sweepStatus: state.sweepStatus,
     selectedDataPoint: state.selectedDataPoint,
+    selectedClass: state.selectedClass,
+    selectedRegion: state.selectedRegion,
     filterInstances: state.filterInstances,
     training: state.training,
     testing: state.testing,
@@ -165,6 +171,8 @@ function mapDispatchToProps (dispatch) {
     toggleNewError: toggleNewError,
     toggleStrictImitation: toggleStrictImitation,
     selectDataPoint: selectDataPoint,
+    setSelectedClass: setSelectedClass,
+    setSelectedRegion: setSelectedRegion,
     getTrainingAndTestingData: getTrainingAndTestingData,
     getModelEvaluationData: getModelEvaluationData,
     getSweepStatus: getSweepStatus,

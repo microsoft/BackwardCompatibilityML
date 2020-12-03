@@ -106,12 +106,13 @@ export function getRegionFill(regionName, regionSelected) {
 
 type IntersectionBetweenModelErrorsState = {
   selectedDataPoint: any,
-  selectedRegion: any,
 }
 
 type IntersectionBetweenModelErrorsProps = {
   selectedDataPoint: any,
-  filterByInstanceIds: any
+  filterByInstanceIds: any,
+  setSelectedRegion: any,
+  selectedRegion: any
 }
 
 class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelErrorsProps, IntersectionBetweenModelErrorsState> {
@@ -120,7 +121,6 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
 
     this.state = {
       selectedDataPoint: this.props.selectedDataPoint,
-      selectedRegion: null,
     };
 
     this.node = React.createRef<HTMLDivElement>();
@@ -156,11 +156,9 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
       this.props.filterByInstanceIds(this.regress);
     } else {
       console.log("invalid regionName " + (regionName ?? "null"));
+      return;
     }
-
-    this.setState({
-      selectedRegion: regionName,
-    });
+    this.props.setSelectedRegion(regionName);
   }
 
   createVennDiagramPlot() {
@@ -292,7 +290,7 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
           path.attr("d", intersectionPath)
             .attr("stroke", "black")
             .attr("stroke-width", "1px")
-            .attr("fill", getRegionFill("intersection", _this.state.selectedRegion))
+            .attr("fill", getRegionFill("intersection", _this.props.selectedRegion))
               .on("mouseover", function() {
                 tooltip.text(`${intersectionSize} (${(intersectionProportion * 100).toFixed(3)}%)`)
                   .style("opacity", 0.8);
@@ -315,7 +313,7 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
           rPath.attr("d", regressPath)
             .attr("stroke", "black")
             .attr("stroke-width", "1px")
-            .attr("fill", getRegionFill("regress", _this.state.selectedRegion))
+            .attr("fill", getRegionFill("regress", _this.props.selectedRegion))
             .on("mouseover", function() {
               tooltip.text(`${regressSize} (${(regressProportion * 100).toFixed(3)}%)`)
                 .style("opacity", 0.8);
@@ -338,7 +336,7 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
           pPath.attr("d", progressPath)
             .attr("stroke", "black")
             .attr("stroke-width", "1px")
-            .attr("fill", getRegionFill("progress", _this.state.selectedRegion))
+            .attr("fill", getRegionFill("progress", _this.props.selectedRegion))
             .on("mouseover", function() {
               tooltip.text(`${progressSize} (${(progressProportion * 100).toFixed(3)}%)`)
                 .style("opacity", 0.8);
@@ -373,7 +371,7 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
                   "translate(" +
                   xCenter + "," +
                   yCenter + ")")
-              .attr("fill", getRegionFill("intersection", _this.state.selectedRegion))
+              .attr("fill", getRegionFill("intersection", _this.props.selectedRegion))
               .attr("stroke", "black")
               .attr("stroke-width", "1px")
               .on("mouseover", function() {
@@ -404,7 +402,7 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
                   "translate(" +
                   xCenter2 + "," +
                   yCenter + ")")
-              .attr("fill", getRegionFill("intersection", _this.state.selectedRegion))
+              .attr("fill", getRegionFill("intersection", _this.props.selectedRegion))
               .attr("stroke", "black")
               .attr("stroke-width", "1px")
               .on("mouseover", function() {
@@ -435,7 +433,7 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
           pPath.attr("d", progressPath)
             .attr("stroke", "black")
             .attr("stroke-width", "1px")
-            .attr("fill", getRegionFill("progress", _this.state.selectedRegion))
+            .attr("fill", getRegionFill("progress", _this.props.selectedRegion))
             .on("mouseover", function() {
               tooltip.text(`${progressSize} (${(progressProportion * 100).toFixed(3)}%)`)
                 .style("opacity", 0.8);
@@ -465,7 +463,7 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
                   "translate(" +
                   xCenter2 + "," +
                   yCenter + ")")
-              .attr("fill", getRegionFill("intersection", _this.state.selectedRegion))
+              .attr("fill", getRegionFill("intersection", _this.props.selectedRegion))
               .attr("stroke", "black")
               .attr("stroke-width", "1px")
               .on("mouseover", function() {
@@ -496,7 +494,7 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
           rPath.attr("d", regressPath)
             .attr("stroke", "black")
             .attr("stroke-width", "1px")
-            .attr("fill", getRegionFill("regress", _this.state.selectedRegion))
+            .attr("fill", getRegionFill("regress", _this.props.selectedRegion))
             .on("mouseover", function() {
               tooltip.text(`${regressSize} (${(regressProportion * 100).toFixed(3)}%)`)
                 .style("opacity", 0.8);
@@ -528,7 +526,7 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
                   "translate(" +
                   xCenter + "," +
                   yCenter + ")")
-              .attr("fill", getRegionFill("progress", _this.state.selectedRegion))
+              .attr("fill", getRegionFill("progress", _this.props.selectedRegion))
               .attr("stroke", "black")
               .attr("stroke-width", "1px")
               .on("mouseover", function() {
@@ -554,7 +552,7 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
                   "translate(" +
                   xCenter2 + "," +
                   yCenter + ")")
-              .attr("fill", getRegionFill("regress", _this.state.selectedRegion))
+              .attr("fill", getRegionFill("regress", _this.props.selectedRegion))
               .attr("stroke", "black")
               .attr("stroke-width", "1px")
               .on("mouseover", function() {
@@ -588,7 +586,7 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
           Intersection Between Model Errors
           <InfoTooltip direction={DirectionalHint.topCenter} message={diagramInfo}/>
         </div>
-        <VennLegend selectedRegion={this.state.selectedRegion} setSelectedRegion={this.setSelectedRegion}/>
+        <VennLegend selectedRegion={this.props.selectedRegion} setSelectedRegion={this.setSelectedRegion}/>
         <div className="tooltip" id="venntooltip" />
       </div>
     );

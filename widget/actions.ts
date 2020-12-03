@@ -35,6 +35,20 @@ function selectDataPoint(dataPoint) {
   }
 }
 
+function setSelectedClass(selectedClass) {
+  return {
+    type: "SET_SELECTED_CLASS",
+    selectedClass: selectedClass
+  }
+}
+
+function setSelectedRegion(selectedRegion) {
+  return {
+    type: "SET_SELECTED_REGION",
+    selectedRegion: selectedRegion
+  }
+}
+
 function requestTrainingAndTestingData() {
   return {
     type: "REQUEST_TRAINING_AND_TESTING_DATA"
@@ -136,6 +150,8 @@ export {
   toggleNewError,
   toggleStrictImitation,
   selectDataPoint,
+  setSelectedClass,
+  setSelectedRegion,
   getTrainingAndTestingData,
   getModelEvaluationData,
   getSweepStatus,
