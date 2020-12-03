@@ -5,6 +5,8 @@ const rawInitialState = {
    data: null,
    sweepStatus: null,
    selectedDataPoint: null,
+   selectedRegion: null,
+   selectedClass: null,
    filterInstances: null,
    training: true,
    testing: true,
@@ -32,6 +34,12 @@ function rootReducer(state = initialState, action) {
 
         case "SELECT_DATA_POINT":
           return Object.assign({}, state, {filterInstances: null, selectedDataPoint: action.dataPoint});
+
+        case "SET_SELECTED_REGION":
+          return Object.assign({}, state, {selectedClass: null, selectedRegion: action.selectedRegion});
+
+        case "SET_SELECTED_CLASS":
+          return Object.assign({}, state, {selectedRegion: null, selectedClass: action.selectedClass});
 
         case "REQUEST_TRAINING_AND_TESTING_DATA":
           return Object.assign({}, state, {filterInstances: null, loading: true});
