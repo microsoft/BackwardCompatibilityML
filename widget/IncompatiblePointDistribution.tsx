@@ -10,12 +10,13 @@ import { DirectionalHint } from 'office-ui-fabric-react/lib/Tooltip';
 
 type IncompatiblePointDistributionState = {
   selectedDataPoint: any,
-  highlightedClass?: number,
   page: number
 }
 
 type IncompatiblePointDistributionProps = {
   selectedDataPoint: any,
+  selectedClass?: number,
+  setSelectedClass: any,
   pageSize?: number,
   filterByInstanceIds: any
 }
@@ -31,7 +32,6 @@ class IncompatiblePointDistribution extends Component<IncompatiblePointDistribut
 
     this.state = {
       selectedDataPoint: this.props.selectedDataPoint,
-      highlightedClass: null,
       page: 0
     };
 
@@ -48,7 +48,6 @@ class IncompatiblePointDistribution extends Component<IncompatiblePointDistribut
   componentWillReceiveProps(nextProps) {
     this.setState({
       selectedDataPoint: nextProps.selectedDataPoint,
-      highlightedClass: null
     });
   }
 
@@ -144,10 +143,10 @@ class IncompatiblePointDistribution extends Component<IncompatiblePointDistribut
          .attr("y", function(d) { return yScale(d.incompatibleInstanceIds.length/totalIncompatible * 100); })
          .attr("width", xScale.bandwidth())
          .attr("height", function(d) { return h - yScale(d.incompatibleInstanceIds.length/totalIncompatible * 100); })
-         .classed("highlighted-bar", function(d) { return d.class == _this.state.highlightedClass })
+         .classed("highlighted-bar", function(d) { return d.class == _this.props.selectedClass })
          .on("click", function(d) {
            _this.props.filterByInstanceIds(d.incompatibleInstanceIds);
-           _this.setState({ highlightedClass: d.class });
+           _this.props.setSelectedClass(d.class);
          });
       }
   }
