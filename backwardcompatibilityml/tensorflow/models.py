@@ -28,8 +28,8 @@ class BCNewErrorCompatibilityModel(tf.keras.models.Sequential):
         specified by the user to calculate the loss on a subset
         of the target.
         """
-        cross_entropy_loss = loss(target_labels, h2_output)
-        return cross_entropy_loss
+        calculated_loss = loss(target_labels, h2_output)
+        return calculated_loss
 
     def loss_func(self, x, y, loss=None):
         """
