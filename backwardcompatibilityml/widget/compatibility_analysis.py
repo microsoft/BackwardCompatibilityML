@@ -11,7 +11,7 @@ from IPython.display import (
 import torch.optim as optim
 from flask import Response
 from backwardcompatibilityml import loss
-from backwardcompatibilityml.sweep_management import SweepManager
+from backwardcompatibilityml.sweep_management import (SweepManager, MLFlowSweepManager)
 from backwardcompatibilityml.metrics import model_accuracy
 from rai_core_flask.flask_helper import FlaskHelper
 from rai_core_flask.environments import (
@@ -108,7 +108,7 @@ def init_app_routes(app, sweep_manager):
     def start_sweep():
         sweep_manager.start_sweep()
         return {
-            "running": sweep_manager.sweep_thread.is_alive(),
+            "running": sweep_manager.is_running(),
             "percent_complete": sweep_manager.get_sweep_status()
         }
 
@@ -116,7 +116,7 @@ def init_app_routes(app, sweep_manager):
     @http.no_cache
     def get_sweep_status():
         return {
-            "running": sweep_manager.sweep_thread.is_alive(),
+            "running": sweep_manager.is_running(),
             "percent_complete": sweep_manager.get_sweep_status()
         }
 
@@ -256,7 +256,16 @@ class CompatibilityAnalysis(object):
             device=device)
 
         self.flask_service = FlaskHelper(ip="0.0.0.0", port=port)
-        init_app_routes(FlaskHelper.app, self.sweep_manager)
+        app_has_routes = False
+        for route in FlaskHelper.app.url_map.iter_rules():
+            if route.endpoint == 'start_sweep':
+                app_has_routes = True
+                break
+        if app_has_routes:
+            FlaskHelper.app.logger.info("Routes already defined. Skipping route initialization.")
+        else:
+            FlaskHelper.app.logger.info("Initializing routes")
+            init_app_routes(FlaskHelper.app, self.sweep_manager)
         api_service_environment = build_environment_params(self.flask_service.env)
         api_service_environment["port"] = self.flask_service.port
         html_string = render_widget_html(api_service_environment)

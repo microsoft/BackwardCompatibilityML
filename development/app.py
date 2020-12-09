@@ -209,6 +209,6 @@ def mnist_sweep():
                           device="cuda")
 
 
-mnist_sweep()
+breast_cancer_sweep()
 app = FlaskHelper.app
 app.logger.info('initialization complete')

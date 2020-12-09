@@ -767,153 +767,173 @@ def compatibility_sweep(sweeps_folder_path, number_of_epochs, h1, h2,
             to set this to "cuda". This makes sure that the input and target
             tensors are transferred to the GPU during training.
     """
-    h1.eval()
-    number_of_trainings = 4 * len(np.arange(0.0, 1.0 + (lambda_c_stepsize / 2), lambda_c_stepsize))
-    if percent_complete_queue is not None:
-        percent_complete_queue.put(0.0)
+    import mlflow
+    with mlflow.start_run(run_name='sweep_test_run'):
+        mlflow.log_param('lambda_c_stepsize', lambda_c_stepsize)
+        mlflow.log_param('batch_size_train', batch_size_train)
+        mlflow.log_param('batch_size_test', batch_size_test)
 
-    if new_error_loss_kwargs is None:
-        new_error_loss_kwargs = dict()
-
-    if strict_imitation_loss_kwargs is None:
-        strict_imitation_loss_kwargs = dict()
-
-    sweep_summary_data = []
-    datapoint_index = 0
-    for lambda_c in np.arange(0.0, 1.0 + (lambda_c_stepsize / 2), lambda_c_stepsize):
-        h2_new_error = copy.deepcopy(h2)
-        train_new_error(
-            h1, h2_new_error, number_of_epochs,
-            training_set, test_set, batch_size_train, batch_size_test,
-            OptimizerClass, optimizer_kwargs, NewErrorLossClass, lambda_c,
-            new_error_loss_kwargs=new_error_loss_kwargs,
-            device=device)
-        h2_new_error.eval()
-        torch.save(h2_new_error.state_dict(), f"{sweeps_folder_path}/{lambda_c}-model-new-error.state")
-
-        training_set_performance_and_compatibility =\
-            evaluate_model_performance_and_compatibility_on_dataset(
-                h1, h2_new_error, training_set, performance_metric,
-                get_instance_metadata=get_instance_metadata,
-                device=device)
-        training_set_performance_and_compatibility["lambda_c"] = lambda_c
-        training_set_performance_and_compatibility["training"] = True
-        training_set_performance_and_compatibility["testing"] = False
-        training_set_performance_and_compatibility["datapoint_index"] = datapoint_index
-        sweep_summary_data.append({
-            "datapoint_index": datapoint_index,
-            "lambda_c": lambda_c,
-            "training": True,
-            "testing": False,
-            "new-error": True,
-            "strict-imitation": False,
-            "performance": training_set_performance_and_compatibility["h2_performance"],
-            "btc": training_set_performance_and_compatibility["btc"],
-            "bec": training_set_performance_and_compatibility["bec"]
-        })
-        training_evaluation_data = json.dumps(training_set_performance_and_compatibility)
-        training_evaluation_data_file = open(f"{sweeps_folder_path}/{datapoint_index}-evaluation-data.json", "w")
-        training_evaluation_data_file.write(training_evaluation_data)
-        training_evaluation_data_file.close()
-        datapoint_index += 1
-
-        testing_set_performance_and_compatibility =\
-            evaluate_model_performance_and_compatibility_on_dataset(
-                h1, h2_new_error, test_set, performance_metric,
-                get_instance_metadata=get_instance_metadata,
-                device=device)
-        testing_set_performance_and_compatibility["lambda_c"] = lambda_c
-        testing_set_performance_and_compatibility["training"] = False
-        testing_set_performance_and_compatibility["testing"] = True
-        testing_set_performance_and_compatibility["datapoint_index"] = datapoint_index
-        sweep_summary_data.append({
-            "datapoint_index": datapoint_index,
-            "lambda_c": lambda_c,
-            "training": False,
-            "testing": True,
-            "new-error": True,
-            "strict-imitation": False,
-            "performance": testing_set_performance_and_compatibility["h2_performance"],
-            "btc": testing_set_performance_and_compatibility["btc"],
-            "bec": testing_set_performance_and_compatibility["bec"]
-        })
-        testing_evaluation_data = json.dumps(testing_set_performance_and_compatibility)
-        testing_evaluation_data_file = open(f"{sweeps_folder_path}/{datapoint_index}-evaluation-data.json", "w")
-        testing_evaluation_data_file.write(testing_evaluation_data)
-        testing_evaluation_data_file.close()
-        datapoint_index += 1
-
-        h2_strict_imitation = copy.deepcopy(h2)
-        train_strict_imitation(
-            h1, h2_strict_imitation, number_of_epochs,
-            training_set, test_set, batch_size_train, batch_size_test,
-            OptimizerClass, optimizer_kwargs, StrictImitationLossClass, lambda_c,
-            strict_imitation_loss_kwargs=strict_imitation_loss_kwargs,
-            device=device)
-        h2_strict_imitation.eval()
-        torch.save(h2_strict_imitation.state_dict(), f"{sweeps_folder_path}/{lambda_c}-model-strict-imitation.state")
-
-        training_set_performance_and_compatibility =\
-            evaluate_model_performance_and_compatibility_on_dataset(
-                h1, h2_strict_imitation, training_set, performance_metric,
-                get_instance_metadata=get_instance_metadata,
-                device=device)
-        training_set_performance_and_compatibility["lambda_c"] = lambda_c
-        training_set_performance_and_compatibility["training"] = True
-        training_set_performance_and_compatibility["testing"] = False
-        training_set_performance_and_compatibility["datapoint_index"] = datapoint_index
-        sweep_summary_data.append({
-            "datapoint_index": datapoint_index,
-            "lambda_c": lambda_c,
-            "training": True,
-            "testing": False,
-            "new-error": False,
-            "strict-imitation": True,
-            "performance": training_set_performance_and_compatibility["h2_performance"],
-            "btc": training_set_performance_and_compatibility["btc"],
-            "bec": training_set_performance_and_compatibility["bec"]
-        })
-        training_evaluation_data = json.dumps(training_set_performance_and_compatibility)
-        training_evaluation_data_file = open(f"{sweeps_folder_path}/{datapoint_index}-evaluation-data.json", "w")
-        training_evaluation_data_file.write(training_evaluation_data)
-        training_evaluation_data_file.close()
-        datapoint_index += 1
-
-        testing_set_performance_and_compatibility =\
-            evaluate_model_performance_and_compatibility_on_dataset(
-                h1, h2_new_error, test_set, performance_metric,
-                get_instance_metadata=get_instance_metadata,
-                device=device)
-        testing_set_performance_and_compatibility["lambda_c"] = lambda_c
-        testing_set_performance_and_compatibility["training"] = False
-        testing_set_performance_and_compatibility["testing"] = True
-        testing_set_performance_and_compatibility["datapoint_index"] = datapoint_index
-        sweep_summary_data.append({
-            "datapoint_index": datapoint_index,
-            "lambda_c": lambda_c,
-            "training": False,
-            "testing": True,
-            "new-error": False,
-            "strict-imitation": True,
-            "performance": testing_set_performance_and_compatibility["h2_performance"],
-            "btc": testing_set_performance_and_compatibility["btc"],
-            "bec": testing_set_performance_and_compatibility["bec"]
-        })
-        testing_evaluation_data = json.dumps(testing_set_performance_and_compatibility)
-        testing_evaluation_data_file = open(f"{sweeps_folder_path}/{datapoint_index}-evaluation-data.json", "w")
-        testing_evaluation_data_file.write(testing_evaluation_data)
-        testing_evaluation_data_file.close()
-        datapoint_index += 1
-
+        h1.eval()
+        number_of_trainings = 4 * len(np.arange(0.0, 1.0 + (lambda_c_stepsize / 2), lambda_c_stepsize))
         if percent_complete_queue is not None:
-            percent_complete_queue.put((datapoint_index) / number_of_trainings)
+            percent_complete_queue.put(0.0)
 
-    sweep_summary = {
-        "data": sweep_summary_data,
-        "h1_performance": model_accuracy(h1, test_set, device=device)
-    }
+        if new_error_loss_kwargs is None:
+            new_error_loss_kwargs = dict()
 
-    sweep_summary_data = json.dumps(sweep_summary)
-    sweep_summary_data_file = open(f"{sweeps_folder_path}/sweep_summary.json", "w")
-    sweep_summary_data_file.write(sweep_summary_data)
-    sweep_summary_data_file.close()
+        if strict_imitation_loss_kwargs is None:
+            strict_imitation_loss_kwargs = dict()
+
+        sweep_summary_data = []
+        datapoint_index = 0
+        run_step = 0
+        for lambda_c in np.arange(0.0, 1.0 + (lambda_c_stepsize / 2), lambda_c_stepsize):
+            run_step += 1
+            h2_new_error = copy.deepcopy(h2)
+            train_new_error(
+                h1, h2_new_error, number_of_epochs,
+                training_set, test_set, batch_size_train, batch_size_test,
+                OptimizerClass, optimizer_kwargs, NewErrorLossClass, lambda_c,
+                new_error_loss_kwargs=new_error_loss_kwargs,
+                device=device)
+            h2_new_error.eval()
+            torch.save(h2_new_error.state_dict(), f"{sweeps_folder_path}/{lambda_c}-model-new-error.state")
+
+            training_set_performance_and_compatibility =\
+                evaluate_model_performance_and_compatibility_on_dataset(
+                    h1, h2_new_error, training_set, performance_metric,
+                    get_instance_metadata=get_instance_metadata,
+                    device=device)
+            training_set_performance_and_compatibility["lambda_c"] = lambda_c
+            training_set_performance_and_compatibility["training"] = True
+            training_set_performance_and_compatibility["testing"] = False
+            training_set_performance_and_compatibility["datapoint_index"] = datapoint_index
+            sweep_summary_data.append({
+                "datapoint_index": datapoint_index,
+                "lambda_c": lambda_c,
+                "training": True,
+                "testing": False,
+                "new-error": True,
+                "strict-imitation": False,
+                "performance": training_set_performance_and_compatibility["h2_performance"],
+                "btc": training_set_performance_and_compatibility["btc"],
+                "bec": training_set_performance_and_compatibility["bec"]
+            })
+            mlflow.log_metric(f"new_error_training_performance", training_set_performance_and_compatibility["h2_performance"], step=run_step)
+            mlflow.log_metric(f"new_error_training_btc", training_set_performance_and_compatibility["btc"], step=run_step)
+            mlflow.log_metric(f"new_error_training_bec", training_set_performance_and_compatibility["bec"], step=run_step)
+            training_evaluation_data = json.dumps(training_set_performance_and_compatibility)
+            training_evaluation_data_file = open(f"{sweeps_folder_path}/{datapoint_index}-evaluation-data.json", "w")
+            training_evaluation_data_file.write(training_evaluation_data)
+            training_evaluation_data_file.close()
+            datapoint_index += 1
+
+            testing_set_performance_and_compatibility =\
+                evaluate_model_performance_and_compatibility_on_dataset(
+                    h1, h2_new_error, test_set, performance_metric,
+                    get_instance_metadata=get_instance_metadata,
+                    device=device)
+            testing_set_performance_and_compatibility["lambda_c"] = lambda_c
+            testing_set_performance_and_compatibility["training"] = False
+            testing_set_performance_and_compatibility["testing"] = True
+            testing_set_performance_and_compatibility["datapoint_index"] = datapoint_index
+            sweep_summary_data.append({
+                "datapoint_index": datapoint_index,
+                "lambda_c": lambda_c,
+                "training": False,
+                "testing": True,
+                "new-error": True,
+                "strict-imitation": False,
+                "performance": testing_set_performance_and_compatibility["h2_performance"],
+                "btc": testing_set_performance_and_compatibility["btc"],
+                "bec": testing_set_performance_and_compatibility["bec"]
+            })
+            mlflow.log_metric(f"new_error_testing_performance", testing_set_performance_and_compatibility["h2_performance"], step=run_step)
+            mlflow.log_metric(f"new_error_testing_btc", testing_set_performance_and_compatibility["btc"], step=run_step)
+            mlflow.log_metric(f"new_error_testing_bec", testing_set_performance_and_compatibility["bec"], step=run_step)
+            testing_evaluation_data = json.dumps(testing_set_performance_and_compatibility)
+            testing_evaluation_data_file = open(f"{sweeps_folder_path}/{datapoint_index}-evaluation-data.json", "w")
+            testing_evaluation_data_file.write(testing_evaluation_data)
+            testing_evaluation_data_file.close()
+            datapoint_index += 1
+
+            h2_strict_imitation = copy.deepcopy(h2)
+            train_strict_imitation(
+                h1, h2_strict_imitation, number_of_epochs,
+                training_set, test_set, batch_size_train, batch_size_test,
+                OptimizerClass, optimizer_kwargs, StrictImitationLossClass, lambda_c,
+                strict_imitation_loss_kwargs=strict_imitation_loss_kwargs,
+                device=device)
+            h2_strict_imitation.eval()
+            torch.save(h2_strict_imitation.state_dict(), f"{sweeps_folder_path}/{lambda_c}-model-strict-imitation.state")
+
+            training_set_performance_and_compatibility =\
+                evaluate_model_performance_and_compatibility_on_dataset(
+                    h1, h2_strict_imitation, training_set, performance_metric,
+                    get_instance_metadata=get_instance_metadata,
+                    device=device)
+            training_set_performance_and_compatibility["lambda_c"] = lambda_c
+            training_set_performance_and_compatibility["training"] = True
+            training_set_performance_and_compatibility["testing"] = False
+            training_set_performance_and_compatibility["datapoint_index"] = datapoint_index
+            sweep_summary_data.append({
+                "datapoint_index": datapoint_index,
+                "lambda_c": lambda_c,
+                "training": True,
+                "testing": False,
+                "new-error": False,
+                "strict-imitation": True,
+                "performance": training_set_performance_and_compatibility["h2_performance"],
+                "btc": training_set_performance_and_compatibility["btc"],
+                "bec": training_set_performance_and_compatibility["bec"]
+            })
+            mlflow.log_metric(f"strict_imitation_training_performance", training_set_performance_and_compatibility["h2_performance"], step=run_step)
+            mlflow.log_metric(f"strict_imitation_training_btc", training_set_performance_and_compatibility["btc"], step=run_step)
+            mlflow.log_metric(f"strict_imitation_training_bec", training_set_performance_and_compatibility["bec"], step=run_step)
+            training_evaluation_data = json.dumps(training_set_performance_and_compatibility)
+            training_evaluation_data_file = open(f"{sweeps_folder_path}/{datapoint_index}-evaluation-data.json", "w")
+            training_evaluation_data_file.write(training_evaluation_data)
+            training_evaluation_data_file.close()
+            datapoint_index += 1
+
+            testing_set_performance_and_compatibility =\
+                evaluate_model_performance_and_compatibility_on_dataset(
+                    h1, h2_new_error, test_set, performance_metric,
+                    get_instance_metadata=get_instance_metadata,
+                    device=device)
+            testing_set_performance_and_compatibility["lambda_c"] = lambda_c
+            testing_set_performance_and_compatibility["training"] = False
+            testing_set_performance_and_compatibility["testing"] = True
+            testing_set_performance_and_compatibility["datapoint_index"] = datapoint_index
+            sweep_summary_data.append({
+                "datapoint_index": datapoint_index,
+                "lambda_c": lambda_c,
+                "training": False,
+                "testing": True,
+                "new-error": False,
+                "strict-imitation": True,
+                "performance": testing_set_performance_and_compatibility["h2_performance"],
+                "btc": testing_set_performance_and_compatibility["btc"],
+                "bec": testing_set_performance_and_compatibility["bec"]
+            })
+            mlflow.log_metric(f"strict_imitation_testing_performance", testing_set_performance_and_compatibility["h2_performance"], step=run_step)
+            mlflow.log_metric(f"strict_imitation_testing_btc", testing_set_performance_and_compatibility["btc"], step=run_step)
+            mlflow.log_metric(f"strict_imitation_testing_bec", testing_set_performance_and_compatibility["bec"], step=run_step)
+            testing_evaluation_data = json.dumps(testing_set_performance_and_compatibility)
+            testing_evaluation_data_file = open(f"{sweeps_folder_path}/{datapoint_index}-evaluation-data.json", "w")
+            testing_evaluation_data_file.write(testing_evaluation_data)
+            testing_evaluation_data_file.close()
+            datapoint_index += 1
+
+            if percent_complete_queue is not None:
+                percent_complete_queue.put((datapoint_index) / number_of_trainings)
+
+        sweep_summary = {
+            "data": sweep_summary_data,
+            "h1_performance": model_accuracy(h1, test_set, device=device)
+        }
+
+        sweep_summary_data = json.dumps(sweep_summary)
+        sweep_summary_data_file = open(f"{sweeps_folder_path}/sweep_summary.json", "w")
+        sweep_summary_data_file.write(sweep_summary_data)
+        sweep_summary_data_file.close()
