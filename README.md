@@ -34,6 +34,11 @@ to see how the `backwardcompatibilityml` module is used.
 
 To demo the widget, open the notebook `compatibility-analysis.ipynb`.
 
+# MLflow
+Compatibility sweeps are automatically logged with [MLflow](https://mlflow.org/). MLflow runs are logged in a folder named `mlruns` in the same directory as the notebook.
+To view the MLflow dashboard, start the MLflow server by running `mlflow server --port 5200 --backend-store-uri ./mlruns`. Then, open the MLflow UI
+in your browser by navigating to `localhost:5200`.
+
 # Tests
 
 To run tests, make sure that you are in the project root folder and do:
