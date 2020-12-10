@@ -11,7 +11,7 @@ from IPython.display import (
 import torch.optim as optim
 from flask import Response
 from backwardcompatibilityml import loss
-from backwardcompatibilityml.sweep_management import (SweepManager, MLFlowSweepManager)
+from backwardcompatibilityml.sweep_management import SweepManager
 from backwardcompatibilityml.metrics import model_accuracy
 from rai_core_flask.flask_helper import FlaskHelper
 from rai_core_flask.environments import (
@@ -208,6 +208,10 @@ class CompatibilityAnalysis(object):
             value is "cpu". But in case your models reside on the GPU, make sure 
             to set this to "cuda". This makes sure that the input and target 
             tensors are transferred to the GPU during training.
+        use_ml_flow: A boolean flag controlling whether or not to log the sweep
+            with MLFlow. If true, an MLFlow run will be created with the name
+            specified by ml_flow_run_name.
+        ml_flow_run_name: A string that configures the name of the MLFlow run.
     """
 
     def __init__(self, folder_name, number_of_epochs, h1, h2, training_set, test_set,
@@ -219,7 +223,9 @@ class CompatibilityAnalysis(object):
                  strict_imitation_loss_kwargs=None,
                  get_instance_image_by_id=None,
                  get_instance_metadata=None,
-                 device="cpu"):
+                 device="cpu",
+                 use_ml_flow=True,
+                 ml_flow_run_name="compatibility_sweep"):
         if OptimizerClass is None:
             OptimizerClass = optim.SGD
 
@@ -253,7 +259,9 @@ class CompatibilityAnalysis(object):
             performance_metric=performance_metric,
             get_instance_image_by_id=get_instance_image_by_id,
             get_instance_metadata=get_instance_metadata,
-            device=device)
+            device=device,
+            use_ml_flow=use_ml_flow,
+            ml_flow_run_name=ml_flow_run_name)
 
         self.flask_service = FlaskHelper(ip="0.0.0.0", port=port)
         app_has_routes = False

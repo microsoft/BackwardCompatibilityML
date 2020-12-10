@@ -120,6 +120,8 @@ examples/sweeps-adult/*state
 examples/sweeps-cifar10/*.json
 examples/sweeps-cifar10/*state
 
+mlruns/
+
 tests/sweeps/*.json
 tests/sweeps/*state
 
