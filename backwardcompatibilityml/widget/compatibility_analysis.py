@@ -224,7 +224,7 @@ class CompatibilityAnalysis(object):
                  get_instance_image_by_id=None,
                  get_instance_metadata=None,
                  device="cpu",
-                 use_ml_flow=True,
+                 use_ml_flow=False,
                  ml_flow_run_name="compatibility_sweep"):
         if OptimizerClass is None:
             OptimizerClass = optim.SGD

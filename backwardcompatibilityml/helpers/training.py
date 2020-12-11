@@ -721,7 +721,7 @@ def compatibility_sweep(sweeps_folder_path, number_of_epochs, h1, h2,
                         strict_imitation_loss_kwargs=None,
                         get_instance_metadata=None,
                         device="cpu",
-                        use_ml_flow=True,
+                        use_ml_flow=False,
                         ml_flow_run_name="compatibility_sweep"):
     """
     This function trains a new model using the backward compatibility loss function
