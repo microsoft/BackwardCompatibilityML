@@ -6,10 +6,6 @@ import ReactDOM from "react-dom";
 import * as d3 from "d3";
 
 
-type SweepManagerState = {
-  sweepStatus: any
-}
-
 type SweepManagerProps = {
   sweepStatus: any,
   getSweepStatus: () => void,
@@ -17,25 +13,15 @@ type SweepManagerProps = {
   getTrainingAndTestingData: () => void
 }
 
-class SweepManager extends Component<SweepManagerProps, SweepManagerState> {
+class SweepManager extends Component<SweepManagerProps> {
   constructor(props) {
     super(props);
-
-    this.state = {
-      sweepStatus: this.props.sweepStatus
-    };
 
     this.pollSweepStatus = this.pollSweepStatus.bind(this);
     this.startSweep = this.startSweep.bind(this);
   }
 
-  timeoutVar: any = null
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      sweepStatus: nextProps.sweepStatus
-    });
-  }
+  timeoutVar: NodeJS.Timeout = null
 
   componentWillUnmount() {
     if (this.timeoutVar != null) {
@@ -54,13 +40,13 @@ class SweepManager extends Component<SweepManagerProps, SweepManagerState> {
 
   startSweep(evt) {
     this.props.startSweep();
-    this.pollSweepStatus();
+    this.timeoutVar = setTimeout(this.pollSweepStatus, 500);
   }
 
   render() {
 
-    if (this.state.sweepStatus == null || !this.state.sweepStatus.running) {
-      if (this.timeoutVar != null && this.state.sweepStatus.percent_complete == 1.0) {
+    if (this.props.sweepStatus == null || !this.props.sweepStatus.running) {
+      if (this.timeoutVar != null && this.props.sweepStatus.percent_complete == 1.0) {
         clearTimeout(this.timeoutVar);
         this.timeoutVar = null;
         this.props.getTrainingAndTestingData();
@@ -77,7 +63,7 @@ class SweepManager extends Component<SweepManagerProps, SweepManagerState> {
       <div className="table">
         Sweep in progress
         <div>
-         {Math.floor(this.state.sweepStatus.percent_complete * 100)} % complete
+         {Math.floor(this.props.sweepStatus.percent_complete * 100)} % complete
         </div>
       </div>
     );

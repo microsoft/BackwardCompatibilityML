@@ -3,8 +3,9 @@
 
 import copy
 import json
-import torch
+import mlflow
 import numpy as np
+import torch
 import backwardcompatibilityml.scores as scores
 from backwardcompatibilityml.metrics import model_accuracy
 
@@ -719,7 +720,9 @@ def compatibility_sweep(sweeps_folder_path, number_of_epochs, h1, h2,
                         new_error_loss_kwargs=None,
                         strict_imitation_loss_kwargs=None,
                         get_instance_metadata=None,
-                        device="cpu"):
+                        device="cpu",
+                        use_ml_flow=False,
+                        ml_flow_run_name="compatibility_sweep"):
     """
     This function trains a new model using the backward compatibility loss function
     BCNLLLoss with respect to an existing model. It does this for each value of
@@ -766,7 +769,17 @@ def compatibility_sweep(sweeps_folder_path, number_of_epochs, h1, h2,
             value is "cpu". But in case your models reside on the GPU, make sure
             to set this to "cuda". This makes sure that the input and target
             tensors are transferred to the GPU during training.
+        use_ml_flow: A boolean flag controlling whether or not to log the sweep
+            with MLFlow. If true, an MLFlow run will be created with the name
+            specified by ml_flow_run_name.
+        ml_flow_run_name: A string that configures the name of the MLFlow run.
     """
+    if use_ml_flow:
+        mlflow.start_run(run_name=ml_flow_run_name)
+        mlflow.log_param('lambda_c_stepsize', lambda_c_stepsize)
+        mlflow.log_param('batch_size_train', batch_size_train)
+        mlflow.log_param('batch_size_test', batch_size_test)
+
     h1.eval()
     number_of_trainings = 4 * len(np.arange(0.0, 1.0 + (lambda_c_stepsize / 2), lambda_c_stepsize))
     if percent_complete_queue is not None:
@@ -780,7 +793,9 @@ def compatibility_sweep(sweeps_folder_path, number_of_epochs, h1, h2,
 
     sweep_summary_data = []
     datapoint_index = 0
+    run_step = 0
     for lambda_c in np.arange(0.0, 1.0 + (lambda_c_stepsize / 2), lambda_c_stepsize):
+        run_step += 1
         h2_new_error = copy.deepcopy(h2)
         train_new_error(
             h1, h2_new_error, number_of_epochs,
@@ -811,6 +826,11 @@ def compatibility_sweep(sweeps_folder_path, number_of_epochs, h1, h2,
             "btc": training_set_performance_and_compatibility["btc"],
             "bec": training_set_performance_and_compatibility["bec"]
         })
+        if use_ml_flow:
+            mlflow.log_metric(f"lambda_c", lambda_c, step=run_step)
+            mlflow.log_metric(f"new_error_training_performance", training_set_performance_and_compatibility["h2_performance"], step=run_step)
+            mlflow.log_metric(f"new_error_training_btc", training_set_performance_and_compatibility["btc"], step=run_step)
+            mlflow.log_metric(f"new_error_training_bec", training_set_performance_and_compatibility["bec"], step=run_step)
         training_evaluation_data = json.dumps(training_set_performance_and_compatibility)
         training_evaluation_data_file = open(f"{sweeps_folder_path}/{datapoint_index}-evaluation-data.json", "w")
         training_evaluation_data_file.write(training_evaluation_data)
@@ -837,6 +857,10 @@ def compatibility_sweep(sweeps_folder_path, number_of_epochs, h1, h2,
             "btc": testing_set_performance_and_compatibility["btc"],
             "bec": testing_set_performance_and_compatibility["bec"]
         })
+        if use_ml_flow:
+            mlflow.log_metric(f"new_error_testing_performance", testing_set_performance_and_compatibility["h2_performance"], step=run_step)
+            mlflow.log_metric(f"new_error_testing_btc", testing_set_performance_and_compatibility["btc"], step=run_step)
+            mlflow.log_metric(f"new_error_testing_bec", testing_set_performance_and_compatibility["bec"], step=run_step)
         testing_evaluation_data = json.dumps(testing_set_performance_and_compatibility)
         testing_evaluation_data_file = open(f"{sweeps_folder_path}/{datapoint_index}-evaluation-data.json", "w")
         testing_evaluation_data_file.write(testing_evaluation_data)
@@ -873,6 +897,10 @@ def compatibility_sweep(sweeps_folder_path, number_of_epochs, h1, h2,
             "btc": training_set_performance_and_compatibility["btc"],
             "bec": training_set_performance_and_compatibility["bec"]
         })
+        if use_ml_flow:
+            mlflow.log_metric(f"strict_imitation_training_performance", training_set_performance_and_compatibility["h2_performance"], step=run_step)
+            mlflow.log_metric(f"strict_imitation_training_btc", training_set_performance_and_compatibility["btc"], step=run_step)
+            mlflow.log_metric(f"strict_imitation_training_bec", training_set_performance_and_compatibility["bec"], step=run_step)
         training_evaluation_data = json.dumps(training_set_performance_and_compatibility)
         training_evaluation_data_file = open(f"{sweeps_folder_path}/{datapoint_index}-evaluation-data.json", "w")
         training_evaluation_data_file.write(training_evaluation_data)
@@ -899,6 +927,10 @@ def compatibility_sweep(sweeps_folder_path, number_of_epochs, h1, h2,
             "btc": testing_set_performance_and_compatibility["btc"],
             "bec": testing_set_performance_and_compatibility["bec"]
         })
+        if use_ml_flow:
+            mlflow.log_metric(f"strict_imitation_testing_performance", testing_set_performance_and_compatibility["h2_performance"], step=run_step)
+            mlflow.log_metric(f"strict_imitation_testing_btc", testing_set_performance_and_compatibility["btc"], step=run_step)
+            mlflow.log_metric(f"strict_imitation_testing_bec", testing_set_performance_and_compatibility["bec"], step=run_step)
         testing_evaluation_data = json.dumps(testing_set_performance_and_compatibility)
         testing_evaluation_data_file = open(f"{sweeps_folder_path}/{datapoint_index}-evaluation-data.json", "w")
         testing_evaluation_data_file.write(testing_evaluation_data)
@@ -917,3 +949,5 @@ def compatibility_sweep(sweeps_folder_path, number_of_epochs, h1, h2,
     sweep_summary_data_file = open(f"{sweeps_folder_path}/sweep_summary.json", "w")
     sweep_summary_data_file.write(sweep_summary_data)
     sweep_summary_data_file.close()
+    if use_ml_flow:
+        mlflow.end_run()

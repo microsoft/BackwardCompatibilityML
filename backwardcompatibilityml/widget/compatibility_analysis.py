@@ -108,7 +108,7 @@ def init_app_routes(app, sweep_manager):
     def start_sweep():
         sweep_manager.start_sweep()
         return {
-            "running": sweep_manager.sweep_thread.is_alive(),
+            "running": sweep_manager.is_running(),
             "percent_complete": sweep_manager.get_sweep_status()
         }
 
@@ -116,7 +116,7 @@ def init_app_routes(app, sweep_manager):
     @http.no_cache
     def get_sweep_status():
         return {
-            "running": sweep_manager.sweep_thread.is_alive(),
+            "running": sweep_manager.is_running(),
             "percent_complete": sweep_manager.get_sweep_status()
         }
 
@@ -208,6 +208,10 @@ class CompatibilityAnalysis(object):
             value is "cpu". But in case your models reside on the GPU, make sure 
             to set this to "cuda". This makes sure that the input and target 
             tensors are transferred to the GPU during training.
+        use_ml_flow: A boolean flag controlling whether or not to log the sweep
+            with MLFlow. If true, an MLFlow run will be created with the name
+            specified by ml_flow_run_name.
+        ml_flow_run_name: A string that configures the name of the MLFlow run.
     """
 
     def __init__(self, folder_name, number_of_epochs, h1, h2, training_set, test_set,
@@ -219,7 +223,9 @@ class CompatibilityAnalysis(object):
                  strict_imitation_loss_kwargs=None,
                  get_instance_image_by_id=None,
                  get_instance_metadata=None,
-                 device="cpu"):
+                 device="cpu",
+                 use_ml_flow=False,
+                 ml_flow_run_name="compatibility_sweep"):
         if OptimizerClass is None:
             OptimizerClass = optim.SGD
 
@@ -253,10 +259,21 @@ class CompatibilityAnalysis(object):
             performance_metric=performance_metric,
             get_instance_image_by_id=get_instance_image_by_id,
             get_instance_metadata=get_instance_metadata,
-            device=device)
+            device=device,
+            use_ml_flow=use_ml_flow,
+            ml_flow_run_name=ml_flow_run_name)
 
         self.flask_service = FlaskHelper(ip="0.0.0.0", port=port)
-        init_app_routes(FlaskHelper.app, self.sweep_manager)
+        app_has_routes = False
+        for route in FlaskHelper.app.url_map.iter_rules():
+            if route.endpoint == 'start_sweep':
+                app_has_routes = True
+                break
+        if app_has_routes:
+            FlaskHelper.app.logger.info("Routes already defined. Skipping route initialization.")
+        else:
+            FlaskHelper.app.logger.info("Initializing routes")
+            init_app_routes(FlaskHelper.app, self.sweep_manager)
         api_service_environment = build_environment_params(self.flask_service.env)
         api_service_environment["port"] = self.flask_service.port
         html_string = render_widget_html(api_service_environment)

@@ -131,7 +131,6 @@ function getSweepStatus() {
 
 function startSweep() {
     return function(dispatch) {
-        dispatch(getSweepStatus());
         makePostCall("api/v1/start_sweep", {});
     }
 }

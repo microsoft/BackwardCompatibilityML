@@ -19,6 +19,8 @@ from flask import send_file
 from PIL import Image
 from rai_core_flask.flask_helper import FlaskHelper
 
+use_ml_flow = True
+ml_flow_run_name = "dev_app_sweep"
 
 def breast_cancer_sweep():
     folder_name = "tests/sweeps"
@@ -95,7 +97,9 @@ def breast_cancer_sweep():
         OptimizerClass=optim.SGD,
         optimizer_kwargs={"lr": learning_rate, "momentum": momentum},
         NewErrorLossClass=bcloss.BCCrossEntropyLoss,
-        StrictImitationLossClass=bcloss.StrictImitationCrossEntropyLoss)
+        StrictImitationLossClass=bcloss.StrictImitationCrossEntropyLoss,
+        use_ml_flow=use_ml_flow,
+        ml_flow_run_name=ml_flow_run_name)
 
 
 def mnist_sweep():
@@ -206,9 +210,11 @@ def mnist_sweep():
                           lambda_c_stepsize=0.25,
                           get_instance_image_by_id=get_instance_image,
                           get_instance_metadata=get_instance_label,
-                          device="cuda")
+                          device="cuda",
+                          use_ml_flow=use_ml_flow,
+                          ml_flow_run_name=ml_flow_run_name)
 
 
-mnist_sweep()
+breast_cancer_sweep()
 app = FlaskHelper.app
 app.logger.info('initialization complete')

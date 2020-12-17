@@ -10,3 +10,4 @@ tensorflow-datasets==4.1.0
 tensorflow-estimator==2.3.0
 tensorflow-metadata==0.25.0
 Pillow==7.2.0
+mlflow==1.12.1

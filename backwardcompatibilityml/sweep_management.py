@@ -6,6 +6,7 @@ import json
 import threading
 import io
 import numpy as np
+import mlflow
 from flask import send_file
 from PIL import Image
 from queue import Queue
@@ -65,6 +66,10 @@ class SweepManager(object):
             value is "cpu". But in case your models reside on the GPU, make sure
             to set this to "cuda". This makes sure that the input and target
             tensors are transferred to the GPU during training.
+        use_ml_flow: A boolean flag controlling whether or not to log the sweep
+            with MLFlow. If true, an MLFlow run will be created with the name
+            specified by ml_flow_run_name.
+        ml_flow_run_name: A string that configures the name of the MLFlow run.
     """
 
     def __init__(self, folder_name, number_of_epochs, h1, h2, training_set, test_set,
@@ -76,7 +81,9 @@ class SweepManager(object):
                  performance_metric=model_accuracy,
                  get_instance_image_by_id=None,
                  get_instance_metadata=None,
-                 device="cpu"):
+                 device="cpu",
+                 use_ml_flow=False,
+                 ml_flow_run_name="compatibility_sweep"):
         self.folder_name = folder_name
         self.number_of_epochs = number_of_epochs
         self.h1 = h1
@@ -96,27 +103,41 @@ class SweepManager(object):
         self.get_instance_image_by_id = get_instance_image_by_id
         self.get_instance_metadata = get_instance_metadata
         self.device = device
+        self.use_ml_flow = use_ml_flow
+        self.ml_flow_run_name = ml_flow_run_name
         self.last_sweep_status = 0.0
         self.percent_complete_queue = Queue()
+        self.sweep_thread = None
+
+    def start_sweep(self):
+        if self.is_running():
+            return
+        self.percent_complete_queue = Queue()
+        self.last_sweep_status = 0.0
         self.sweep_thread = threading.Thread(
             target=training.compatibility_sweep,
             args=(self.folder_name, self.number_of_epochs, self.h1, self.h2,
-                  self.training_set, self.test_set,
-                  self.batch_size_train, self.batch_size_test,
-                  self.OptimizerClass, self.optimizer_kwargs,
-                  self.NewErrorLossClass, self.StrictImitationLossClass,
-                  self.performance_metric,),
+                self.training_set, self.test_set,
+                self.batch_size_train, self.batch_size_test,
+                self.OptimizerClass, self.optimizer_kwargs,
+                self.NewErrorLossClass, self.StrictImitationLossClass,
+                self.performance_metric,),
             kwargs={
                 "lambda_c_stepsize": self.lambda_c_stepsize,
                 "percent_complete_queue": self.percent_complete_queue,
                 "new_error_loss_kwargs": self.new_error_loss_kwargs,
                 "strict_imitation_loss_kwargs": self.strict_imitation_loss_kwargs,
                 "get_instance_metadata": self.get_instance_metadata,
-                "device": self.device
+                "device": self.device,
+                "use_ml_flow": self.use_ml_flow,
+                "ml_flow_run_name": self.ml_flow_run_name
             })
-
-    def start_sweep(self):
         self.sweep_thread.start()
+
+    def is_running(self):
+        if not self.sweep_thread:
+            return False
+        return self.sweep_thread.is_alive()
 
     def start_sweep_synchronous(self):
         training.compatibility_sweep(
