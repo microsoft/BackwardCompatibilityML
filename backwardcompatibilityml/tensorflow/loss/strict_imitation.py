@@ -4,10 +4,12 @@ import tensorflow.compat.v1 as tf1
 
 class BCStrictImitationNLLLoss(object):
 
-    def __init__(self, h1, h2, lambda_c):
+    def __init__(self, h1, h2, lambda_c, clip_value_min=1e-10, clip_value_max=4.0):
         self.h1 = h1
         self.h2 = h2
         self.lambda_c = lambda_c
+        self.clip_value_min = clip_value_min
+        self.clip_value_max = clip_value_max
         self.__name__ = "BCStrictImitationNLLLoss"
 
     def nll_loss(self, target_labels, model_output):
@@ -16,6 +18,10 @@ class BCStrictImitationNLLLoss(object):
         model_output_correct = (model_output_diff == 0)
         _, model_output_support = tf.dynamic_partition(
             model_output, tf.dtypes.cast(model_output_correct, tf.int32), 2)
+        model_output_support = tf.clip_by_value(
+            model_output_support,
+            clip_value_min=self.clip_value_min,
+            clip_value_max=self.clip_value_max)
         loss = tf.reduce_sum(tf.math.log(model_output_support))
 
         return loss
