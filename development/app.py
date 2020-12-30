@@ -14,7 +14,7 @@ import random
 from backwardcompatibilityml import loss as bcloss
 from backwardcompatibilityml.helpers import training
 from backwardcompatibilityml.helpers.models import LogisticRegression, MLPClassifier
-from backwardcompatibilityml.widget.compatibility_analysis import CompatibilityAnalysis
+from backwardcompatibilityml.widgets import CompatibilityAnalysis
 from flask import send_file
 from PIL import Image
 from rai_core_flask.flask_helper import FlaskHelper

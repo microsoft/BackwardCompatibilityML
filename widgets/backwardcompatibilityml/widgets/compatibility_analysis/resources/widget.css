@@ -1,0 +1,286 @@
+/**
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
+
+#viz {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  position: relative;
+  width: 960px;
+}
+ 
+.axis text {
+  font: 10px sans-serif;
+}
+ 
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+ 
+.bar {
+  fill: rgba(170, 170, 198, 0.8);
+}
+ 
+/*.bar:hover {
+  fill: rgba(226, 75, 158, 0.8);
+}*/
+ 
+label {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.plot {
+  position: relative;
+  display: inline-block;
+}
+
+.plot svg {
+  background-color: white
+}
+
+.plot-btc {
+  background-color: lightgrey;
+  padding-left: 20px;
+  padding-right:20px;
+  padding-top: 20px;
+  padding-bottom: 10px;
+}
+
+.plot-bec {
+  background-color: lightgrey;
+  padding-right:20px;
+  padding-top: 20px;
+  padding-bottom: 10px;
+}
+
+.plot-venn {
+  background-color: lightgrey;
+  padding-left: 20px;
+  padding-right:20px;
+  padding-top: 20px;
+  padding-bottom: 39px;
+  vertical-align: top;
+  line-height: 20px;
+}
+
+.plot-distribution {
+  background-color: lightgrey;
+  padding-right:20px;
+  padding-top: 20px;
+  padding-bottom: 10px;
+  line-height: 20px;
+}
+
+.plot-title-row {
+  display: flex;
+  background-color: white;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  font-family: sans-serif;
+  font-size: 10px;
+  padding-left: 40px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.page-button-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin-top: 5px;
+}
+
+.page-button-row span {
+  margin-left: 5px;
+  margin-right: 5px;
+  padding-top: 2px;
+}
+
+.page-button-row button {
+  background-color: white;
+  border: 1px solid black;
+}
+
+.venn-legend-row {
+  display: flex;
+  background-color: white;
+  flex-direction: row;
+  font-family: sans-serif;
+  justify-content: center;
+  align-items: center;
+  font-size: 10px;
+  padding-left: 37px;
+}
+
+.venn-legend-row-block {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 5px;
+}
+
+.venn-legend-row-block-selected {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border: 2px solid rgb(200,200,200);
+  padding: 3px;
+}
+
+.venn-legend-row-block:hover {
+  border: 2px solid black;
+  padding: 3px;
+}
+
+.venn-legend-row-block-selected:hover {
+  border: 2px solid black;
+  padding: 3px;
+}
+
+.venn-legend-color-box {
+  height: 10px;
+  width: 10px;
+  margin-right: 5px;
+}
+
+.tooltip {
+  background-color: black;
+  color: white;
+  border-radius: 3px;
+  position: absolute;
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.table {
+  width: 700px;
+  text-align: center;
+  background-color: lightblue;
+}
+
+.data-selector .control-group {
+  display: inline-block;
+  margin-right: 50px;
+}
+
+.data-selector {
+  width: 700px;
+  text-align: left;
+}
+
+.data-selector .control-subgroup {
+  display: inline-block;
+  margin-right: 20px;
+}
+
+.data-selector .control {
+  display: inline-block;
+  margin-right: 5px;
+}
+
+.dropdown-check-list {
+  font-size: 10px;
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-check-list .anchor {
+  font-weight: bold;
+  position: relative;
+  cursor: pointer;
+  display: inline-block;
+  padding: 5px 50px 5px 10px;
+  border: 1px solid #ccc;
+}
+
+.dropdown-check-list .anchor:after {
+  position: absolute;
+  content: "";
+  border-left: 2px solid black;
+  border-top: 2px solid black;
+  padding: 5px;
+  right: 10px;
+  top: 20%;
+  -moz-transform: rotate(-135deg);
+  -ms-transform: rotate(-135deg);
+  -o-transform: rotate(-135deg);
+  -webkit-transform: rotate(-135deg);
+  transform: rotate(-135deg);
+}
+
+.dropdown-check-list .anchor:active:after {
+  right: 8px;
+  top: 21%;
+}
+
+.dropdown-check-list ul {
+  position: absolute;
+}
+
+.dropdown-check-list ul.items {
+  padding: 2px;
+  display: none;
+  margin: 0;
+  border: 1px solid #ccc;
+  border-top: none;
+  background: white;
+  z-index: 100;
+}
+
+.dropdown-check-list ul.items li {
+  list-style: none;
+}
+
+.dropdown-check-list.visible .anchor {
+  color: #0094ff;
+}
+
+.dropdown-check-list.visible .items {
+  display: block;
+}
+
+#raw-values-table {
+  width: 700px;
+  margin-top: 0px;
+  border-style: solid;
+  border-width: 1px;
+}
+
+.model-details .model-details-row {
+  width: 100%;
+  display: inline-block;
+  text-align: center;
+  padding: 0.1em 0.1em;
+}
+
+.model-details-row td {
+  display: inline-block;
+  text-align: center;
+  width: 180px;
+}
+
+.model-details-info-data {
+  display: inline-block;
+  font-weight: bold;
+  font-size: 10px;
+  margin-right: 4px;
+}
+
+.model-details-info-type {
+  display: inline-block;
+  font-style: italic;
+  font-size: 10px;
+  font-weight: normal;
+}
+
+.highlighted-bar {
+  stroke-width: 2;
+  stroke: rgb(0,0,0);
+}
+

@@ -1,0 +1,29 @@
+<!--
+ Copyright (c) Microsoft Corporation.
+ Licensed under the MIT License.
+-->
+
+<div class="container">
+    <style>
+        {{ widget_css }}
+    </style>
+    <div id="widget">
+    </div>
+    <script>
+        var data = {{ data }};
+        window.API_SERVICE_ENVIRONMENT = {{ api_service_environment }};
+        window.WIDGET_STATE = {
+            data: data,
+            sweepStatus: null,
+            selectedDataPoint: null,
+            training: true,
+            testing: true,
+            newError: true,
+            strictImitation: true,
+            error: null,
+            loading: false
+        };
+
+        {{ widget_javascript }}
+    </script>
+</div>
