@@ -111,78 +111,8 @@ def init_app_routes(app, comparison_manager):
 
 class ModelComparison(object):
     """
-    The CompatibilityAnalysis class is an interactive widget intended for use
-    within a Jupyter Notebook. It provides an interactive UI for the user
-    to interact with for:
-
-        1. Initiating a sweep of the lambda_c parameter space while performing
-            compatibility training / updating of a model h2 with respect to a
-            reference model h1.
-        2. Checking on the status of the sweep being performed.
-        3. Interacting with the data generated during the sweep, once the sweep
-            is completed.
-
-    Note that this class may only be instantiated once within the same Notebook
-    at this time.
-
-    This class works by instantiating a Flask server listening on a free port
-    in the 5000 - 5099 range, or a port explicitly specified by the user.
-
-    It then registers a few REST api endpoints on this Flask server.
-    The UI for the widget which is displayed within the Jupyter Notebook,
-    interacts with these REST api endpoints over HTTP requests.
-    It dynamically loads data and uses it to render visualizations
-    within the widget UI.
-
-    Args:
-        folder_name: A string value representing the full path of the
-            folder where the result of the compatibility sweep is to be stored.
-        number_of_epochs: The number of training epochs to use on each sweep.
-        h1: The reference model being used.
-        h2: The new model being traind / updated.
-        training_set: The list of training samples as (batch_ids, input, target).
-        test_set: The list of testing samples as (batch_ids, input, target).
-        batch_size_train: An integer representing batch size of the training set.
-        batch_size_test: An integer representing the batch size of the test set.
-        lambda_c_stepsize: The increments of lambda_c to use as we sweep the parameter
-            space between 0.0 and 1.0.
-        OptimizerClass: The class to instantiate an optimizer from for training.
-        optimizer_kwargs: A dictionary of the keyword arguments to be used to
-            instantiate the optimizer.
-        NewErrorLossClass: The class of the New Error style loss function to
-            be instantiated and used to perform compatibility constrained
-            training of our model h2.
-        StrictImitationLossClass: The class of the Strict Imitation style loss
-            function to be instantiated and used to perform compatibility
-            constrained training of our model h2.
-        performance_metric: A function to evaluate model performance. The function is expected to have the following signature:
-                metric(model, dataset, device)
-                    model: The model being evaluated
-                    dataset: The dataset as a list of (input, target) pairs
-                    device: The device Pytorch is using for training - "cpu" or "cuda"
-
-            If unspecified, then accuracy is used.
-        port: An integer value to indicate the port to which the Flask service
-            should bind.
-        get_instance_image_by_id: A function that returns an image representation of the data corresponding to the instance id, in PNG format. It should be a function of the form:
-                get_instance_image_by_id(instance_id)
-                    instance_id: An integer instance id
-
-            And should return a PNG image.
-        get_instance_metadata: A function that returns a text string representation of some metadata corresponding to the instance id. It should be a function of the form:
-                get_instance_metadata(instance_id)
-                    instance_id: An integer instance id
-
-            And should return a string.
-        device: A string with values either "cpu" or "cuda" to indicate the
-            device that Pytorch is performing training on. By default this
-            value is "cpu". But in case your models reside on the GPU, make sure
-            to set this to "cuda". This makes sure that the input and target
-            tensors are transferred to the GPU during training.
-        use_ml_flow: A boolean flag controlling whether or not to log the sweep
-            with MLFlow. If true, an MLFlow run will be created with the name
-            specified by ml_flow_run_name.
-        ml_flow_run_name: A string that configures the name of the MLFlow run.
+    Model Comparison widget
+    ...
     """
 
     def __init__(self, folder_name, number_of_epochs, h1, h2, dataset,
