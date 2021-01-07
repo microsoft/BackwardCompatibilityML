@@ -39,8 +39,6 @@ class ErrorInstancesTable extends Component<ErrorInstancesTableProps, ErrorInsta
     }
   }
 
-  calculateNumPages
-
   componentWillReceiveProps(nextProps) {
     let errorInstances = nextProps.selectedDataPoint.error_instances;
     if (nextProps.filterInstances != null) {
