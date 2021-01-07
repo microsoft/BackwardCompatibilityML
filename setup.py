@@ -35,8 +35,9 @@ setuptools.setup(
         "backwardcompatibilityml",
         "backwardcompatibilityml.loss",
         "backwardcompatibilityml.helpers",
-        "backwardcompatibilityml.widget",
-        "backwardcompatibilityml.widget.resources"
+        "backwardcompatibilityml.widgets",
+        "backwardcompatibilityml.widgets.compatibility_analysis.resources",
+         "backwardcompatibilityml.widgets.model_comparison.resources"
 
     ],  # setuptools.find_packages(),
 

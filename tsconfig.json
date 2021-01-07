@@ -9,7 +9,7 @@
         "jsx": "react",
         "baseUrl": ".",
         "paths": {
-            "@App/*": ["widget/*"]
+            "@App/*": ["widgets/*"]
         }
     }
 }

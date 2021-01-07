@@ -5,7 +5,7 @@ import { TestScheduler } from 'jest'
 import { act } from 'react-dom/test-utils'
 import { unmountComponentAtNode } from 'react-dom'
 
-import DataSelector from '@App/DataSelector'
+import DataSelector from '@App/common/DataSelector'
 
 afterEach(cleanup);
 

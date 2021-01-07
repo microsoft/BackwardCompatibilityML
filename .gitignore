@@ -129,6 +129,10 @@ node_modules/
 
 backwardcompatibilityml/widget/resources/widget-build.js
 backwardcompatibilityml/widget/resources/widget.css
+backwardcompatibilityml/widgets/compatibility_analysis/resources/widget-build.js
+backwardcompatibilityml/widgets/compatibility_analysis/resources/widget.css
+backwardcompatibilityml/widgets/model_comparison/resources/widget-build.js
+backwardcompatibilityml/widgets/model_comparison/resources/widget.css
 
 package-lock.json
 
