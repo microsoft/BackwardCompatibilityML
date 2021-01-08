@@ -107,7 +107,7 @@ def breast_cancer_sweep():
 
 
 def mnist_sweep():
-    sweeps_folder = "development/sweeps-mnist"
+    sweeps_folder = "development/model-comparison/sweeps-mnist"
     n_epochs = 3
     n_samples = 5000
     batch_size_train = 64
