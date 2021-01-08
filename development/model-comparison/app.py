@@ -88,23 +88,6 @@ def breast_cancer_sweep():
     model_comparison = ModelComparison("sweeps-fico", number_of_epochs, h1, h2, training_set,
                                        use_ml_flow=True, device="cuda")
 
-    # CompatibilityAnalysis(
-    #     folder_name,
-    #     number_of_epochs,
-    #     h1,
-    #     h2,
-    #     training_set,
-    #     testing_set,
-    #     batch_size_train,
-    #     batch_size_test,
-    #     lambda_c_stepsize=0.05,
-    #     OptimizerClass=optim.SGD,
-    #     optimizer_kwargs={"lr": learning_rate, "momentum": momentum},
-    #     NewErrorLossClass=bcloss.BCCrossEntropyLoss,
-    #     StrictImitationLossClass=bcloss.StrictImitationCrossEntropyLoss,
-    #     use_ml_flow=use_ml_flow,
-    #     ml_flow_run_name=ml_flow_run_name)
-
 
 def mnist_sweep():
     sweeps_folder = "development/model-comparison/sweeps-mnist"
@@ -207,19 +190,6 @@ def mnist_sweep():
     model_comparison = ModelComparison("sweeps-fico", n_epochs, h1, h2, train_loader,
                                        get_instance_image_by_id=get_instance_image,
                                        use_ml_flow=True, device="cuda")
-
-    # CompatibilityAnalysis(sweeps_folder, n_epochs, h1, h2, train_loader, test_loader,
-    #                       batch_size_train, batch_size_test,
-    #                       OptimizerClass=optim.SGD,
-    #                       optimizer_kwargs={"lr": learning_rate, "momentum": momentum},
-    #                       NewErrorLossClass=bcloss.BCCrossEntropyLoss,
-    #                       StrictImitationLossClass=bcloss.StrictImitationCrossEntropyLoss,
-    #                       lambda_c_stepsize=0.25,
-    #                       get_instance_image_by_id=get_instance_image,
-    #                       get_instance_metadata=get_instance_label,
-    #                       device="cuda",
-    #                       use_ml_flow=use_ml_flow,
-    #                       ml_flow_run_name=ml_flow_run_name)
 
 
 mnist_sweep()
