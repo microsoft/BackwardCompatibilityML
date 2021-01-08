@@ -23,7 +23,7 @@ module.exports = {
       filename: 'widget.css'
     }),
     isDevelopment && new HtmlWebpackPlugin({
-      template: './development/index.html'
+      template: './development/model-comparison/index.html'
     }),
     isDevelopment && new ReactRefreshPlugin()
   ].filter(Boolean),
