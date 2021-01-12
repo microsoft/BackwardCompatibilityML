@@ -20,14 +20,13 @@ class ComparisonManager(object):
     model comparison.
     """
 
-    def __init__(self, folder_name, h1, h2, dataset,
+    def __init__(self, h1, h2, dataset,
                  performance_metric=model_accuracy,
                  get_instance_image_by_id=None,
                  get_instance_metadata=None,
                  device="cpu",
                  use_ml_flow=False,
                  ml_flow_run_name="model_comparison"):
-        self.folder_name = folder_name
         self.h1 = h1
         self.h2 = h2
         self.dataset = dataset

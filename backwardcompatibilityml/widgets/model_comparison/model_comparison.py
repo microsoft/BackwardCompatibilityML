@@ -115,7 +115,7 @@ class ModelComparison(object):
     ...
     """
 
-    def __init__(self, folder_name, number_of_epochs, h1, h2, dataset,
+    def __init__(self, h1, h2, dataset,
                  performance_metric=model_accuracy,
                  port=None,
                  get_instance_image_by_id=None,
@@ -128,7 +128,6 @@ class ModelComparison(object):
             get_instance_metadata = default_get_instance_metadata
 
         self.comparison_manager = ComparisonManager(
-            folder_name,
             h1,
             h2,
             dataset,
