@@ -85,7 +85,7 @@ def breast_cancer_sweep():
 
     h2 = MLPClassifier(9, 2)
 
-    model_comparison = ModelComparison("sweeps-fico", number_of_epochs, h1, h2, training_set,
+    model_comparison = ModelComparison(h1, h2, training_set,
                                        use_ml_flow=True, device="cuda")
 
 
@@ -187,7 +187,7 @@ def mnist_sweep():
         label = dataset[instance_id][2].item()
         return f'{label}'
 
-    model_comparison = ModelComparison("sweeps-fico", n_epochs, h1, h2, train_loader,
+    model_comparison = ModelComparison(h1, h2, train_loader,
                                        get_instance_image_by_id=get_instance_image,
                                        use_ml_flow=True, device="cuda")
 
