@@ -58,7 +58,7 @@ Changes to the CSS or TypeScript code will be hot loaded automatically in the br
 
 ## Compatibility Analysis Widget
 
-- Open a new terminal and within the project root folder do `FLASK_ENV=development FLASK_APP=development/compatibility-analysis/app.py flask run --host 0.0.0.0 --port 5000` on Linux or `set FLASK_ENV=development && set FLASK_APP=development\comparibility-analysis\app.py && flask run --host 0.0.0.0 --port 5000` on Windows. This will start the Flask server for the APIs used by the widget.
+- Open a new terminal and within the project root folder do `FLASK_ENV=development FLASK_APP=development/compatibility-analysis/app.py flask run --host 0.0.0.0 --port 5000` on Linux or `set FLASK_ENV=development && set FLASK_APP=development\compatibility-analysis\app.py && flask run --host 0.0.0.0 --port 5000` on Windows. This will start the Flask server for the APIs used by the widget.
 - Open a new terminal, then from within the project root folder do `npm run start-compatibility-analysis`
 - Open your browser and point it to `http://<your-ip-address>:3000`
 
