@@ -1,44 +1,31 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
-import os
-import json
-import threading
 import io
 import numpy as np
-import mlflow
 from flask import send_file
 from PIL import Image
-from queue import Queue
-from backwardcompatibilityml.helpers import training
-from backwardcompatibilityml.metrics import model_accuracy
 
 
 class ComparisonManager(object):
     """
-    The ComparisonManager class is used to manage an experiment that performs
-    model comparison.
+    The ComparisonManager class is used to field any REST requests by the ModelComparison
+    widget UI components from within the Jupyter notebook.
+
+    Args:
+        training_set: The list of training samples as (batch_ids, input, target).
+        dataset: The list of dataset samples as (batch_ids, input, target).
+        get_instance_image_by_id: A function that returns an image representation of the data corresponding to the instance id, in PNG format. It should be a function of the form:
+                get_instance_image_by_id(instance_id)
+                    instance_id: An integer instance id
+
+            And should return a PNG image.
     """
 
-    def __init__(self, h1, h2, dataset,
-                 performance_metric=model_accuracy,
-                 get_instance_image_by_id=None,
-                 get_instance_metadata=None,
-                 device="cpu",
-                 use_ml_flow=False,
-                 ml_flow_run_name="model_comparison"):
-        self.h1 = h1
-        self.h2 = h2
+    def __init__(self, dataset,
+                 get_instance_image_by_id=None):
         self.dataset = dataset
-        self.performance_metric = performance_metric
         self.get_instance_image_by_id = get_instance_image_by_id
-        self.get_instance_metadata = get_instance_metadata
-        self.device = device
-        self.use_ml_flow = use_ml_flow
-        self.ml_flow_run_name = ml_flow_run_name
-        self.last_sweep_status = 0.0
-        self.percent_complete_queue = Queue()
-        self.sweep_thread = None
 
     def get_instance_image(self, instance_id):
         get_instance_image_by_id = self.get_instance_image_by_id
