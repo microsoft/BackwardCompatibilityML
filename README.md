@@ -48,17 +48,26 @@ To run tests, make sure that you are in the project root folder and do:
 3. `npm install`
 4. `npm run test`
 
-# Development environment
+# Development Environment
 
-To run the widget and APIs in a development environment:
-- Open a new terminal, then from within the root folder do `npm start`. This will host the widget with `webpack-dev-server`.
-  - To customize the host IP, run `webpack-dev-server --hot --mode development --host <ip>` instead of `npm start`.
-  - `npm start` uses `0.0.0.0` which makes the server accessible externally.
-- Open a new terminal, then from within the root folder do `flask run`. This will start the Flask server for the APIs used by the widget.
+This is provided as a convenience tool to developers, in order to allow development of the widget proceed outside of a Jupyter notebook environment.
 
-The widget can be loaded in the web browser at `localhost:3000`. It will be loaded independently from a Jupyter notebook. The APIs will be hosted at `localhost:5000`. If you are running the server within a VM, you might need to use your machine's local IP instead of `localhost`.
+The widget can be loaded in the web browser at `localhost:3000` or `<your-ip>:3000`. It will be loaded independently from a Jupyter notebook. The APIs will be hosted at `localhost:5000` or `<your-ip>:5000`.
 
 Changes to the CSS or TypeScript code will be hot loaded automatically in the browser. Flask will run in debug mode and automatically restart whenever the Python code is changed.
+
+## Compatibility Analysis Widget
+
+- Open a new terminal and within the project root folder do `FLASK_ENV=development FLASK_APP=development/compatibility-analysis/app.py flask run --host 0.0.0.0 --port 5000` on Linux or `set FLASK_ENV=development && set FLASK_APP=development\compatibility-analysis\app.py && flask run --host 0.0.0.0 --port 5000` on Windows. This will start the Flask server for the APIs used by the widget.
+- Open a new terminal, then from within the project root folder do `npm run start-compatibility-analysis`
+- Open your browser and point it to `http://<your-ip-address>:3000`
+
+## Model Comparison Widget
+
+- Open a new terminal and within the project root folder do `FLASK_ENV=development FLASK_APP=development/model-comparison/app.py flask run --host 0.0.0.0 --port 5000` on Linux or `set FLASK_ENV=development && set FLASK_APP=development\model-comparison\app.py && flask run --host 0.0.0.0 --port 5000` on Windows. This will start the Flask server for the APIs used by the widget.
+- Open a new terminal, then from within the project root folder do `npm run start-model-comparison`.
+- Open your browser and point it to `http://<your-ip-address>:3000`
+
 
 # Contributing
 

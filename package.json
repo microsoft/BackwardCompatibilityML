@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "d3": "^5.16.0",
     "office-ui-fabric-react": "^7.117.0",
     "jquery": "^3.5.1",
@@ -53,7 +53,8 @@
     "webpack-dev-server": "^3.11.0"
   },
   "scripts": {
-    "start": "webpack-dev-server --hot --mode development --host 0.0.0.0",
+    "start-compatibility-analysis": "webpack-dev-server --config ./compatibilityanalysis.webpack.config.js --hot --mode development --host 0.0.0.0",
+    "start-model-comparison": "webpack-dev-server --config ./modelcomparison.webpack.config.js --hot --mode development --host 0.0.0.0",
     "build": "cross-env NODE_ENV=production webpack --config ./compatibilityanalysis.webpack.config.js && cross-env NODE_ENV=production webpack --config ./modelcomparison.webpack.config.js",
     "test": "jest"
   }

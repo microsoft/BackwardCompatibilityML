@@ -105,6 +105,9 @@ venv.bak/
 # mypy
 .mypy_cache/
 
+# Pytorch models
+*.state
+
 development/sweeps-mnist/*.json
 development/sweeps-mnist/*state
 

@@ -112,32 +112,64 @@ def init_app_routes(app, comparison_manager):
 class ModelComparison(object):
     """
     Model Comparison widget
-    ...
+
+    The ModelComparison class is an interactive widget intended for use
+    within a Jupyter Notebook. It provides an interactive UI for the user
+    that allows the user to:
+
+        1. Compare two models h1 and h2 on a dataset with regard to compatibility.
+        2. The comparison is run by comparing the set of classification errors that h1 and h2
+           make on the dataset.
+        3. The Venn Diagram plot within the widget provides a breakdown of the overlap between
+           the sets of classification errors made by h1 and h2.
+        4. The bar chart indicates the number of errors made by h2 that are not made by h1
+           on a per class basis.
+        5. The error instances table, provides an exploratory view to allow the user to
+           explore the instances which h1 and h2 have misclassified. This table is linked
+           to the Venn Diagram and Bar Charts, so that the user may filter the error
+           instances displayed in the table by clicking on regions of those components.
+
+    Args:
+        h1: The reference model being used.
+        h2: The model that we want to compare against model h1.
+        dataset: The list of dataset samples as (batch_ids, input, target). This data needs to be batched.
+        performance_metric: A function to evaluate model performance. The function is expected to have the following signature:
+                metric(model, dataset, device)
+                    model: The model being evaluated
+                    dataset: The dataset as a list of (input, target) pairs
+                    device: The device Pytorch is using for training - "cpu" or "cuda"
+
+            If unspecified, then accuracy is used.
+        port: An integer value to indicate the port to which the Flask service
+            should bind.
+        get_instance_image_by_id: A function that returns an image representation of the data corresponding to the instance id, in PNG format. It should be a function of the form:
+                get_instance_image_by_id(instance_id)
+                    instance_id: An integer instance id
+            And should return a PNG image.
+        get_instance_metadata: A function that returns a text string representation of some metadata corresponding to the instance id. It should be a function of the form:
+                get_instance_metadata(instance_id)
+                    instance_id: An integer instance id
+            And should return a string.
+        device: A string with values either "cpu" or "cuda" to indicate the
+            device that Pytorch is performing training on. By default this
+            value is "cpu". But in case your models reside on the GPU, make sure
+            to set this to "cuda". This makes sure that the input and target
+            tensors are transferred to the GPU during training.
     """
 
-    def __init__(self, folder_name, number_of_epochs, h1, h2, dataset,
+    def __init__(self, h1, h2, dataset,
                  performance_metric=model_accuracy,
                  port=None,
                  get_instance_image_by_id=None,
                  get_instance_metadata=None,
-                 device="cpu",
-                 use_ml_flow=False,
-                 ml_flow_run_name="model_comparison"):
+                 device="cpu"):
 
         if get_instance_metadata is None:
             get_instance_metadata = default_get_instance_metadata
 
         self.comparison_manager = ComparisonManager(
-            folder_name,
-            h1,
-            h2,
             dataset,
-            performance_metric=performance_metric,
-            get_instance_image_by_id=get_instance_image_by_id,
-            get_instance_metadata=get_instance_metadata,
-            device=device,
-            use_ml_flow=use_ml_flow,
-            ml_flow_run_name=ml_flow_run_name)
+            get_instance_image_by_id=get_instance_image_by_id)
 
         self.flask_service = FlaskHelper(ip="0.0.0.0", port=port)
         app_has_routes = False
