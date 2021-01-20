@@ -46,11 +46,9 @@ class ErrorInstancesTable extends Component<ErrorInstancesTableProps, ErrorInsta
         return (nextProps.filterInstances.indexOf(errorInstance.instance_id) != -1)
       });
     }
-    const numPages = Math.ceil(errorInstances.length / nextProps.pageSize);
-
     this.setState({
       selecedDataPoint: nextProps.selecedDataPoint,
-      page: Math.min(numPages-1, this.state.page)
+      page: 0
     });
   }
 
