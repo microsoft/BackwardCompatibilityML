@@ -3,6 +3,11 @@
 Using the Backward Compatibility ML Compatibility Analysis Widget
 =================================================================
 
+.. note::
+    At the moment, the Compatibility Analysis Widget only works with
+    PyTorch models. If you are interested in using the widget with TensorFlow, 
+    please let us know by submitting a `Feature request. <https://github.com/microsoft/BackwardCompatibilityML/issues/new?template=feature_request.md&title=%5BFEATURE%5D>`_
+
 The compatibility analysis widget can be used to quickly determine which loss
 function and value of |lambda|:sub:`c` performs best for your models. The widget will
 train a new model ``h2`` using backward compatibility loss functions of your choice. 

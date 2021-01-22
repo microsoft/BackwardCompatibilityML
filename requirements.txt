@@ -11,3 +11,4 @@ tensorflow-estimator==2.4.0
 tensorflow-metadata==0.25.0
 Pillow==7.2.0
 mlflow==1.12.1
+greenlet==0.4.16

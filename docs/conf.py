@@ -21,11 +21,11 @@ sys.path.insert(0, os.path.abspath('../backwardcompatibilityml'))
 # -- Project information -----------------------------------------------------
 
 project = 'BackwardCompatibilityML'
-copyright = '2020, Microsoft'
-author = 'Besmira Nushi, Ece Kamar, Xavier Fernandes, Juan Lema, Megha Srivastava, Gagan Bansal, Dean Carignan'
+copyright = '2021, Microsoft'
+author = 'Besmira Nushi, Ece Kamar, Xavier Fernandes, Nicholas King, Kathleen Walker, Juan Lema, Megha Srivastava, Gagan Bansal, Dean Carignan'
 
 # The full version, including alpha/beta/rc tags
-release = '1.3.0'
+release = '1.4.0'
 
 
 # -- General configuration ---------------------------------------------------
@@ -47,6 +47,11 @@ templates_path = ['_templates']
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
+# This value contains a list of modules to be mocked up.
+# This is useful when some external dependencies are not met at build time 
+# and break the building process. You may only specify the root package of 
+# the dependencies themselves and omit the sub-module
+autodoc_mock_imports = ["tensorflow"]
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -60,5 +65,5 @@ html_theme = 'sphinx_rtd_theme'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
-# Change Read the Docs master file to index.rst 
+# Change Read the Docs master file to index.rst
 master_doc = 'index'

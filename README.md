@@ -32,7 +32,14 @@ The Backward Compatibility ML project has two components:
 Start your Jupyter Notebooks server and load in the example notebook under the `examples` folder
 to see how the `backwardcompatibilityml` module is used.
 
-To demo the widget, open the notebook `compatibility-analysis.ipynb`.
+To demo the compatbility analysis widget, open the notebook `compatibility-analysis.ipynb` inside the examples folder. Below is a list other sample notebooks that may be of interest. For the full list of example notebooks, please refer to [Running the Backward Compatibility ML library examples](https://backwardcompatibilityml.readthedocs.io/en/latest/backwardcompatibilityml/topics/getting_started.html#running-the-backward-compatibility-ml-library-examples)
+
+| Notebook name                                      | Framework  | Notes                            |
+|----------------------------------------------------|------------|----------------------------------|
+| compatibility-analysis-cifar10-resnet18-pretrained | PyTorch    | Uses a pre-trained model         |
+| model-comparison-MNIST                             | PyTorch    | Uses ModelComparison widget      |
+| tensorflow-new-error-cross-entropy-loss            | TensorFlow | General TensorFlow usage example |
+| tensorflow-MNIST                                   | TensorFlow | Uses CompatibilityModel class    |
 
 # MLflow
 Compatibility sweeps are automatically logged with [MLflow](https://mlflow.org/). MLflow runs are logged in a folder named `mlruns` in the same directory as the notebook.
@@ -76,7 +83,7 @@ Check [CONTRIBUTING](CONTRIBUTING.md) page.
 # Research and Acknowledgements 
 This project materializes and implements ideas from ongoing research on Backward Compatibility in Machine Learning and Model Comparison. Here is a list of development and research contributors:
 
-**Current Project Leads**: [Xavier Fernandes](https://www.linkedin.com/in/praphat-xavier-fernandes-86574814/), [Juan Lema](http://juanlema.com), [Besmira Nushi](https://besmiranushi.com/)
+**Current Contributors**: [Xavier Fernandes](https://www.linkedin.com/in/praphat-xavier-fernandes-86574814/), [Nicholas King](https://www.nickbking.com/), [Kathleen Walker](https://www.linkedin.com/in/kathleenedits/), [Juan Lema](http://juanlema.com), [Besmira Nushi](https://besmiranushi.com/)
 
 **Research Contributors**: [Gagan Bansal](https://homes.cs.washington.edu/~bansalg/), [Megha Srivastava](https://web.stanford.edu/~meghas/), [Besmira Nushi](https://besmiranushi.com/
 ), [Ece Kamar](https://www.ecekamar.com/), [Eric Horvitz](http://www.erichorvitz.com/), [Dan Weld](https://www.cs.washington.edu/people/faculty/weld), [Shital Shah](https://shitalshah.com/)

@@ -3,5 +3,7 @@
 
 @ECHO OFF
 
-rmdir _build /s /q
-make html
+rmdir source /S /Q
+sphinx-apidoc -o .\source ..\backwardcompatibilityml
+call make clean
+call make html

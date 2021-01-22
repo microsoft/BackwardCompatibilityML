@@ -1,13 +1,24 @@
-﻿Notebook name,Framework,Dataset,Network,Optimizer,Backward Compatibility Dissonance Function,Backward Compatibility Loss Function,Uses CompatibilityAnalysis widget
-bcbinary_cross_entropy,PyTorch,UCI Adult Data Set,LogisticRegression,SGD,New Error,Binary Cross-entropy Loss,N
-bckldivergence,PyTorch,MNIST,Custom,SGD,New Error,Kullback–Leibler Divergence Loss,N
-bcnllloss,PyTorch,MNIST,Custom,SGD,New Error,Negative Log Likelihood Loss,N
-compatibility-analysis,PyTorch,MNIST,Custom,SGD,New Error & Strict Imitation,Cross-entropy Loss,Y
-compatibility-analysis-adult,PyTorch,UCI Adult Data Set,LogisticRegression,SGD,New Error & Strict Imitation,Cross-entropy Loss,Y
-compatibility-analysis-adult-kldiv,PyTorch,UCI Adult Data Set,LogisticRegression,SGD,New Error & Strict Imitation,Kullback–Leibler Divergence Loss,Y
-compatibility-analysis-cifar10-resnet18,PyTorch,CIFAR10,Custom & RESNet 18,SGD,New Error & Strict Imitation,Cross-entropy Loss,Y
-compatibility-analysis-cifar10-resnet18-pretrained,PyTorch,CIFAR10,Custom & RESNet 18 (pretrained),SGD,New Error & Strict Imitation,Cross-entropy Loss,Y
-compatibility-analysis-from-saved-data,PyTorch,MNIST,Custom,SGD,New Error & Strict Imitation,Cross-entropy Loss,Y
-compatibility-analysis-kldiv,PyTorch,MNIST,Custom,SGD,New Error & Strict Imitation,Kullback–Leibler Divergence Loss,Y
-si_cross_entropy_loss,PyTorch,MNIST,Custom,SGD,Strict Imitation,Cross-entropy Loss,N
-si_nllloss,PyTorch,MNIST,Custom,SGD,Strict Imitation,Negative Log Likelihood Loss,N
+﻿Notebook name,Framework,Dataset,Network,Optimizer,Backward Compatibility Dissonance Function,Backward Compatibility Loss Function,Uses CompatibilityAnalysis widget,Uses CompatibilityModel class,Uses ModelComparison widget
+bcbinary_cross_entropy,PyTorch,UCI Adult Data Set,LogisticRegression,SGD,New Error,Binary Cross-entropy Loss,N,N/A,N
+bckldivergence,PyTorch,MNIST,Custom,SGD,New Error,Kullback–Leibler Divergence Loss,N,N/A,N
+bcnllloss,PyTorch,MNIST,Custom,SGD,New Error,Negative Log Likelihood Loss,N,N/A,N
+compatibility-analysis,PyTorch,MNIST,Custom,SGD,New Error & Strict Imitation,Cross-entropy Loss,Y,N/A,N
+compatibility-analysis-adult,PyTorch,UCI Adult Data Set,LogisticRegression,SGD,New Error & Strict Imitation,Cross-entropy Loss,Y,N/A,N
+compatibility-analysis-adult-kldiv,PyTorch,UCI Adult Data Set,LogisticRegression,SGD,New Error & Strict Imitation,Kullback–Leibler Divergence Loss,Y,N/A,N
+compatibility-analysis-cifar10-resnet18,PyTorch,CIFAR10,Custom & RESNet 18,SGD,New Error & Strict Imitation,Cross-entropy Loss,Y,N/A,N
+compatibility-analysis-cifar10-resnet18-pretrained,PyTorch,CIFAR10,Custom & RESNet 18 (pretrained),SGD,New Error & Strict Imitation,Cross-entropy Loss,Y,N/A,N
+compatibility-analysis-from-saved-data,PyTorch,MNIST,Custom,SGD,New Error & Strict Imitation,Cross-entropy Loss,Y,N/A,N
+compatibility-analysis-kldiv,PyTorch,MNIST,Custom,SGD,New Error & Strict Imitation,Kullback–Leibler Divergence Loss,Y,N/A,N
+model-comparison-MNIST,PyTorch,MNIST,Custom,SGD,N/A,N/A,N/A,N/A,Y
+si_cross_entropy_loss,PyTorch,MNIST,Custom,SGD,Strict Imitation,Cross-entropy Loss,N,N/A,N
+si_nllloss,PyTorch,MNIST,Custom,SGD,Strict Imitation,Negative Log Likelihood Loss,N,N/A,N
+tensorflow-MNIST-generalized,TensorFlow,MNIST,Custom,Adam,New Error,Cross-entropy Loss,N/A,N,N/A
+tensorflow-MNIST,TensorFlow,MNIST,Custom,Adam,New Error,Cross-entropy Loss,N/A,Y,N/A
+tensorflow-new-error-binary-cross-entropy-loss,TensorFlow,MNIST,Custom,Adam,New Error,Binary Cross-entropy Loss,N/A,N,N/A
+tensorflow-new-error-cross-entropy-loss,TensorFlow,MNIST,Custom,Adam,New Error,Cross-entropy Loss,N/A,N,N/A
+tensorflow-new-error-kldiv-loss,TensorFlow,MNIST,Custom,Adam,New Error,Cross-entropy Loss,N/A,N,N/A
+tensorflow-new-error-nll-loss,TensorFlow,MNIST,Custom,Adam,New Error,Negative Log Likelihood Loss,N/A,N,N/A
+tensorflow-strict-imitation-binary-cross-entropy-loss,TensorFlow,MNIST,Custom,Adam,Strict Imitation,Binary Cross-entropy Loss,N/A,N,N/A
+tensorflow-strict-imitation-cross-entropy-loss,TensorFlow,MNIST,Custom,Adam,Strict Imitation,Cross-entropy Loss,N/A,N,N/A
+tensorflow-strict-imitation-kldiv-loss,TensorFlow,MNIST,Custom,Adam,Strict Imitation,Cross-entropy Loss,N/A,N,N/A
+tensorflow-strict-imitation-nll-loss,TensorFlow,MNIST,Custom,Adam,Strict Imitation,Negative Log Likelihood Loss,N/A,N,N/A

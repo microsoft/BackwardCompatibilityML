@@ -4,6 +4,14 @@ backwardcompatibilityml.helpers package
 Submodules
 ----------
 
+backwardcompatibilityml.helpers.comparison module
+-------------------------------------------------
+
+.. automodule:: backwardcompatibilityml.helpers.comparison
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 backwardcompatibilityml.helpers.http module
 -------------------------------------------
 
