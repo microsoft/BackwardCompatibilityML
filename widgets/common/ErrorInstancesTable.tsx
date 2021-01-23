@@ -40,8 +40,15 @@ class ErrorInstancesTable extends Component<ErrorInstancesTableProps, ErrorInsta
   }
 
   componentWillReceiveProps(nextProps) {
+    let errorInstances = nextProps.selectedDataPoint.error_instances;
+    if (nextProps.filterInstances != null) {
+      errorInstances = nextProps.selectedDataPoint.error_instances.filter(errorInstance => {
+        return (nextProps.filterInstances.indexOf(errorInstance.instance_id) != -1)
+      });
+    }
     this.setState({
-      selecedDataPoint: nextProps.selecedDataPoint
+      selecedDataPoint: nextProps.selecedDataPoint,
+      page: 0
     });
   }
 
@@ -91,7 +98,7 @@ class ErrorInstancesTable extends Component<ErrorInstancesTableProps, ErrorInsta
       items.push(errorInstances[i]);
     }
 
-    const numPages = Math.ceil(this.props.selectedDataPoint.error_instances.length / this.props.pageSize);
+    const numPages = Math.ceil(errorInstances.length / this.props.pageSize);
 
     return (
       <Fabric styles={{root: {width: 700}}}>
@@ -107,11 +114,11 @@ class ErrorInstancesTable extends Component<ErrorInstancesTableProps, ErrorInsta
                 page: Math.max(0, this.state.page - 1)
               })
             }}>&lt;</button>
-          <span aria-label="error page number">{this.state.page+1} of {numPages+1}</span>
+          <span aria-label="error page number">{this.state.page+1} of {numPages}</span>
           <button
             onClick={() => {
               this.setState({
-                page: Math.min(this.state.page + 1, numPages)
+                page: Math.min(this.state.page + 1, numPages-1)
               })
             }}>&gt;</button>
         </div>

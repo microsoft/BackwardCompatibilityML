@@ -55,7 +55,7 @@ function rootReducer(state = initialState, action) {
           return Object.assign({}, state, {filterInstances: null, loading: true});
 
         case "REQUEST_MODEL_EVALUATION_DATA_SUCCEEDED":
-          return Object.assign({}, state, {filterInstances: null, selectedDataPoint: action.evaluationData, loading: false});
+          return Object.assign({}, state, {filterInstances: null, selectedDataPoint: action.evaluationData, selectedRegion: null, selectedClass: null, loading: false});
 
         case "REQUEST_MODEL_EVALUATION_DATA_FAILED":
           console.log("Error: ", action.error);
