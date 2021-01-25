@@ -40,12 +40,6 @@ class ErrorInstancesTable extends Component<ErrorInstancesTableProps, ErrorInsta
   }
 
   componentWillReceiveProps(nextProps) {
-    let errorInstances = nextProps.selectedDataPoint.error_instances;
-    if (nextProps.filterInstances != null) {
-      errorInstances = nextProps.selectedDataPoint.error_instances.filter(errorInstance => {
-        return (nextProps.filterInstances.indexOf(errorInstance.instance_id) != -1)
-      });
-    }
     this.setState({
       selecedDataPoint: nextProps.selecedDataPoint,
       page: 0
