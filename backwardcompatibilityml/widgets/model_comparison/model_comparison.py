@@ -145,10 +145,12 @@ class ModelComparison(object):
         get_instance_image_by_id: A function that returns an image representation of the data corresponding to the instance id, in PNG format. It should be a function of the form:
                 get_instance_image_by_id(instance_id)
                     instance_id: An integer instance id
+
             And should return a PNG image.
         get_instance_metadata: A function that returns a text string representation of some metadata corresponding to the instance id. It should be a function of the form:
                 get_instance_metadata(instance_id)
                     instance_id: An integer instance id
+                    
             And should return a string.
         device: A string with values either "cpu" or "cuda" to indicate the
             device that Pytorch is performing training on. By default this

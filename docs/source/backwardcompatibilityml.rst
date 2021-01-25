@@ -9,10 +9,19 @@ Subpackages
 
    backwardcompatibilityml.helpers
    backwardcompatibilityml.loss
-   backwardcompatibilityml.widget
+   backwardcompatibilityml.tensorflow
+   backwardcompatibilityml.widgets
 
 Submodules
 ----------
+
+backwardcompatibilityml.comparison\_management module
+-----------------------------------------------------
+
+.. automodule:: backwardcompatibilityml.comparison_management
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 backwardcompatibilityml.metrics module
 --------------------------------------
