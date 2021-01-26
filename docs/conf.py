@@ -25,7 +25,7 @@ copyright = '2021, Microsoft'
 author = 'Besmira Nushi, Ece Kamar, Xavier Fernandes, Nicholas King, Kathleen Walker, Juan Lema, Megha Srivastava, Gagan Bansal, Dean Carignan'
 
 # The full version, including alpha/beta/rc tags
-release = '1.4.0'
+release = '1.4.1'
 
 
 # -- General configuration ---------------------------------------------------
