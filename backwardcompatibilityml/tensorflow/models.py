@@ -5,6 +5,40 @@ import tensorflow.compat.v2 as tf
 
 
 class BCNewErrorCompatibilityModel(tf.keras.models.Sequential):
+    """
+    BackwardCompatibility base model for Tensorflow
+
+    One may create a new Tensorflow model by subclassing
+    their new model h2 from this model.
+    This allows one to train or update a new model h2, using the
+    backward compatibility loss, with respect to an existing
+    model h1, using the Tensorflow fit method, h2.fit(...).
+
+    Assuming that you have a pre-trained model h1 and you
+    would like to create a new model h2 that you train
+    using the backward compatibility loss with respect to h1,
+    the following describes the example usage:
+
+        h1.trainable = False
+
+        h2 = BCNewErrorCompatibilityModel([
+          tf.keras.layers.Flatten(input_shape=(28, 28, 1)),
+          tf.keras.layers.Dense(128,activation='relu'),
+          tf.keras.layers.Dense(10, activation='softmax')
+        ], h1=h1, lambda_c=0.7)
+
+        h2.compile(
+            loss=tf.keras.losses.sparse_categorical_crossentropy,
+            optimizer=tf.keras.optimizers.Adam(0.001),
+            metrics=['accuracy']
+        )
+
+        h2.fit(
+            dataset_train,
+            epochs=6,
+            validation_data=dataset_test,
+        )
+    """
 
     def __init__(self, *args, h1=None, lambda_c=0.0, **kwargs):
         """
