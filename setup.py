@@ -6,7 +6,7 @@ import setuptools
 
 
 # this must be incremented every time we push an update to pypi (but not before)
-VERSION = "1.4.1"
+VERSION = "1.4.2"
 
 # supply contents of our README file as our package's long description
 with open("README.md", "r") as fh:
@@ -30,16 +30,20 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/microsoft/BackwardCompatibilityML",
 
-    # this will find our package "xtlib" by its having an "__init__.py" file
+    # Pckages
     packages=[
         "backwardcompatibilityml",
         "backwardcompatibilityml.loss",
         "backwardcompatibilityml.helpers",
         "backwardcompatibilityml.widgets",
+        "backwardcompatibilityml.widgets.compatibility_analysis",
         "backwardcompatibilityml.widgets.compatibility_analysis.resources",
-         "backwardcompatibilityml.widgets.model_comparison.resources"
+        "backwardcompatibilityml.widgets.model_comparison",
+        "backwardcompatibilityml.widgets.model_comparison.resources",
+        "backwardcompatibilityml.tensorflow",
+        "backwardcompatibilityml.tensorflow.loss"
 
-    ],  # setuptools.find_packages(),
+    ],
 
     entry_points={
     },
