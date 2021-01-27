@@ -15,7 +15,7 @@ class BCNewErrorCompatibilityModel(tf.keras.models.Sequential):
     model h1, using the Tensorflow fit method, h2.fit(...).
 
     Assuming that you have a pre-trained model h1 and you
-    would like to create a new model h2 that you train
+    would like to create a new model h2 trained
     using the backward compatibility loss with respect to h1,
     the following describes the example usage:
 
