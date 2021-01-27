@@ -30,9 +30,17 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/microsoft/BackwardCompatibilityML",
 
-    # Subpackages
+    # Pckages
     packages=[
-        setuptools.find_packages()
+        "backwardcompatibilityml",
+        "backwardcompatibilityml.loss",
+        "backwardcompatibilityml.helpers",
+        "backwardcompatibilityml.widgets",
+        "backwardcompatibilityml.widgets.compatibility_analysis.resources",
+        "backwardcompatibilityml.widgets.model_comparison.resources",
+        "backwardcompatibilityml.tensorflow",
+        "backwardcompatibilityml.tensorflow.loss"
+
     ],
 
     entry_points={
