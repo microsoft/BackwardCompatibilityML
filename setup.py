@@ -36,7 +36,9 @@ setuptools.setup(
         "backwardcompatibilityml.loss",
         "backwardcompatibilityml.helpers",
         "backwardcompatibilityml.widgets",
+        "backwardcompatibilityml.widgets.compatibility_analysis",
         "backwardcompatibilityml.widgets.compatibility_analysis.resources",
+        "backwardcompatibilityml.widgets.model_comparison",
         "backwardcompatibilityml.widgets.model_comparison.resources",
         "backwardcompatibilityml.tensorflow",
         "backwardcompatibilityml.tensorflow.loss"
