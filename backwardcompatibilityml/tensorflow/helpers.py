@@ -30,8 +30,8 @@ def bc_fit(h2, training_set=None, testing_set=None, epochs=None, bc_loss=None, o
 
     Args:
         h2: A Tensorflow model that we want to train using backward compatibility.
-        training_set: The training set to use to train our model.
-        testing_set: The testing set to use to validate our model.
+        training_set: The training set for our model.
+        testing_set: The testing set for validating our model.
         epochs: The number of training epochs.
         bc_loss: An instance of a Tensorflow BCLoss function.
         optimizer: The optimizer to use.

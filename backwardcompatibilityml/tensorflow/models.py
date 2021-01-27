@@ -8,9 +8,9 @@ class BCNewErrorCompatibilityModel(tf.keras.models.Sequential):
     """
     BackwardCompatibility base model for Tensorflow
 
-    One may create a new Tensorflow model by subclassing
-    their new model h2 from this model.
-    This allows one to train or update a new model h2, using the
+    You may create a new Tensorflow model by subclassing
+    your new model h2 from this model.
+    This allows you to train or update a new model h2, using the
     backward compatibility loss, with respect to an existing
     model h1, using the Tensorflow fit method, h2.fit(...).
 
