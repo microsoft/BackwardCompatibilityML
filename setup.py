@@ -30,16 +30,10 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/microsoft/BackwardCompatibilityML",
 
-    # this will find our package "xtlib" by its having an "__init__.py" file
+    # Subpackages
     packages=[
-        "backwardcompatibilityml",
-        "backwardcompatibilityml.loss",
-        "backwardcompatibilityml.helpers",
-        "backwardcompatibilityml.widgets",
-        "backwardcompatibilityml.widgets.compatibility_analysis.resources",
-         "backwardcompatibilityml.widgets.model_comparison.resources"
-
-    ],  # setuptools.find_packages(),
+        setuptools.find_packages()
+    ],
 
     entry_points={
     },
