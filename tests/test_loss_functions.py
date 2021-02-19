@@ -17,6 +17,25 @@ from backwardcompatibilityml.helpers.models import LogisticRegression, MLPClassi
 from backwardcompatibilityml.metrics import model_accuracy
 
 
+def get_sweep_data(folder_name, datapoint_index):
+    sweep_file = open(f"{folder_name}/{datapoint_index}-evaluation-data.json", "r")
+    sweep_data = json.loads(sweep_file.read())
+    sweep_file.close()
+    return sweep_data
+
+
+def get_sweep_entry(sweep_summary, lambda_c, train=False, test=False, strict_imitation=False, new_error=False):
+    result = list(
+        filter(
+            lambda entry: (
+                entry["lambda_c"] - lambda_c < 1e-5 and entry["training"] == train and entry["testing"] == test and entry["strict-imitation"] == strict_imitation and entry["new-error"] == new_error),
+            sweep_summary["data"]))
+    if len(result) > 0:
+        return result.pop()
+
+    return None
+
+
 class TestLossFunctions(object):
 
     def setup_class(cls):
@@ -111,6 +130,21 @@ class TestLossFunctions(object):
         assert(entry_lambda_c_0["performance"] >= h1_accuracy)
         # assert(entry_lambda_c_1["performance"] <= entry_lambda_c_0["performance"])
         # assert(entry_lambda_c_1["bec"] >= entry_lambda_c_0["bec"])
+        lambda_step = 0.0
+        while lambda_step <= 1.0:
+            train_sweep_entry = get_sweep_entry(
+                sweep_summary, lambda_step,
+                train=True, test=False, strict_imitation=False, new_error=True)
+            test_sweep_entry = get_sweep_entry(
+                sweep_summary, lambda_step,
+                train=False, test=True, strict_imitation=False, new_error=True)
+            train_sweep = get_sweep_data("tests/sweeps", train_sweep_entry["datapoint_index"])
+            test_sweep = get_sweep_data("tests/sweeps", test_sweep_entry["datapoint_index"])
+            error_instances_training = list(map(lambda e: e["instance_id"], train_sweep["error_instances"]))
+            error_instances_testing = list(map(lambda e: e["instance_id"], test_sweep["error_instances"]))
+
+            assert(len(set(error_instances_training).intersection(set(error_instances_testing))) == 0)
+            lambda_step = lambda_step + 0.05
 
     def test_bc_cross_entropy_loss(self):
         h1 = LogisticRegression(9, 2)

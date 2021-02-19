@@ -113,6 +113,8 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
     var btcValues = allDataPoints.map(d => d["btc"]);
     var becValues = allDataPoints.map(d => d["bec"]);
     var allValues = [].concat(btcValues).concat(becValues);
+    var allPerformance = allDataPoints.map(d => d["performance"]);
+    var allPerformanceWithH1 = allPerformance.concat(this.props.h1Performance);
 
     var xScale = d3.scaleLinear()
       .domain([
@@ -122,8 +124,8 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
       .range([0,w])
     var yScale = d3.scaleLinear()
       .domain([
-        d3.min(allDataPoints,function (d) { return d['performance'] }),
-        d3.max(allDataPoints,function (d) { return d['performance'] })
+        (d3.min(allPerformanceWithH1) - 0.005),
+        (d3.max(allPerformanceWithH1) + 0.005)
         ])
       .range([h,0])
 
