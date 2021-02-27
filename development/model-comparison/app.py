@@ -189,7 +189,7 @@ def mnist_sweep():
 
     model_comparison = ModelComparison(h1, h2, train_loader,
                                        get_instance_image_by_id=get_instance_image,
-                                       use_ml_flow=True, device="cuda")
+                                       device="cuda")
 
 
 mnist_sweep()
