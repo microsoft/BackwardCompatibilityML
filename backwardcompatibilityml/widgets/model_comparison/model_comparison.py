@@ -176,7 +176,7 @@ class ModelComparison(object):
         self.flask_service = FlaskHelper(ip="0.0.0.0", port=port)
         app_has_routes = False
         for route in FlaskHelper.app.url_map.iter_rules():
-            if route.endpoint == 'instance_data':
+            if route.endpoint == 'get_instance_data':
                 app_has_routes = True
                 break
         if app_has_routes:

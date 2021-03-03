@@ -86,7 +86,7 @@ def breast_cancer_sweep():
     h2 = MLPClassifier(9, 2)
 
     model_comparison = ModelComparison(h1, h2, training_set,
-                                       use_ml_flow=True, device="cuda")
+                                       device="cuda")
 
 
 def mnist_sweep():
@@ -189,7 +189,7 @@ def mnist_sweep():
 
     model_comparison = ModelComparison(h1, h2, train_loader,
                                        get_instance_image_by_id=get_instance_image,
-                                       use_ml_flow=True, device="cuda")
+                                       device="cuda")
 
 
 mnist_sweep()
