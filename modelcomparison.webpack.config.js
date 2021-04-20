@@ -67,7 +67,7 @@ module.exports = {
     filename: 'widget-build.js'
   },
   devServer: {
-    contentBase: path.resolve(__dirname, "development"),
+    contentBase: path.resolve(__dirname, "development/model-comparison"),
     port: 3000
   }
 };
