@@ -28,10 +28,17 @@
   fill: rgba(226, 75, 158, 0.8);
 }*/
  
+/*
 label {
   position: absolute;
   top: 10px;
   right: 10px;
+}
+*/
+
+.main-container {
+  display: block;
+  max-width: 700px;
 }
 
 .plot {
@@ -164,14 +171,22 @@ label {
   background-color: lightblue;
 }
 
+.two-column-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+}
+
 .data-selector .control-group {
   display: inline-block;
   margin-right: 50px;
 }
 
 .data-selector {
-  width: 700px;
-  text-align: left;
+  max-width: 350px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
 }
 
 .data-selector .control-subgroup {

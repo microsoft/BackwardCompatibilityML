@@ -7,7 +7,7 @@ import * as d3 from "d3";
 import { bisect } from "./optimization.tsx";
 import { InfoTooltip } from "./InfoTooltip.tsx";
 import { VennLegend } from "./VennLegend.tsx";
-import { DirectionalHint } from 'office-ui-fabric-react/lib/Tooltip';
+import { DirectionalHint } from '@fluentui/react';
 
 function calculateCircleRadiiAndDistance(a, b, ab, datasetSize) {
   let aProportion = a / datasetSize;

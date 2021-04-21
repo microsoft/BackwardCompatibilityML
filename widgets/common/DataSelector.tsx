@@ -2,9 +2,7 @@
 // Licensed under the MIT License.
 
 import React, { Component } from "react";
-import ReactDOM from "react-dom";
-import * as d3 from "d3";
-
+import { Checkbox } from '@fluentui/react';
 
 type DataSelectorState = {
   training: boolean,
@@ -157,6 +155,26 @@ class DataSelector extends Component<DataSelectorProps, DataSelectorState> {
         return "dropdown-check-list";
       }
     }
+
+    return (
+      <div className="data-selector col-6">
+        <div>Dataset:</div>
+        <div>
+          <Checkbox label="Training" checked={this.state.training} onChange={this.selectTraining} />
+        </div>
+        <div>
+          <Checkbox label="Testing" checked={this.state.testing} onChange={this.selectTesting} />
+        </div>
+        <div>Dissonance:</div>
+        <div>
+          <Checkbox label="New Error" checked={this.state.newError} onChange={this.selectNewError} />
+        </div>
+        <div>
+          <Checkbox label="Strict" checked={this.state.strictImitation} onChange={this.selectStrictImitation} />
+        </div>
+      </div>
+    );
+    /*
     return (
       <div className="data-selector">
         <div className="control-group">
@@ -181,6 +199,7 @@ class DataSelector extends Component<DataSelectorProps, DataSelectorState> {
         </div>
       </div>
     );
+    */
   }
 }
 export default DataSelector;

@@ -11,6 +11,7 @@ import ErrorInstancesTable from "../common/ErrorInstancesTable.tsx";
 import DataSelector from "../common/DataSelector.tsx"
 import SweepManager from "../common/SweepManager.tsx";
 import SelectedModelDetails from "../common/SelectedModelDetails.tsx";
+import { Slider } from '@fluentui/react';
 import { bindActionCreators } from "redux";
 import { connect } from 'react-redux';
 import {
@@ -84,7 +85,7 @@ function Container({
     }
 
     return (
-      <div className="container">
+      <div className="main-container">
           <div className="row">
               <SweepManager
                 sweepStatus={sweepStatus}
@@ -93,13 +94,24 @@ function Container({
                 getTrainingAndTestingData={getTrainingAndTestingData}
               />
           </div>
-          <div className="row">
+          <div className="two-column-row">
             <DataSelector
               toggleTraining={toggleTraining}
               toggleTesting={toggleTesting}
               toggleNewError={toggleNewError}
               toggleStrictImitation={toggleStrictImitation}
             />
+            <Slider
+              label="λ value"
+              ranged
+              min={0}
+              max={1}
+              defaultValue={1}
+              defaultLowerValue={0}
+              step={0.1}
+            />
+          </div>
+          <div className="row">
             <Legend
               testing={testing}
               training={training}

@@ -9,8 +9,8 @@ import {
   Selection,
   SelectionMode,
   IColumn
-} from "office-ui-fabric-react/lib/DetailsList";
-import { Fabric } from "office-ui-fabric-react/lib/Fabric";
+} from "@fluentui/react/lib/DetailsList";
+import { Fabric } from "@fluentui/react/lib/Fabric";
 import { apiBaseUrl } from "./api.ts";
 
 

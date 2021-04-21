@@ -7,7 +7,7 @@ import * as d3 from "d3";
 import { bisect } from "./optimization.tsx";
 import { InfoTooltip } from "./InfoTooltip.tsx"
 import { getRegionFill } from "./IntersectionBetweenModelErrors.tsx";
-import { DirectionalHint } from 'office-ui-fabric-react/lib/Tooltip';
+import { DirectionalHint } from '@fluentui/react';
 
 type VennLegendProps = {
   selectedRegion: any
