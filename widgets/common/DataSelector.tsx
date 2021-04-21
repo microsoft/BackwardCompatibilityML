@@ -140,22 +140,6 @@ class DataSelector extends Component<DataSelectorProps, DataSelectorState> {
   }
 
   render() {
-    let getDatasetDropdownClasses = () => {
-      if (this.state.showDatasetDropdown) {
-        return "dropdown-check-list visible";
-      } else {
-        return "dropdown-check-list";
-      }
-    }
-
-    let getDissonanceDropdownClasses = () => {
-      if (this.state.showDissonanceDropdown) {
-        return "dropdown-check-list visible";
-      } else {
-        return "dropdown-check-list";
-      }
-    }
-
     return (
       <div className="data-selector col-6">
         <div>Dataset:</div>
@@ -174,32 +158,6 @@ class DataSelector extends Component<DataSelectorProps, DataSelectorState> {
         </div>
       </div>
     );
-    /*
-    return (
-      <div className="data-selector">
-        <div className="control-group">
-          <div className={getDatasetDropdownClasses()}>
-            <span className="anchor" onClick={this.toggleDatasetDropdown}>Dataset</span>
-            <ul className="items">
-              <li><input type="checkbox" aria-label="select all datasets" checked={this.state.training && this.state.testing} onChange={this.selectTrainingAndTesting} />(Select All)</li>
-              <li><input type="checkbox" aria-label="training" checked={this.state.training} onChange={this.selectTraining} />Training</li>
-              <li><input type="checkbox" aria-label="testing" checked={this.state.testing} onChange={this.selectTesting} />Testing</li>
-            </ul>
-          </div>
-        </div>
-        <div className="control-group">
-          <div className={getDissonanceDropdownClasses()}>
-            <span className="anchor" onClick={this.toggleDissonanceDropdown}>Dissonance</span>
-            <ul className="items">
-              <li><input type="checkbox" aria-label="select all dissonance" checked={this.state.newError && this.state.strictImitation} onChange={this.selectNewErrorAndStrictImitation} />(Select All)</li>
-              <li><input type="checkbox" aria-label="new error" checked={this.state.newError} onChange={this.selectNewError} />New Error</li>
-              <li><input type="checkbox" aria-label="strict imitation" checked={this.state.strictImitation} onChange={this.selectStrictImitation} />Strict Imitation</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    );
-    */
   }
 }
 export default DataSelector;

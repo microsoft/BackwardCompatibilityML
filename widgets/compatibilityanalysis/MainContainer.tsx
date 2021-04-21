@@ -11,6 +11,7 @@ import ErrorInstancesTable from "../common/ErrorInstancesTable.tsx";
 import DataSelector from "../common/DataSelector.tsx"
 import SweepManager from "../common/SweepManager.tsx";
 import SelectedModelDetails from "../common/SelectedModelDetails.tsx";
+import LambdaSlider from "../common/LambdaSlider.tsx";
 import { Slider } from '@fluentui/react';
 import { bindActionCreators } from "redux";
 import { connect } from 'react-redux';
@@ -101,15 +102,7 @@ function Container({
               toggleNewError={toggleNewError}
               toggleStrictImitation={toggleStrictImitation}
             />
-            <Slider
-              label="λ value"
-              ranged
-              min={0}
-              max={1}
-              defaultValue={1}
-              defaultLowerValue={0}
-              step={0.1}
-            />
+            <LambdaSlider />
           </div>
           <div className="row">
             <Legend
