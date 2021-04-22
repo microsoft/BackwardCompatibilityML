@@ -100,7 +100,6 @@ function Container({
                 getTrainingAndTestingData={getTrainingAndTestingData}
               />
           </div>
-          <div>LowerBound: {lambdaLowerBound} UpperBound: {lambdaUpperBound}</div>
           <div className="two-column-row">
             <DataSelector
               toggleTraining={toggleTraining}
