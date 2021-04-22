@@ -12,7 +12,6 @@ import DataSelector from "../common/DataSelector.tsx"
 import SweepManager from "../common/SweepManager.tsx";
 import SelectedModelDetails from "../common/SelectedModelDetails.tsx";
 import LambdaSlider from "../common/LambdaSlider.tsx";
-import { Slider } from '@fluentui/react';
 import { bindActionCreators } from "redux";
 import { connect } from 'react-redux';
 import {
@@ -23,6 +22,8 @@ import {
   selectDataPoint,
   setSelectedClass,
   setSelectedRegion,
+  setLambdaLowerBound,
+  setLambdaUpperBound,
   getTrainingAndTestingData,
   getModelEvaluationData,
   getSweepStatus,
@@ -39,6 +40,10 @@ function Container({
   selectedRegion,
   setSelectedClass,
   setSelectedRegion,
+  lambdaLowerBound,
+  lambdaUpperBound,
+  setLambdaLowerBound,
+  setLambdaUpperBound,
   filterInstances,
   training,
   testing,
@@ -95,6 +100,7 @@ function Container({
                 getTrainingAndTestingData={getTrainingAndTestingData}
               />
           </div>
+          <div>LowerBound: {lambdaLowerBound} UpperBound: {lambdaUpperBound}</div>
           <div className="two-column-row">
             <DataSelector
               toggleTraining={toggleTraining}
@@ -102,7 +108,12 @@ function Container({
               toggleNewError={toggleNewError}
               toggleStrictImitation={toggleStrictImitation}
             />
-            <LambdaSlider />
+            <LambdaSlider
+              setLambdaLowerBound={setLambdaLowerBound}
+              setLambdaUpperBound={setLambdaUpperBound}
+              lambdaLowerBound={lambdaLowerBound}
+              lambdaUpperBound={lambdaUpperBound}
+            />
           </div>
           <div className="row">
             <Legend
@@ -121,6 +132,8 @@ function Container({
               testing={testing}
               newError={newError}
               strictImitation={strictImitation}
+              lambdaLowerBound={lambdaLowerBound}
+              lambdaUpperBound={lambdaUpperBound}
               compatibilityScoreType="btc"
               selectDataPoint={selectDataPoint}
               getModelEvaluationData={getModelEvaluationData}
@@ -134,6 +147,8 @@ function Container({
               testing={testing}
               newError={newError}
               strictImitation={strictImitation}
+              lambdaLowerBound={lambdaLowerBound}
+              lambdaUpperBound={lambdaUpperBound}
               compatibilityScoreType="bec"
               selectDataPoint={selectDataPoint}
               getModelEvaluationData={getModelEvaluationData}
@@ -162,6 +177,8 @@ function mapStateToProps (state) {
     selectedClass: state.selectedClass,
     selectedRegion: state.selectedRegion,
     filterInstances: state.filterInstances,
+    lambdaLowerBound: state.lambdaLowerBound,
+    lambdaUpperBound: state.lambdaUpperBound,
     training: state.training,
     testing: state.testing,
     newError: state.newError,
@@ -180,6 +197,8 @@ function mapDispatchToProps (dispatch) {
     selectDataPoint: selectDataPoint,
     setSelectedClass: setSelectedClass,
     setSelectedRegion: setSelectedRegion,
+    setLambdaLowerBound: setLambdaLowerBound,
+    setLambdaUpperBound: setLambdaUpperBound,
     getTrainingAndTestingData: getTrainingAndTestingData,
     getModelEvaluationData: getModelEvaluationData,
     getSweepStatus: getSweepStatus,

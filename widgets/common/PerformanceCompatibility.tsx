@@ -26,6 +26,8 @@ type PerformanceCompatibilityProps = {
   newError: boolean,
   strictImitation: boolean,
   selectedDataPoint: any,
+  lambdaLowerBound: number,
+  lambdaUpperBound: number,
   compatibilityScoreType: string,
   performanceMetric: string,
   selectDataPoint: (d: any) => void,
@@ -109,6 +111,8 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
     if (_this.state.testing && _this.state.strictImitation) {
       allDataPoints = allDataPoints.concat(data.filter(d => (d["testing"] && d["strict-imitation"])));
     }
+
+    allDataPoints = allDataPoints.filter(d => d.lambda_c >= this.props.lambdaLowerBound && d.lambda_c <= this.props.lambdaUpperBound);
 
     var btcValues = allDataPoints.map(d => d["btc"]);
     var becValues = allDataPoints.map(d => d["bec"]);

@@ -49,6 +49,20 @@ function setSelectedRegion(selectedRegion) {
   }
 }
 
+function setLambdaLowerBound(lowerBound) {
+  return {
+    type: "SET_LAMBDA_LOWER_BOUND",
+    lambdaLowerBound: lowerBound
+  }
+}
+
+function setLambdaUpperBound(upperBound) {
+  return {
+    type: "SET_LAMBDA_UPPER_BOUND",
+    lambdaUpperBound: upperBound
+  }
+}
+
 function requestTrainingAndTestingData() {
   return {
     type: "REQUEST_TRAINING_AND_TESTING_DATA"
@@ -151,6 +165,8 @@ export {
   selectDataPoint,
   setSelectedClass,
   setSelectedRegion,
+  setLambdaLowerBound,
+  setLambdaUpperBound,
   getTrainingAndTestingData,
   getModelEvaluationData,
   getSweepStatus,
