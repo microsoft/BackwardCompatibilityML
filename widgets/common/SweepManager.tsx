@@ -2,8 +2,7 @@
 // Licensed under the MIT License.
 
 import React, { Component } from "react";
-import ReactDOM from "react-dom";
-import * as d3 from "d3";
+import { PrimaryButton } from '@fluentui/react/lib/Button';
 
 
 type SweepManagerProps = {
@@ -53,8 +52,9 @@ class SweepManager extends Component<SweepManagerProps> {
       }
 
       return (
-        <div className="table">
-          <a href="#" onClick={this.startSweep}>Start Sweep</a>
+        <div className="start-sweep-header">
+          <h1>Backward Compatibility Analysis for Updated Model</h1>
+          <PrimaryButton text="Start Sweep" onClick={this.startSweep} />
         </div>
       );
     }
