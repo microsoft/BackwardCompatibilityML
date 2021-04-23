@@ -61,7 +61,7 @@ class IncompatiblePointDistribution extends Component<IncompatiblePointDistribut
 
     var margin = { top: 5, right: 15, bottom: 50, left: 55 }
     var h = 250 - margin.top - margin.bottom
-    var w = 250;
+    var w = 392;
 
     // SVG
     d3.select("#incompatiblepointdistribution").remove();

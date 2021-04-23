@@ -80,7 +80,7 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
 
     var margin = { top: 15, right: 15, bottom: 20, left: 55 }
     var h = 250 - margin.top - margin.bottom
-    var w = 320 - margin.left - margin.right
+    var w = 461 - margin.left - margin.right
 
     var formatPercentX = d3.format('.3f');
     var formatPercentY = d3.format('.2f');

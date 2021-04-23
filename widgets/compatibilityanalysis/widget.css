@@ -38,7 +38,7 @@ label {
 
 .main-container {
   display: block;
-  max-width: 700px;
+  max-width: 1000px;
 }
 
 .plot {
@@ -166,7 +166,7 @@ label {
 }
 
 .table {
-  width: 700px;
+  width: 1000px;
   text-align: center;
   background-color: lightblue;
 }
@@ -261,7 +261,7 @@ label {
 }
 
 #raw-values-table {
-  width: 700px;
+  width: 1000px;
   margin-top: 0px;
   border-style: solid;
   border-width: 1px;
