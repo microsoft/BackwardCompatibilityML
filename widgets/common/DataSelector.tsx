@@ -141,20 +141,32 @@ class DataSelector extends Component<DataSelectorProps, DataSelectorState> {
 
   render() {
     return (
-      <div className="data-selector col-6">
+      <div className="data-selector">
         <div>Dataset:</div>
         <div>
           <Checkbox label="Training" checked={this.state.training} onChange={this.selectTraining} />
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="11" height="11" fill="#5EBBFF" fill-opacity="0.85"/>
+          </svg>
         </div>
         <div>
           <Checkbox label="Testing" checked={this.state.testing} onChange={this.selectTesting} />
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="11" height="11" fill="#F332A6" fill-opacity="0.85"/>
+          </svg>
         </div>
         <div>Dissonance:</div>
         <div>
           <Checkbox label="New Error" checked={this.state.newError} onChange={this.selectNewError} />
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="7" cy="7" r="6" fill="#D7D6D6" stroke="black"/>
+          </svg>
         </div>
         <div>
-          <Checkbox label="Strict" checked={this.state.strictImitation} onChange={this.selectStrictImitation} />
+          <Checkbox label="Strict Imitation" checked={this.state.strictImitation} onChange={this.selectStrictImitation} />
+          <svg width="14" height="12" viewBox="0 0 14 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7 1L13.0622 11.5H0.937822L7 1Z" fill="#D7D6D6" stroke="black"/>
+          </svg>
         </div>
       </div>
     );

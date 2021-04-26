@@ -202,16 +202,16 @@ label {
   grid-template-rows: 1fr;
 }
 
-.data-selector .control-group {
-  display: inline-block;
-  margin-right: 50px;
-}
-
 .data-selector {
-  max-width: 350px;
+  max-width: 500px;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr;
+}
+
+.data-selector .control-group {
+  display: inline-block;
+  margin-right: 50px;
 }
 
 .data-selector .control-subgroup {
@@ -220,6 +220,11 @@ label {
 }
 
 .data-selector .control {
+  display: inline-block;
+  margin-right: 5px;
+}
+
+.data-selector .ms-Checkbox {
   display: inline-block;
   margin-right: 5px;
 }
