@@ -92,14 +92,15 @@ function Container({
 
     return (
       <div className="main-container">
-          <div className="row">
-              <SweepManager
-                sweepStatus={sweepStatus}
-                getSweepStatus={getSweepStatus}
-                startSweep={startSweep}
-                getTrainingAndTestingData={getTrainingAndTestingData}
-              />
-          </div>
+        <div className="row">
+            <SweepManager
+              sweepStatus={sweepStatus}
+              getSweepStatus={getSweepStatus}
+              startSweep={startSweep}
+              getTrainingAndTestingData={getTrainingAndTestingData}
+            />
+        </div>
+        <div className="padded-container">
           <div className="two-column-row">
             <DataSelector
               toggleTraining={toggleTraining}
@@ -164,6 +165,7 @@ function Container({
           <div className="row">
             <ErrorInstancesTable selectedDataPoint={selectedDataPoint} filterInstances={filterInstances} />
           </div>
+        </div>
       </div>
     );
 }

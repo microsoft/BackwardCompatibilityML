@@ -41,6 +41,11 @@ label {
   max-width: 1000px;
 }
 
+.padded-container {
+  padding: 30px;
+  background-color: #EFF0F5;
+}
+
 .start-sweep-header {
   display: flex;
   justify-content: center;
@@ -198,6 +203,8 @@ label {
 
 .two-column-row {
   display: grid;
+  background-color: white;
+  padding: 22px;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr;
 }
