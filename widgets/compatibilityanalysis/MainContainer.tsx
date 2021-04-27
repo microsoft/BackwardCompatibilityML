@@ -4,7 +4,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import PerformanceCompatibility from "../common/PerformanceCompatibility.tsx";
-import Legend from "../common/Legend.tsx";
+import PointSelector from "../common/PointSelector.tsx";
 import IntersectionBetweenModelErrors from "../common/IntersectionBetweenModelErrors.tsx";
 import IncompatiblePointDistribution from "../common/IncompatiblePointDistribution.tsx";
 import ErrorInstancesTable from "../common/ErrorInstancesTable.tsx";
@@ -115,45 +115,45 @@ function Container({
               lambdaUpperBound={lambdaUpperBound}
             />
           </div>
-          <div className="row">
-            <Legend
+          <div className="plot-container">
+            <PointSelector
               testing={testing}
               training={training}
               newError={newError}
               strictImitation={strictImitation}
             />
-          </div>
-          <div className="row">
-            <PerformanceCompatibility
-              data={data.data}
-              h1Performance={data.h1_performance}
-              performanceMetric={data.performance_metric}
-              training={training}
-              testing={testing}
-              newError={newError}
-              strictImitation={strictImitation}
-              lambdaLowerBound={lambdaLowerBound}
-              lambdaUpperBound={lambdaUpperBound}
-              compatibilityScoreType="btc"
-              selectDataPoint={selectDataPoint}
-              getModelEvaluationData={getModelEvaluationData}
-              selectedDataPoint={selectedDataPoint}
-            />
-            <PerformanceCompatibility
-              data={data.data}
-              h1Performance={data.h1_performance}
-              performanceMetric={data.performance_metric}
-              training={training}
-              testing={testing}
-              newError={newError}
-              strictImitation={strictImitation}
-              lambdaLowerBound={lambdaLowerBound}
-              lambdaUpperBound={lambdaUpperBound}
-              compatibilityScoreType="bec"
-              selectDataPoint={selectDataPoint}
-              getModelEvaluationData={getModelEvaluationData}
-              selectedDataPoint={selectedDataPoint}
-            />
+            <div className="row">
+              <PerformanceCompatibility
+                data={data.data}
+                h1Performance={data.h1_performance}
+                performanceMetric={data.performance_metric}
+                training={training}
+                testing={testing}
+                newError={newError}
+                strictImitation={strictImitation}
+                lambdaLowerBound={lambdaLowerBound}
+                lambdaUpperBound={lambdaUpperBound}
+                compatibilityScoreType="btc"
+                selectDataPoint={selectDataPoint}
+                getModelEvaluationData={getModelEvaluationData}
+                selectedDataPoint={selectedDataPoint}
+              />
+              <PerformanceCompatibility
+                data={data.data}
+                h1Performance={data.h1_performance}
+                performanceMetric={data.performance_metric}
+                training={training}
+                testing={testing}
+                newError={newError}
+                strictImitation={strictImitation}
+                lambdaLowerBound={lambdaLowerBound}
+                lambdaUpperBound={lambdaUpperBound}
+                compatibilityScoreType="bec"
+                selectDataPoint={selectDataPoint}
+                getModelEvaluationData={getModelEvaluationData}
+                selectedDataPoint={selectedDataPoint}
+              />
+            </div>
           </div>
           {(selectedDataPoint != null)? 
             <SelectedModelDetails btc={selectedDataPoint.btc} bec={selectedDataPoint.bec} h1Performance={data.h1_performance} h2Performance={selectedDataPoint.h2_performance} performanceMetric={data.performance_metric} lambdaC={selectedDataPoint.lambda_c} />

@@ -76,6 +76,15 @@ label {
   display: inline-block;
 }
 
+.plot-container {
+  background-color: white;
+  margin-top: 16px;
+  padding-left: 19px;
+  padding-right: 19px;
+  padding-top: 14px;
+  padding-bottom: 14px;
+}
+
 .plot svg {
   background-color: white
 }
@@ -142,6 +151,31 @@ label {
 .page-button-row button {
   background-color: white;
   border: 1px solid black;
+}
+
+.point-selector {
+  background-color: #F3F4F8;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  padding-left: 22px;
+  padding-right: 22px;
+}
+
+.point-legend-entry-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.point-legend-entry {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 14px;
+  margin-right: 25px;
+}
+
+.point-legend-entry svg {
+  margin-right: 10px;
 }
 
 .venn-legend-row {
