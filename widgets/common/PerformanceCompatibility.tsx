@@ -79,20 +79,14 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
     var data = this.state.data;
 
     var margin = { top: 15, right: 15, bottom: 20, left: 55 }
-    var h = 250 - margin.top - margin.bottom
-    var w = 461 - margin.left - margin.right
+    var h = 350 - margin.top - margin.bottom
+    var w = 425 - margin.left - margin.right
 
     var formatPercentX = d3.format('.3f');
     var formatPercentY = d3.format('.2f');
     var colorMap = {
-      "training": {
-        "new-error": "rgba(170, 170, 255, 0.8)",
-        "strict-imitation": "rgba(113, 113, 255, 0.8)"
-      },
-      "testing": {
-        "new-error": "rgba(206, 160, 205, 0.8)",
-        "strict-imitation": "rgba(226, 75, 158, 0.8)"
-      }
+      "training": "rgba(118, 197, 255, 0.15)",
+      "testing": "rgba(245, 81, 179, 0.15)"
     };
 
     var allDataPoints = [];
@@ -193,14 +187,15 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
       .attr("y1", yScale(this.props.h1Performance))
       .attr("x2", xScale(d3.max(allValues)))
       .attr("y2", yScale(this.props.h1Performance))
-      .attr("stroke", "black")
+      .attr("stroke", "#6f27db")
       .attr("stroke-width", "1px")
       .attr("stroke-dasharray", "5,5");
 
-    function drawCircles() {
-
+    function drawNewError() {
+      const newErrorData = allDataPoints.filter(d =>  d["new-error"]);
+      const radius = 8;
       var circles = svg.selectAll('circle')
-          .data(allDataPoints)
+          .data(newErrorData)
           .enter()
         .append('circle')
           .attr('cx',function (d) { return xScale(d[_this.props.compatibilityScoreType]) })
@@ -208,9 +203,9 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
           .attr('r', function(d) {
             var datapointIndex = (_this.props.selectedDataPoint != null)? _this.props.selectedDataPoint.datapoint_index: null;
             if (d.datapoint_index == datapointIndex) {
-              return 8;
+              return 1.5 * radius;
             } else {
-              return 4;
+              return radius;
             }
           })
           .attr('stroke','black')
@@ -223,14 +218,78 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
             }
           })
           .attr('fill',function (d,i) {
-            if (d["training"] && d["new-error"]) {
-              return colorMap["training"]["new-error"];
-            } else if (d["training"] && d["strict-imitation"]) {
-              return colorMap["training"]["strict-imitation"];
-            } else if (d["testing"] && d["new-error"]) {
-              return colorMap["testing"]["new-error"];
-            } else if (d["testing"] && d["strict-imitation"]) {
-              return colorMap["testing"]["strict-imitation"];
+            if (d["training"]) {
+              return colorMap["training"];
+            } else if (d["testing"]) {
+              return colorMap["testing"];
+            }
+          })
+          .on('mouseover', function (d) {
+            d3.select(this)
+              .transition()
+              .duration(500)
+              .attr('r',1.5*radius)
+              .attr('stroke-width',3);
+
+            tooltip.text(`lambda ${d["lambda_c"].toFixed(2)}`)
+              .style("opacity", 0.8);
+          })
+          .on('mouseout', function (d) {
+            var datapointIndex = (_this.props.selectedDataPoint != null)? _this.props.selectedDataPoint.datapoint_index: null;
+            if (d.datapoint_index != datapointIndex) {
+              d3.select(this)
+                .transition()
+                .duration(500)
+                .attr('r',4)
+                .attr('stroke-width',1);
+             }
+
+            tooltip.style("opacity", 0);
+            tooltip.text("");
+          })
+          .on("mousemove", function() {
+            var scatterPlot = document.getElementById(`scatterplot-${_this.props.compatibilityScoreType}`);
+            var coords = d3.mouse(scatterPlot);
+            tooltip.style("left", `${coords[0] - (margin.left + margin.right)/2 - 40}px`)
+              .style("top", `${coords[1] - (margin.top + margin.bottom)/2}px`);
+          })
+          .on('click', (d, i) => {
+            _this.props.getModelEvaluationData(d["datapoint_index"]);
+          });
+    }
+
+    function drawStrictImitation() {
+      const strictImitationData = allDataPoints.filter(d =>  d["strict-imitation"]);
+      const size = 4;
+      svg.selectAll('polyline')
+          .data(strictImitationData)
+          .enter()
+        .append('polyline')
+          .attr('points', function(d) {
+            // Centroid coordinates
+            const cx = d[_this.props.compatibilityScoreType];
+            const cy = d['performance'];
+            // Calculate points of equilateral triangle
+            const p1 = (xScale(cx) - Math.sqrt(3)*size) + ',' + (yScale(cy) + size);
+            const p2 = (xScale(cx) + Math.sqrt(3)*size) + ',' + (yScale(cy) + size);
+            const p3 = xScale(cx) + ',' + (yScale(cy) - 2*size);
+            // x,y points delimited by spaces
+            return p1 + ' ' + p2 + ' ' + p3 + ' ' + p1;
+          })
+          .attr('stroke','black')
+          .attr('stroke-width', function(d) {
+            var datapointIndex = (_this.props.selectedDataPoint != null)? _this.props.selectedDataPoint.datapoint_index: null;
+            if (d.datapoint_index == datapointIndex) {
+              return 3;
+            } else {
+              return 1;
+            }
+          })
+          .attr('fill',function (d,i) {
+            if (d["training"]) {
+              return colorMap["training"];
+            } else if (d["testing"]) {
+              return colorMap["testing"];
             }
           })
           .on('mouseover', function (d) {
@@ -267,7 +326,8 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
           });
     }
 
-    drawCircles();
+    drawNewError();
+    drawStrictImitation();
   }
 
 

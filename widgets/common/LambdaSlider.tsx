@@ -29,6 +29,7 @@ const LambdaSlider: React.FunctionComponent<LambdaSliderProps> = ({setLambdaLowe
     defaultLowerValue={0}
     step={0.1}
     onChange={onChange}
+    styles={{root: {marginLeft: "25px"}}}
   />
 }
 

@@ -46,6 +46,19 @@ label {
   background-color: #EFF0F5;
 }
 
+.padded-container h2, .padded-container h2:first-child {
+  font-size: 24px;
+  line-height: 20px;
+  font-weight: normal;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin-top: 0px;
+  margin-bottom: 25px;
+  padding-left: 18px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-left: solid #0078D4 8px;
+}
+
 .start-sweep-header {
   display: flex;
   justify-content: center;
@@ -89,6 +102,7 @@ label {
   background-color: white
 }
 
+/*
 .plot-btc {
   background-color: lightgrey;
   padding-left: 20px;
@@ -103,6 +117,7 @@ label {
   padding-top: 20px;
   padding-bottom: 10px;
 }
+*/
 
 .plot-venn {
   background-color: lightgrey;

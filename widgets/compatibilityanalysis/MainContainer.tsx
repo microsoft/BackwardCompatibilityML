@@ -101,6 +101,7 @@ function Container({
             />
         </div>
         <div className="padded-container">
+          <h2>h2 Dataset Distribution</h2>
           <div className="two-column-row">
             <DataSelector
               toggleTraining={toggleTraining}
