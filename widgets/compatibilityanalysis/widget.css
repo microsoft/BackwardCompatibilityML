@@ -176,16 +176,18 @@ label {
   padding-right: 22px;
 }
 
-.point-legend-entry-container {
+.point-selector-row {
   display: flex;
   flex-direction: row;
+  align-items: center;
+  font-size: 16px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .point-legend-entry {
   display: flex;
   flex-direction: row;
   align-items: center;
-  font-size: 14px;
   margin-right: 25px;
 }
 

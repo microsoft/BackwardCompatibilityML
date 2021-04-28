@@ -122,6 +122,8 @@ function Container({
               training={training}
               newError={newError}
               strictImitation={strictImitation}
+              data={data.data}
+              getModelEvaluationData={getModelEvaluationData}
             />
             <div className="row">
               <PerformanceCompatibility
