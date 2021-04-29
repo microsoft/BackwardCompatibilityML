@@ -22,14 +22,6 @@ const PointSelector: React.FunctionComponent<PointSelectorProps> = ({ testing, t
   const [selectedDissonance, setSelectedDissonance] = React.useState("");
   const legendEntries: Array<JSX.Element> = [];
 
-  const getDatapointIndex = (dataset: string, dissonance: string, lambda: string) => {
-    const point = data.find(d => d[dataset] && d[dissonance] && d.lambda_c.toString() === lambda);
-    if (point) {
-      return point.datapoint_index;
-    }
-    return null;
-  }
-
   if (selectedDataPoint) {
     (function syncData() {
       const point = data.find(d => d.datapoint_index === selectedDataPoint.datapoint_index);
