@@ -124,6 +124,7 @@ function Container({
               strictImitation={strictImitation}
               data={data.data}
               getModelEvaluationData={getModelEvaluationData}
+              selectedDataPoint={selectedDataPoint}
             />
             <div className="row">
               <PerformanceCompatibility

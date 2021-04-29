@@ -12,15 +12,49 @@ type PointSelectorProps = {
   newError: boolean,
   strictImitation: boolean,
   data: any,
-  getModelEvaluationData: Function
+  getModelEvaluationData: Function,
+  selectedDataPoint: any
 }
 
-const PointSelector: React.FunctionComponent<PointSelectorProps> = ({ testing, training, newError, strictImitation, data, getModelEvaluationData }) => {
-  const NO_LAMBDA = -1;
-  const [selectedLambda, setSelectedLambda] = React.useState(NO_LAMBDA);
+const PointSelector: React.FunctionComponent<PointSelectorProps> = ({ testing, training, newError, strictImitation, data, getModelEvaluationData, selectedDataPoint }) => {
+  const [selectedLambda, setSelectedLambda] = React.useState("");
   const [selectedDataset, setSelectedDataset] = React.useState("");
   const [selectedDissonance, setSelectedDissonance] = React.useState("");
   const legendEntries: Array<JSX.Element> = [];
+
+  const getDatapointIndex = (dataset: string, dissonance: string, lambda: string) => {
+    const point = data.find(d => d[dataset] && d[dissonance] && d.lambda_c.toString() === lambda);
+    if (point) {
+      return point.datapoint_index;
+    }
+    return null;
+  }
+
+  if (selectedDataPoint) {
+    (function syncData() {
+      const point = data.find(d => d.datapoint_index === selectedDataPoint.datapoint_index);
+      if (!point) {
+        console.log(`Unable to find data point with index=${selectedDataPoint.datapoint_index}`);
+        return;
+      }
+
+      if (point["new-error"] && selectedDissonance !== "new-error") {
+        setSelectedDissonance("new-error");
+      } else if (point["strict-imitation"] && selectedDissonance !== "strict-imitation") {
+        setSelectedDissonance("strict-imitation");
+      }
+
+      if (point["testing"] && selectedDataset !== "testing") {
+        setSelectedDataset("testing");
+      } else if (point["training"] && selectedDataset !== "training") {
+        setSelectedDataset("training");
+      }
+
+      if (point.lambda_c.toString() !== selectedLambda) {
+        setSelectedLambda(point.lambda_c.toString());
+      }
+    })();
+  }
 
   if (training) {
     if (newError) {
@@ -83,14 +117,14 @@ const PointSelector: React.FunctionComponent<PointSelectorProps> = ({ testing, t
   const lambdaValues = Array.from(lambdaSet).sort();
 
   const lambdaOptions = lambdaValues.map(lambda => {
-    const str = lambda.toFixed(2);
-    return { key: lambda, text: str }
+    const rounded = lambda.toFixed(2);
+    return { key: lambda.toString(), text: rounded }
   });
 
-  const selectPoint = (dataset, dissonance, lambda) => {
+  const selectPoint = (dataset: string, dissonance: string, lambda: string) => {
     console.log(`Point selected from dropdown: dataset=${dataset} dissonance=${dissonance} λ=${lambda}`);
-    if (dataset !== "" && dissonance !== "" && lambda !== NO_LAMBDA) {
-      const point = data.find(d => d[dataset] && d[dissonance] && d.lambda_c === lambda);
+    if (dataset !== "" && dissonance !== "" && lambda !== "") {
+      const point = data.find(d => d[dataset] && d[dissonance] && d.lambda_c.toString() === lambda);
       if (point) {
         console.log(`Point index=${point.datapoint_index}`);
         getModelEvaluationData(point.datapoint_index);
@@ -113,10 +147,12 @@ const PointSelector: React.FunctionComponent<PointSelectorProps> = ({ testing, t
   };
 
   const onLambdaChange = (event: React.FormEvent<HTMLDivElement>, item: IDropdownOption) => {
-    const lambda = item.key as number;
+    const lambda = item.key.toString();
     setSelectedLambda(lambda);
     selectPoint(selectedDataset, selectedDissonance, lambda);
   };
+
+  const keyHelper = (s: string) => s === "" ? undefined : s;
 
   return (
     <div className="point-selector">
@@ -126,10 +162,10 @@ const PointSelector: React.FunctionComponent<PointSelectorProps> = ({ testing, t
       <div className="point-selector-row" style={{ marginTop: "20px" }}>
         <span style={{ marginRight: "12px" }}>Select a point</span>
         <InfoTooltip message="Choose a point by dataset, dissonance function, and lambda value" direction={DirectionalHint.bottomCenter} />
-        <Dropdown placeholder="Dataset" options={datasetOptions} onChange={onDatasetChange} styles={{ root: { marginLeft: "26px", marginRight: "16px" } }} />
-        <Dropdown placeholder="Dissonance function" options={dissonanceOptions}  onChange={onDissonanceChange} styles={{ root: { marginRight: "32px" } }} />
+        <Dropdown placeholder="Dataset" selectedKey={keyHelper(selectedDataset)} options={datasetOptions} onChange={onDatasetChange} styles={{ root: { marginLeft: "26px", marginRight: "16px" } }} />
+        <Dropdown placeholder="Dissonance function" selectedKey={keyHelper(selectedDissonance)} options={dissonanceOptions}  onChange={onDissonanceChange} styles={{ root: { marginRight: "32px" } }} />
         <span>λ value:</span>
-        <Dropdown placeholder="λ value" options={lambdaOptions} onChange={onLambdaChange} styles={{ root: { marginLeft: "20px" } }} />
+        <Dropdown placeholder="λ value" options={lambdaOptions} selectedKey={keyHelper(selectedLambda)} onChange={onLambdaChange} styles={{ root: { marginLeft: "20px" } }} />
       </div>
     </div>
   )

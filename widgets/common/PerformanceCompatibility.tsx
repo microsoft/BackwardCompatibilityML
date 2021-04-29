@@ -275,10 +275,17 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
           .data(strictImitationData)
           .enter()
         .append('polyline')
-          .attr('points', d => getPoints(d, 4))
+          .attr('points', function(d) {
+            const datapointIndex = (_this.props.selectedDataPoint != null)? _this.props.selectedDataPoint.datapoint_index: null;
+            if (d.datapoint_index == datapointIndex) {
+              return getPoints(d, 8);
+            } else {
+              return getPoints(d, 4);
+            }
+          })
           .attr('stroke','black')
           .attr('stroke-width', function(d) {
-            var datapointIndex = (_this.props.selectedDataPoint != null)? _this.props.selectedDataPoint.datapoint_index: null;
+            const datapointIndex = (_this.props.selectedDataPoint != null)? _this.props.selectedDataPoint.datapoint_index: null;
             if (d.datapoint_index == datapointIndex) {
               return 3;
             } else {
