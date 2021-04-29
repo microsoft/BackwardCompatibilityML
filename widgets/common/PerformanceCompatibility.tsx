@@ -6,6 +6,7 @@ import ReactDOM from "react-dom";
 import * as d3 from "d3";
 import { InfoTooltip } from "./InfoTooltip.tsx"
 import { DirectionalHint } from '@fluentui/react';
+import { DefaultButton } from '@fluentui/react/lib/Button';
 
 
 type PerformanceCompatibilityState = {
@@ -339,7 +340,6 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
 
 
   render() {
-    let classes = `plot plot-${this.props.compatibilityScoreType}`;
     let title = this.props.compatibilityScoreType.toUpperCase();
     let message = "UNDEFINED";
 
@@ -350,15 +350,22 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
     }
 
     return (
-      <React.Fragment>
-        <div className={classes} ref={this.node} id={`scatterplot-${this.props.compatibilityScoreType}`}>
+      <div>
+        <div style={{display: "flex", flexDirection: "row", alignItems: "center"}}>
+          <h3 style={{fontFamily: "'Segoe UI', sans-serif", fontSize: "20px", fontWeight: "normal", marginRight: "8px"}}>Model accuracy - {title}</h3>
+          <InfoTooltip message={message} direction={DirectionalHint.bottomCenter} />
+          <div style={{marginLeft: "auto"}}>
+            <DefaultButton iconProps={{iconName: "ZoomIn"}} text="zoom in" styles={{root: {paddingLeft: "9px", paddingRight: "9px", marginRight: "12px"}}}/>
+            <a href="#" style={{marginRight: "10px"}}>reset</a>
+          </div>
+        </div>
+        <div className="plot" ref={this.node} id={`scatterplot-${this.props.compatibilityScoreType}`}>
           <div className="tooltip" id={`lambdactooltip-${this.props.compatibilityScoreType}`} />
           <div className="plot-title-row">
             {title}
-            <InfoTooltip message={message} direction={DirectionalHint.bottomCenter} />
           </div>
         </div>
-      </React.Fragment>
+      </div>
     );
   }
 

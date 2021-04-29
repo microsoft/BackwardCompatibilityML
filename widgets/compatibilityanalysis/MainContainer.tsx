@@ -126,7 +126,7 @@ function Container({
               getModelEvaluationData={getModelEvaluationData}
               selectedDataPoint={selectedDataPoint}
             />
-            <div className="row">
+            <div className="two-column-row">
               <PerformanceCompatibility
                 data={data.data}
                 h1Performance={data.h1_performance}
