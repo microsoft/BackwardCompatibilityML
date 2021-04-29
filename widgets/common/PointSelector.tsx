@@ -17,9 +17,9 @@ type PointSelectorProps = {
 
 const PointSelector: React.FunctionComponent<PointSelectorProps> = ({ testing, training, newError, strictImitation, data, getModelEvaluationData }) => {
   const NO_LAMBDA = -1;
+  const [selectedLambda, setSelectedLambda] = React.useState(NO_LAMBDA);
   const [selectedDataset, setSelectedDataset] = React.useState("");
   const [selectedDissonance, setSelectedDissonance] = React.useState("");
-  const [selectedLambda, setSelectedLambda] = React.useState(NO_LAMBDA);
   const legendEntries: Array<JSX.Element> = [];
 
   if (training) {

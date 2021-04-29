@@ -258,24 +258,24 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
           });
     }
 
+    // Calculates coordinates for the vertices of an equilateral triangle
+    // with centroid coordinates cx,cy and scaled by size
+    function trianglePoints(cx: number, cy: number, size: number) {
+      const p1 = (xScale(cx) - Math.sqrt(3)*size) + ',' + (yScale(cy) + size);
+      const p2 = (xScale(cx) + Math.sqrt(3)*size) + ',' + (yScale(cy) + size);
+      const p3 = xScale(cx) + ',' + (yScale(cy) - 2*size);
+      // x,y points delimited by spaces
+      return p1 + ' ' + p2 + ' ' + p3 + ' ' + p1;
+    }
+
     function drawStrictImitation() {
       const strictImitationData = allDataPoints.filter(d =>  d["strict-imitation"]);
-      const size = 4;
+      const getPoints = (d: any, size: number) => trianglePoints(d[_this.props.compatibilityScoreType], d['performance'], size);
       svg.selectAll('polyline')
           .data(strictImitationData)
           .enter()
         .append('polyline')
-          .attr('points', function(d) {
-            // Centroid coordinates
-            const cx = d[_this.props.compatibilityScoreType];
-            const cy = d['performance'];
-            // Calculate points of equilateral triangle
-            const p1 = (xScale(cx) - Math.sqrt(3)*size) + ',' + (yScale(cy) + size);
-            const p2 = (xScale(cx) + Math.sqrt(3)*size) + ',' + (yScale(cy) + size);
-            const p3 = xScale(cx) + ',' + (yScale(cy) - 2*size);
-            // x,y points delimited by spaces
-            return p1 + ' ' + p2 + ' ' + p3 + ' ' + p1;
-          })
+          .attr('points', d => getPoints(d, 4))
           .attr('stroke','black')
           .attr('stroke-width', function(d) {
             var datapointIndex = (_this.props.selectedDataPoint != null)? _this.props.selectedDataPoint.datapoint_index: null;
@@ -296,7 +296,7 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
             d3.select(this)
               .transition()
               .duration(500)
-              .attr('r',8)
+              .attr('points', d => getPoints(d, 8))
               .attr('stroke-width',3);
 
             tooltip.text(`lambda ${d["lambda_c"].toFixed(2)}`)
@@ -308,7 +308,7 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
               d3.select(this)
                 .transition()
                 .duration(500)
-                .attr('r',4)
+                .attr('points', d => getPoints(d, 4))
                 .attr('stroke-width',1);
              }
 
