@@ -7,7 +7,9 @@ import mlflow
 import numpy as np
 import torch
 import backwardcompatibilityml.scores as scores
-from backwardcompatibilityml.metrics import model_accuracy
+from backwardcompatibilityml.metrics import (
+    model_accuracy,
+    model_accuracy_by_class)
 
 
 def train_epoch(epoch, network, optimizer, loss_function, training_set, batch_size_train,
@@ -521,6 +523,13 @@ def compatibility_scores(h1, h2, dataset, device="cpu"):
     return btc_dataset, bec_dataset
 
 
+def update_error_instances_by_class_dict(old_error_instances_by_class_dict, new_error_instances_by_class_dict):
+    for class_key, new_error_instance_ids in new_error_instances_by_class_dict.items():
+        old_error_instance_ids = old_error_instances_by_class_dict.get(class_key, [])
+        updated_error_instance_ids = old_error_instance_ids + new_error_instance_ids
+        old_error_instances_by_class_dict[class_key] = updated_error_instance_ids
+
+
 def evaluate_model_performance_and_compatibility_on_dataset(h1, h2, dataset, performance_metric,
                                                             get_instance_metadata=None,
                                                             device="cpu"):
@@ -550,6 +559,8 @@ def evaluate_model_performance_and_compatibility_on_dataset(h1, h2, dataset, per
     h2_dataset_error_instance_ids = []
     h1_and_h2_dataset_error_instance_ids = []
     h1h2_dataset_incompatible_instance_ids_by_class = {}
+    h1_error_instances_by_class = {}
+    h2_error_instances_by_class = {}
     classes = set()
     all_error_instances = []
     dataset_size = 0
@@ -562,6 +573,15 @@ def evaluate_model_performance_and_compatibility_on_dataset(h1, h2, dataset, per
             h1, h2, batch_ids, data, target,
             get_instance_metadata=get_instance_metadata, device=device)
         get_incompatible_instances_by_class(all_errors, batch_ids, target, h1h2_dataset_incompatible_instance_ids_by_class)
+
+        new_h1_error_instances_by_class = get_error_instance_ids_by_class(
+            h1, batch_ids, data, target, device=device)
+        new_h2_error_instances_by_class = get_error_instance_ids_by_class(
+            h2, batch_ids, data, target, device=device)
+
+        update_error_instances_by_class_dict(h1_error_instances_by_class, new_h1_error_instances_by_class)
+        update_error_instances_by_class_dict(h2_error_instances_by_class, new_h2_error_instances_by_class)
+
         all_error_instances += all_errors
         h1_dataset_error_instance_ids += h1_error_count_batch
         h2_dataset_error_instance_ids += h2_error_count_batch
@@ -573,6 +593,18 @@ def evaluate_model_performance_and_compatibility_on_dataset(h1, h2, dataset, per
             "class": class_label,
             "incompatibleInstanceIds": incompatible_instance_ids
         })
+
+    h1_accuracy_by_class = model_accuracy_by_class(h1, dataset, device)
+    for h1_class_accuracy in h1_accuracy_by_class:
+        class_label = h1_class_accuracy["class"]
+        h1_class_error_instances = h1_error_instances_by_class[class_label]
+        h1_class_accuracy["error_instance_ids"] = h1_class_error_instances
+
+    h2_accuracy_by_class = model_accuracy_by_class(h2, dataset, device)
+    for h2_class_accuracy in h2_accuracy_by_class:
+        class_label = h2_class_accuracy["class"]
+        h2_class_error_instances = h2_error_instances_by_class[class_label]
+        h2_class_accuracy["error_instance_ids"] = h2_class_error_instances
 
     h2_performance = performance_metric(h2, dataset, device)
 
@@ -596,7 +628,11 @@ def evaluate_model_performance_and_compatibility_on_dataset(h1, h2, dataset, per
         ],
 
         "h2_incompatible_instance_ids_by_class": h1h2_ds_incompatible_instance_ids_by_class,
+        # "h1_error_instances_by_class": h1_error_instances_by_class,
+        # "h2_error_instances_by_class": h2_error_instances_by_class,
         "sorted_classes": sorted(list(classes)),
+        "h1_accuracy_by_class": h1_accuracy_by_class,
+        "h2_accuracy_by_class": h2_accuracy_by_class,
         "h2_performance": h2_performance,
         "btc": btc,
         "bec": bec,

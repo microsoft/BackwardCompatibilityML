@@ -6,7 +6,7 @@ import ReactDOM from "react-dom";
 import PerformanceCompatibility from "../common/PerformanceCompatibility.tsx";
 import Legend from "../common/Legend.tsx";
 import IntersectionBetweenModelErrors from "../common/IntersectionBetweenModelErrors.tsx";
-import IncompatiblePointDistribution from "../common/IncompatiblePointDistribution.tsx";
+import ClassStatisticsPanel from "../common/IncompatiblePointDistribution.tsx";
 import ErrorInstancesTable from "../common/ErrorInstancesTable.tsx";
 import DataSelector from "../common/DataSelector.tsx"
 import SweepManager from "../common/SweepManager.tsx";
@@ -25,7 +25,8 @@ import {
   getModelEvaluationData,
   getSweepStatus,
   startSweep,
-  filterByInstanceIds
+  filterByInstanceIds,
+  setSelectedModelAccuracyClass
 } from './actions.ts';
 
 
@@ -35,6 +36,7 @@ function Container({
   selectedDataPoint,
   selectedClass,
   selectedRegion,
+  selectedModelAccuracyClass,
   setSelectedClass,
   setSelectedRegion,
   filterInstances,
@@ -53,7 +55,8 @@ function Container({
   getModelEvaluationData,
   getSweepStatus,
   startSweep,
-  filterByInstanceIds}) {
+  filterByInstanceIds,
+  setSelectedModelAccuracyClass}) {
 
     if (loading) {
       return (
@@ -140,7 +143,14 @@ function Container({
             : null}
           <div className="row">
             <IntersectionBetweenModelErrors selectedDataPoint={selectedDataPoint} setSelectedRegion={setSelectedRegion} selectedRegion={selectedRegion} filterByInstanceIds={filterByInstanceIds}/>
-            <IncompatiblePointDistribution selectedDataPoint={selectedDataPoint} setSelectedClass={setSelectedClass} selectedClass={selectedClass} filterByInstanceIds={filterByInstanceIds} />
+            <ClassStatisticsPanel
+              selectedDataPoint={selectedDataPoint}
+              setSelectedClass={setSelectedClass}
+              selectedClass={selectedClass}
+              selectedModelAccuracyClass={selectedModelAccuracyClass}
+              setSelectedModelAccuracyClass={setSelectedModelAccuracyClass}
+              filterByInstanceIds={filterByInstanceIds}
+            />
           </div>
           <div className="row">
             <ErrorInstancesTable selectedDataPoint={selectedDataPoint} filterInstances={filterInstances} />
@@ -156,6 +166,7 @@ function mapStateToProps (state) {
     selectedDataPoint: state.selectedDataPoint,
     selectedClass: state.selectedClass,
     selectedRegion: state.selectedRegion,
+    selectedModelAccuracyClass: state.selectedModelAccuracyClass,
     filterInstances: state.filterInstances,
     training: state.training,
     testing: state.testing,
@@ -179,7 +190,8 @@ function mapDispatchToProps (dispatch) {
     getModelEvaluationData: getModelEvaluationData,
     getSweepStatus: getSweepStatus,
     startSweep: startSweep,
-    filterByInstanceIds: filterByInstanceIds
+    filterByInstanceIds: filterByInstanceIds,
+    setSelectedModelAccuracyClass: setSelectedModelAccuracyClass,
   }, dispatch);
  }
 
