@@ -331,8 +331,35 @@ label {
   border: 2px solid black;
 }
 
-.chart-selector-color-box {
+
+.class-accuracy-legend-row {
+  display: flex;
+  background-color: white;
+  flex-direction: row;
+  font-family: sans-serif;
+  justify-content: center;
+  align-items: center;
+  font-size: 10px;
+  padding-left: 37px;
+}
+
+.class-accuracy-legend-row-block {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 5px;
+}
+
+.class-accuracy-h1 {
   height: 10px;
   width: 10px;
   margin-right: 5px;
+  background: rgba(111, 39, 219, 1);
+}
+
+.class-accuracy-h2 {
+  height: 10px;
+  width: 10px;
+  margin-right: 5px;
+  background: rgba(106, 159, 243, 1);
 }

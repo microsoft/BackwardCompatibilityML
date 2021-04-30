@@ -62,14 +62,14 @@ class IncompatiblePointDistribution extends Component<IncompatiblePointDistribut
     var body = d3.select(this.node.current);
 
     var margin = { top: 5, right: 15, bottom: 50, left: 55 }
-    var h = 220 - margin.top - margin.bottom
+    var h = 200 - margin.top - margin.bottom
     var w = 250;
 
     // SVG
     d3.select("#incompatiblepointdistribution").remove();
     var svg = body.append('svg')
         .attr('id', "incompatiblepointdistribution")
-        .attr('height',h + margin.top + margin.bottom)
+        .attr('height',h + margin.top + margin.bottom + 16)
         .attr('width',w + margin.left + margin.right)
         .attr('float', 'left');
 
@@ -283,18 +283,18 @@ class ModelAccuracyByClass extends Component<ModelAccuracyByClassProps, ModelAcc
     var body = d3.select(this.node.current);
 
     var margin = { top: 5, right: 15, bottom: 50, left: 55 }
-    var h = 220 - margin.top - margin.bottom
+    var h = 186 - margin.top - margin.bottom
     var w = 250;
 
-    // SVG
-    d3.select("#modelaccuracybyclass").remove();
-    var svg = body.append('svg')
-        .attr('id', "modelaccuracybyclass")
-        .attr('height',h + margin.top + margin.bottom)
-        .attr('width',w + margin.left + margin.right)
-        .attr('float', 'left');
-
     if (this.props.selectedDataPoint != null) {
+      // SVG
+      d3.select("#modelaccuracybyclass").remove();
+      var svg = body.append('svg')
+          .attr('id', "modelaccuracybyclass")
+          .attr('height',h + margin.top + margin.bottom)
+          .attr('width',w + margin.left + margin.right)
+          .attr('float', 'left');
+
       // Sort the data into the dataRows based on the ordering of the sorted classes
       var startI = this.state.page * this.props.pageSize;
       var endI = Math.min(startI + this.props.pageSize, this.props.selectedDataPoint.sorted_classes.length);
@@ -383,13 +383,41 @@ class ModelAccuracyByClass extends Component<ModelAccuracyByClassProps, ModelAcc
            // _this.selectModelAccuracyClass("h2", d.class);
            _this.props.setSelectedModelAccuracyClass("h2", d.class);
          });
-      }
+    } else {
+      // SVG
+      d3.select("#modelaccuracybyclass").remove();
+      var svg = body.append('svg')
+          .attr('id', "modelaccuracybyclass")
+          .attr('height', 216)
+          .attr('width',w + margin.left + margin.right)
+          .attr('float', 'left');
+    }
   }
 
   render() {
     let numClasses = this.props.selectedDataPoint?.sorted_classes?.length ?? 0;
     let numPages = Math.ceil(numClasses/this.props.pageSize) - 1;
     const message = "Displays the distribution of model accuracies per class.​";
+
+    let getClassAccuracyLegend = () => {
+      if (this.props.selectedDataPoint != null) {
+        return (
+          <div className="class-accuracy-legend-row">
+            <div className="class-accuracy-legend-row-block">
+              <div className="class-accuracy-h1" />
+              h1
+            </div>
+            <div className="class-accuracy-legend-row-block">
+              <div className="class-accuracy-h2" />
+              h2
+            </div>
+          </div>
+        );
+      } else {
+        return (<React.Fragment />);
+      }
+    }
+
     return (
       <div className="plot plot-distribution">
         <BarChartSelector selectedChart={"model-accuracy"} setSelectedChart={this.props.setSelectedChart} />
@@ -397,6 +425,7 @@ class ModelAccuracyByClass extends Component<ModelAccuracyByClassProps, ModelAcc
           Model Accuracy by Class
           <InfoTooltip message={message} direction={DirectionalHint.topCenter} />
         </div>
+        {getClassAccuracyLegend()}
         <div ref={this.node}/>
         <div className="page-button-row">
           <button onClick={() => {
