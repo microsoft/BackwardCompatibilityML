@@ -21,7 +21,15 @@
 }
  
 .bar {
-  fill: rgba(170, 170, 198, 0.8);
+  fill: rgba(236, 106, 97, 1);
+}
+
+.barh1 {
+  fill: rgba(111, 39, 219, 0.8);
+}
+
+.barh2 {
+  fill: rgba(106, 159, 243, 0.8);
 }
  
 /*.bar:hover {
@@ -282,4 +290,81 @@ label {
 .highlighted-bar {
   stroke-width: 2;
   stroke: rgb(0,0,0);
+}
+
+.chart-selector-row {
+  display: flex;
+  background-color: white;
+  flex-direction: row;
+  font-family: sans-serif;
+  justify-content: center;
+  align-items: center;
+  font-size: 10px;
+  padding-left: 37px;
+  padding-top: 2px;
+}
+
+.chart-selector-row > .ms-Button {
+  font-size: 10px;
+}
+
+.chart-selector-row-block {
+  background: rgba(255, 255, 255, 1);
+  color: rgba(0, 0, 0, 1);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border: 2px solid rgb(255, 255, 255);
+  padding: 5px;
+}
+
+.chart-selector-row-block-selected {
+  background: rgba(0, 120, 212, 1);
+  color: rgba(255, 255, 255, 1);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border: 2px solid rgb(255, 255, 255);
+  padding: 3px;
+}
+
+.chart-selector-row-block:hover {
+  border: 2px solid black;
+}
+
+.chart-selector-row-block-selected:hover {
+  border: 2px solid black;
+}
+
+
+.class-accuracy-legend-row {
+  display: flex;
+  background-color: white;
+  flex-direction: row;
+  font-family: sans-serif;
+  justify-content: center;
+  align-items: center;
+  font-size: 10px;
+  padding-left: 37px;
+}
+
+.class-accuracy-legend-row-block {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 5px;
+}
+
+.class-accuracy-h1 {
+  height: 10px;
+  width: 10px;
+  margin-right: 5px;
+  background: rgba(111, 39, 219, 1);
+}
+
+.class-accuracy-h2 {
+  height: 10px;
+  width: 10px;
+  margin-right: 5px;
+  background: rgba(106, 159, 243, 1);
 }
