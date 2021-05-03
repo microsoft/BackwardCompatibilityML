@@ -130,14 +130,25 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
 
     var tooltip = d3.select(`#lambdactooltip-${_this.props.compatibilityScoreType}`);
 
+    var fullHeight = h + margin.top + margin.bottom;
+    var fullWidth = w + margin.left + margin.right;
     // SVG
     d3.select(`#${this.props.compatibilityScoreType}`).remove();
     var svg = body.insert('svg', '.plot-title-row')
         .attr('id', this.props.compatibilityScoreType)
-        .attr('height',h + margin.top + margin.bottom)
-        .attr('width',w + margin.left + margin.right)
+        .attr('height', fullHeight)
+        .attr('width', fullWidth)
       .append('g')
         .attr('transform','translate(' + margin.left + ',' + margin.top + ')')
+
+    // This invisible rect covers the whole plot and captures zoom events
+    var listenerRect = svg.append('rect')
+      .attr('x', 0)
+      .attr('y', 0)
+      .attr('width', fullWidth)
+      .attr('height', fullHeight)
+      .style('opacity', 0);
+
     // X-axis
     var xAxis = d3.axisBottom()
       .scale(xScale)
@@ -151,12 +162,12 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
       .ticks(5);
 
     // X-axis
-    svg.append('g')
+    var xAxisDraw = svg.append('g')
         .attr('class','axis')
         .attr('id','xAxis')
         .attr('transform', 'translate(0,' + h + ')')
         .call(xAxis)
-      .append('text')
+    xAxisDraw.append('text')
         .attr('id','xAxisLabel')
         .attr('y', 25)
         .attr('x',w/2)
@@ -167,11 +178,11 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
         .attr("fill", "black");
 
     // Y-axis
-    svg.append('g')
+    var yAxisDraw = svg.append('g')
         .attr('class','axis')
         .attr('id','yAxis')
         .call(yAxis)
-      .append('text')
+    yAxisDraw.append('text')
         .attr('id', 'yAxisLabel')
         .attr('transform','rotate(-90)')
         .attr('x',-h/2+2.5*this.props.performanceMetric.length)
@@ -183,7 +194,7 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
         .attr("font-size", "20px")
         .attr("fill", "black");
 
-    svg.append("line")
+    var h1AccuracyLine = svg.append("line")
       .attr("x1", xScale(d3.min(allValues) - 0.005))
       .attr("y1", yScale(this.props.h1Performance))
       .attr("x2", xScale(d3.max(allValues)))
@@ -257,22 +268,24 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
           .on('click', (d, i) => {
             _this.props.getModelEvaluationData(d["datapoint_index"]);
           });
+      return circles;
     }
 
     // Calculates coordinates for the vertices of an equilateral triangle
     // with centroid coordinates cx,cy and scaled by size
-    function trianglePoints(cx: number, cy: number, size: number) {
-      const p1 = (xScale(cx) - Math.sqrt(3)*size) + ',' + (yScale(cy) + size);
-      const p2 = (xScale(cx) + Math.sqrt(3)*size) + ',' + (yScale(cy) + size);
+    const sqrt3 = Math.sqrt(3);
+    function getTrianglePoints(cx: number, cy: number, size: number, xScale: Function, yScale: Function) {
+      const p1 = (xScale(cx) - sqrt3*size) + ',' + (yScale(cy) + size);
+      const p2 = (xScale(cx) + sqrt3*size) + ',' + (yScale(cy) + size);
       const p3 = xScale(cx) + ',' + (yScale(cy) - 2*size);
       // x,y points delimited by spaces
       return p1 + ' ' + p2 + ' ' + p3 + ' ' + p1;
     }
 
     function drawStrictImitation() {
+      const getPoints = (d: any, size: number) => getTrianglePoints(d[_this.props.compatibilityScoreType], d['performance'], size, xScale, yScale);
       const strictImitationData = allDataPoints.filter(d =>  d["strict-imitation"]);
-      const getPoints = (d: any, size: number) => trianglePoints(d[_this.props.compatibilityScoreType], d['performance'], size);
-      svg.selectAll('polyline')
+      const triangles = svg.selectAll('polyline')
           .data(strictImitationData)
           .enter()
         .append('polyline')
@@ -332,10 +345,61 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
           .on('click', (d, i) => {
             _this.props.getModelEvaluationData(d["datapoint_index"]);
           });
+      return triangles;
     }
 
-    drawNewError();
-    drawStrictImitation();
+    const circles = drawNewError();
+    const triangles = drawStrictImitation();
+    const zoom = d3.zoom().scaleExtent([1, 100]).on('zoom', doZoom);
+    listenerRect.call(zoom);
+
+    function doZoom() {
+      const transform = d3.event.transform;
+      const xScaleNew = transform.rescaleX(xScale);
+      const yScaleNew = transform.rescaleY(yScale);
+      xAxis.scale(xScaleNew);
+      xAxisDraw.call(xAxis);
+      yAxis.scale(yScaleNew)
+      yAxisDraw.call(yAxis);
+
+      circles.attr('cx',function (d) { return xScaleNew(d[_this.props.compatibilityScoreType]) })
+          .attr('cy',function (d) { return yScaleNew(d['performance']) });
+
+      const getPoints = (d: any, size: number) => getTrianglePoints(d[_this.props.compatibilityScoreType], d['performance'], size, xScaleNew, yScaleNew);
+      triangles.attr('points', function(d) {
+        const datapointIndex = (_this.props.selectedDataPoint != null)? _this.props.selectedDataPoint.datapoint_index: null;
+        if (d.datapoint_index == datapointIndex) {
+          return getPoints(d, 8);
+        } else {
+          return getPoints(d, 4);
+        }
+      }).on('mouseover', function (d) {
+        d3.select(this)
+          .transition()
+          .duration(500)
+          .attr('points', d => getPoints(d, 8))
+          .attr('stroke-width',3);
+
+        tooltip.text(`lambda ${d["lambda_c"].toFixed(2)}`)
+          .style("opacity", 0.8);
+      }).on('mouseout', function (d) {
+        var datapointIndex = (_this.props.selectedDataPoint != null)? _this.props.selectedDataPoint.datapoint_index: null;
+        if (d.datapoint_index != datapointIndex) {
+          d3.select(this)
+            .transition()
+            .duration(500)
+            .attr('points', d => getPoints(d, 4))
+            .attr('stroke-width',1);
+         }
+
+        tooltip.style("opacity", 0);
+        tooltip.text("");
+      });
+
+      h1AccuracyLine.attr("y1", yScaleNew(_this.props.h1Performance))
+      .attr("y2", yScaleNew(_this.props.h1Performance))
+    }
+
   }
 
 
