@@ -189,41 +189,48 @@ type BarChartSelectorProps = {
   setSelectedChart: Function
 }
 
+
 class BarChartSelector extends Component<BarChartSelectorProps, null> {
 
   render () {
-    let getBlockClass  = (regionName: string) => {
-      if (this.props.selectedChart == regionName) {
-        return "chart-selector-row-block-selected";
+
+    let getButtons = () => {
+      if (this.props.selectedChart == "model-accuracy") {
+        return (
+          <React.Fragment>
+            <PrimaryButton
+              text="Model Accuracy"
+              onClick={() => this.props.setSelectedChart("model-accuracy")}
+              styles={{root: {marginLeft: '2px', marginRight: '2px'} }}
+            />
+            <DefaultButton
+              text="Incompatible Points"
+              onClick={() => this.props.setSelectedChart("incompatible-points")}
+              styles={{root: {marginLeft: '2px', marginRight: '2px'} }}
+            />
+          </React.Fragment>
+        );
       } else {
-        return "chart-selector-row-block";
+        return (
+          <React.Fragment>
+            <DefaultButton
+              text="Model Accuracy"
+              onClick={() => this.props.setSelectedChart("model-accuracy")}
+              styles={{root: {marginLeft: '2px', marginRight: '2px'} }}
+            />
+            <PrimaryButton
+              text="Incompatible Points"
+              onClick={() => this.props.setSelectedChart("incompatible-points")}
+              styles={{root: {marginLeft: '2px', marginRight: '2px'}}}
+            />
+          </React.Fragment>
+        );
       }
-    }
-
-    let getBgColor = (chartName: string) => {
-      if (this.props.selectedChart == chartName) {
-        return "rgba(0, 120, 212, 1)";
-      }
-
-      return "rgba(255, 255, 255, 1)";
-    }
-
-    let getTextColor = (chartName: string) => {
-      if (this.props.selectedChart == chartName) {
-        return "rgba(255, 255, 255, 1)";
-      }
-
-      return "rgba(0, 0, 0, 1)";
     }
 
     return (
       <div className="chart-selector-row">
-        <div className={getBlockClass("model-accuracy")} onClick={() => this.props.setSelectedChart("model-accuracy")}>
-          Model Accuracy
-        </div>
-        <div className={getBlockClass("incompatible-points")} onClick={() => this.props.setSelectedChart("incompatible-points")}>
-          Incompatible Points
-        </div>
+        {getButtons()}
       </div>
     )
   }
@@ -364,8 +371,7 @@ class ModelAccuracyByClass extends Component<ModelAccuracyByClassProps, ModelAcc
          .attr("height", function(d) { return h - yScale(d.accuracy * 100); })
          .classed("highlighted-bar", function(d) { return (_this.props.selectedModelAccuracyClass != null) && (d.class == _this.props.selectedModelAccuracyClass.classLabel && _this.props.selectedModelAccuracyClass.modelName == "h1") })
          .on("click", function(d) {
-           // _this.props.filterByInstanceIds(d.error_instance_ids);
-           // _this.selectModelAccuracyClass("h1", d.class);
+           _this.props.filterByInstanceIds(d.error_instance_ids);
            _this.props.setSelectedModelAccuracyClass("h1", d.class);
          });
 
@@ -379,8 +385,7 @@ class ModelAccuracyByClass extends Component<ModelAccuracyByClassProps, ModelAcc
          .attr("height", function(d) { return h - yScale(d.accuracy * 100); })
          .classed("highlighted-bar", function(d) { return (_this.props.selectedModelAccuracyClass != null) && (d.class == _this.props.selectedModelAccuracyClass.classLabel && _this.props.selectedModelAccuracyClass.modelName == "h2") })
          .on("click", function(d) {
-           // _this.props.filterByInstanceIds(d.error_instance_ids);
-           // _this.selectModelAccuracyClass("h2", d.class);
+           _this.props.filterByInstanceIds(d.error_instance_ids);
            _this.props.setSelectedModelAccuracyClass("h2", d.class);
          });
     } else {

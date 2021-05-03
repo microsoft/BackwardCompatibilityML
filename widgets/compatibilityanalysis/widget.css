@@ -301,6 +301,11 @@ label {
   align-items: center;
   font-size: 10px;
   padding-left: 37px;
+  padding-top: 2px;
+}
+
+.chart-selector-row > .ms-Button {
+  font-size: 10px;
 }
 
 .chart-selector-row-block {

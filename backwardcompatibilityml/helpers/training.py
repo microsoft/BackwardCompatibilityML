@@ -628,8 +628,6 @@ def evaluate_model_performance_and_compatibility_on_dataset(h1, h2, dataset, per
         ],
 
         "h2_incompatible_instance_ids_by_class": h1h2_ds_incompatible_instance_ids_by_class,
-        # "h1_error_instances_by_class": h1_error_instances_by_class,
-        # "h2_error_instances_by_class": h2_error_instances_by_class,
         "sorted_classes": sorted(list(classes)),
         "h1_accuracy_by_class": h1_accuracy_by_class,
         "h2_accuracy_by_class": h2_accuracy_by_class,
