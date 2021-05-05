@@ -77,7 +77,7 @@ function Container({
           <div className="row">
             <IntersectionBetweenModelErrors selectedDataPoint={data} setSelectedRegion={setSelectedRegion} selectedRegion={selectedRegion} filterByInstanceIds={filterByInstanceIds}/>
             <ClassStatisticsPanel
-              selectedDataPoint={selectedDataPoint}
+              selectedDataPoint={data}
               setSelectedClass={setSelectedClass}
               selectedClass={selectedClass}
               selectedModelAccuracyClass={selectedModelAccuracyClass}
