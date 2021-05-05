@@ -11,41 +11,44 @@ type PointSelectorProps = {
   training: boolean,
   newError: boolean,
   strictImitation: boolean,
+  lambdaLowerBound: number,
+  lambdaUpperBound: number,
   data: any,
   getModelEvaluationData: Function,
   selectedDataPoint: any
 }
 
-const PointSelector: React.FunctionComponent<PointSelectorProps> = ({ testing, training, newError, strictImitation, data, getModelEvaluationData, selectedDataPoint }) => {
+const PointSelector: React.FunctionComponent<PointSelectorProps> = ({ testing, training, newError, strictImitation,
+                                                                      lambdaLowerBound, lambdaUpperBound, data,
+                                                                      getModelEvaluationData, selectedDataPoint }) => {
   const [selectedLambda, setSelectedLambda] = React.useState("");
   const [selectedDataset, setSelectedDataset] = React.useState("");
   const [selectedDissonance, setSelectedDissonance] = React.useState("");
   const legendEntries: Array<JSX.Element> = [];
 
   if (selectedDataPoint) {
-    (function syncData() {
-      const point = data.find(d => d.datapoint_index === selectedDataPoint.datapoint_index);
-      if (!point) {
-        console.log(`Unable to find data point with index=${selectedDataPoint.datapoint_index}`);
-        return;
-      }
+    // Sync state with selected data
+    const point = data.find(d => d.datapoint_index === selectedDataPoint.datapoint_index);
+    if (!point) {
+      console.log(`Unable to find data point with index=${selectedDataPoint.datapoint_index}`);
+      return;
+    }
 
-      if (point["new-error"] && selectedDissonance !== "new-error") {
-        setSelectedDissonance("new-error");
-      } else if (point["strict-imitation"] && selectedDissonance !== "strict-imitation") {
-        setSelectedDissonance("strict-imitation");
-      }
+    if (point["new-error"] && selectedDissonance !== "new-error") {
+      setSelectedDissonance("new-error");
+    } else if (point["strict-imitation"] && selectedDissonance !== "strict-imitation") {
+      setSelectedDissonance("strict-imitation");
+    }
 
-      if (point["testing"] && selectedDataset !== "testing") {
-        setSelectedDataset("testing");
-      } else if (point["training"] && selectedDataset !== "training") {
-        setSelectedDataset("training");
-      }
+    if (point["testing"] && selectedDataset !== "testing") {
+      setSelectedDataset("testing");
+    } else if (point["training"] && selectedDataset !== "training") {
+      setSelectedDataset("training");
+    }
 
-      if (point.lambda_c.toString() !== selectedLambda) {
-        setSelectedLambda(point.lambda_c.toString());
-      }
-    })();
+    if (point.lambda_c.toString() !== selectedLambda) {
+      setSelectedLambda(point.lambda_c.toString());
+    }
   }
 
   if (training) {
@@ -106,7 +109,7 @@ const PointSelector: React.FunctionComponent<PointSelectorProps> = ({ testing, t
 
   const lambdaSet = new Set<number>();
   data.forEach(d => lambdaSet.add(d.lambda_c));
-  const lambdaValues = Array.from(lambdaSet).sort();
+  const lambdaValues = Array.from(lambdaSet).filter(n => n >= lambdaLowerBound && n <= lambdaUpperBound).sort();
 
   const lambdaOptions = lambdaValues.map(lambda => {
     const rounded = lambda.toFixed(2);

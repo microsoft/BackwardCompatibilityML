@@ -122,6 +122,8 @@ function Container({
               training={training}
               newError={newError}
               strictImitation={strictImitation}
+              lambdaLowerBound={lambdaLowerBound}
+              lambdaUpperBound={lambdaUpperBound}
               data={data.data}
               getModelEvaluationData={getModelEvaluationData}
               selectedDataPoint={selectedDataPoint}

@@ -86,8 +86,8 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
     var formatPercentX = d3.format('.3f');
     var formatPercentY = d3.format('.2f');
     var colorMap = {
-      "training": "rgba(118, 197, 255, 0.15)",
-      "testing": "rgba(245, 81, 179, 0.15)"
+      "training": "rgba(118, 197, 255, 0.30)",
+      "testing": "rgba(245, 81, 179, 0.30)"
     };
 
     var allDataPoints = [];
@@ -252,7 +252,7 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
               d3.select(this)
                 .transition()
                 .duration(500)
-                .attr('r',4)
+                .attr('r',radius)
                 .attr('stroke-width',1);
              }
 

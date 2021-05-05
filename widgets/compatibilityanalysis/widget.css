@@ -243,6 +243,13 @@ label {
   grid-template-rows: 1fr;
 }
 
+/* Adds ticks to lambda value slider */
+.main-container .ms-Slider-slidebox {
+  background: linear-gradient(to right, black 1px, transparent 1px);
+  background-size: 10% 10%;
+  padding: 0px;
+}
+
 .data-selector {
   max-width: 500px;
   display: grid;
