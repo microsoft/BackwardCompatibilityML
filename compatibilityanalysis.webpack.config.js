@@ -55,6 +55,14 @@ module.exports = {
           !isDevelopment && MiniCssExtractPlugin.loader,
           'css-loader'
         ].filter(Boolean)
+      },
+      {
+        test: /\.(png|jpe?g|gif)$/i,
+        use: [
+          {
+            loader: 'file-loader',
+          },
+        ],
       }
     ]
   },

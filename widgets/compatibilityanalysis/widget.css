@@ -247,11 +247,25 @@ label {
   grid-template-rows: 1fr;
 }
 
-/* Adds ticks to lambda value slider */
+/* lambda slider customization */
 .main-container .ms-Slider-slidebox {
-  background: linear-gradient(to right, black 1px, transparent 1px);
-  background-size: 10% 10%;
-  padding: 0px;
+  background-image: url('../images/slider-bg.png');
+  padding-left: 2px;
+  padding-right: 2px;
+  margin-left: 11px;
+  margin-right: 6px;
+}
+.main-container .ms-slider-active {
+  background: #0078D4;
+  height: 4px;
+  margin-bottom: -1px;
+}
+
+.main-container .ms-slider-inactive {
+  /* !important is necessary to override color change on mouse hover */
+  background: #686868 !important;
+  height: 2px;
+  margin-top: 1px;
 }
 
 .data-selector {
