@@ -51,10 +51,14 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
     };
 
     this.node = React.createRef<HTMLDivElement>();
+    this.zoomIn = () => {}
+    this.zoomOut = () => {}
     this.createPVCPlot = this.createPVCPlot.bind(this);
   }
 
   node: React.RefObject<HTMLDivElement>
+  zoomIn: Function
+  zoomOut: Function
 
   componentDidMount() {
     this.createPVCPlot();
@@ -134,20 +138,23 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
     var fullWidth = w + margin.left + margin.right;
     // SVG
     d3.select(`#${this.props.compatibilityScoreType}`).remove();
+    var zoom = d3.zoom().scaleExtent([1, 100]).on('zoom', doZoom);
     var svg = body.insert('svg', '.plot-title-row')
         .attr('id', this.props.compatibilityScoreType)
         .attr('height', fullHeight)
         .attr('width', fullWidth)
-      .append('g')
+        .call(zoom)
+        .on("wheel.zoom", null);
+    var plot = svg.append('g')
         .attr('transform','translate(' + margin.left + ',' + margin.top + ')')
 
-    // This invisible rect covers the whole plot and captures zoom events
-    var listenerRect = svg.append('rect')
-      .attr('x', 0)
-      .attr('y', 0)
-      .attr('width', fullWidth)
-      .attr('height', fullHeight)
-      .style('opacity', 0);
+    _this.zoomIn = () => {
+      svg.transition().duration(750).call(zoom.scaleBy, 2)
+    }
+
+    _this.zoomOut = () => {
+      svg.transition().duration(750).call(zoom.scaleBy, 0.5)
+    }
 
     // X-axis
     var xAxis = d3.axisBottom()
@@ -162,7 +169,7 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
       .ticks(5);
 
     // X-axis
-    var xAxisDraw = svg.append('g')
+    var xAxisDraw = plot.append('g')
         .attr('class','axis')
         .attr('id','xAxis')
         .attr('transform', 'translate(0,' + h + ')')
@@ -178,7 +185,7 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
         .attr("fill", "black");
 
     // Y-axis
-    var yAxisDraw = svg.append('g')
+    var yAxisDraw = plot.append('g')
         .attr('class','axis')
         .attr('id','yAxis')
         .call(yAxis)
@@ -194,7 +201,21 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
         .attr("font-size", "20px")
         .attr("fill", "black");
 
-    var h1AccuracyLine = svg.append("line")
+    var clipId = `clip${this.props.compatibilityScoreType}`;
+    var clip = plot.append("defs")
+        .append("svg:clipPath")
+        .attr("id", clipId)
+        .append("svg:rect")
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('width', w)
+        .attr('height', h);
+
+    var plot = plot.append('g')
+        .attr("id", "scatterplot")
+        .attr("clip-path", `url(#${clipId})`);
+
+    var h1AccuracyLine = plot.append("line")
       .attr("x1", xScale(d3.min(allValues) - 0.005))
       .attr("y1", yScale(this.props.h1Performance))
       .attr("x2", xScale(d3.max(allValues)))
@@ -206,7 +227,7 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
     function drawNewError() {
       const newErrorData = allDataPoints.filter(d =>  d["new-error"]);
       const radius = 8;
-      var circles = svg.selectAll('circle')
+      var circles = plot.selectAll('circle')
           .data(newErrorData)
           .enter()
         .append('circle')
@@ -285,7 +306,7 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
     function drawStrictImitation() {
       const getPoints = (d: any, size: number) => getTrianglePoints(d[_this.props.compatibilityScoreType], d['performance'], size, xScale, yScale);
       const strictImitationData = allDataPoints.filter(d =>  d["strict-imitation"]);
-      const triangles = svg.selectAll('polyline')
+      const triangles = plot.selectAll('polyline')
           .data(strictImitationData)
           .enter()
         .append('polyline')
@@ -350,8 +371,6 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
 
     const circles = drawNewError();
     const triangles = drawStrictImitation();
-    const zoom = d3.zoom().scaleExtent([1, 100]).on('zoom', doZoom);
-    listenerRect.call(zoom);
 
     function doZoom() {
       const transform = d3.event.transform;
@@ -399,9 +418,7 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
       h1AccuracyLine.attr("y1", yScaleNew(_this.props.h1Performance))
       .attr("y2", yScaleNew(_this.props.h1Performance))
     }
-
   }
-
 
   render() {
     let title = this.props.compatibilityScoreType.toUpperCase();
@@ -419,8 +436,8 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
           <h3 style={{fontFamily: "'Segoe UI', sans-serif", fontSize: "20px", fontWeight: "normal", marginRight: "8px"}}>Model accuracy - {title}</h3>
           <InfoTooltip message={message} direction={DirectionalHint.bottomCenter} />
           <div style={{marginLeft: "auto"}}>
-            <DefaultButton iconProps={{iconName: "ZoomIn"}} text="zoom in" styles={{root: {paddingLeft: "9px", paddingRight: "9px", marginRight: "12px"}}}/>
-            <a href="#" style={{marginRight: "10px"}}>reset</a>
+            <DefaultButton iconProps={{iconName: "ZoomIn"}} onClick={() => this.zoomIn()} styles={{root: {marginRight: "12px"}}}/>
+            <DefaultButton iconProps={{iconName: "ZoomOut"}} onClick={() => this.zoomOut()} styles={{root: {marginRight: "12px"}}}/>
           </div>
         </div>
         <div className="plot" ref={this.node} id={`scatterplot-${this.props.compatibilityScoreType}`}>

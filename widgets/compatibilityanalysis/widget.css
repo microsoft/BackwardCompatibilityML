@@ -59,6 +59,10 @@ label {
   border-left: solid #0078D4 8px;
 }
 
+.padded-container h3, .padded-container h3:first-child {
+  margin: 0px;
+}
+
 .start-sweep-header {
   display: flex;
   justify-content: center;
