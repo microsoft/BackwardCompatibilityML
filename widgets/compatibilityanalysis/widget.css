@@ -224,6 +224,15 @@ label {
   margin-right: 5px;
 }
 
+.reset-zoom-button {
+  color: #0066CC;
+  background-color: white;
+  border: none;
+  margin-right: 12px;
+  padding: 0px;
+  text-decoration: underline;
+}
+
 .tooltip {
   background-color: black;
   color: white;

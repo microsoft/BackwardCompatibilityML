@@ -6,7 +6,7 @@ import ReactDOM from "react-dom";
 import * as d3 from "d3";
 import { InfoTooltip } from "./InfoTooltip.tsx"
 import { DirectionalHint } from '@fluentui/react';
-import { DefaultButton } from '@fluentui/react/lib/Button';
+import { IconButton } from '@fluentui/react/lib/Button';
 
 
 type PerformanceCompatibilityState = {
@@ -53,12 +53,14 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
     this.node = React.createRef<HTMLDivElement>();
     this.zoomIn = () => {}
     this.zoomOut = () => {}
+    this.resetZoom = () => {}
     this.createPVCPlot = this.createPVCPlot.bind(this);
   }
 
   node: React.RefObject<HTMLDivElement>
   zoomIn: Function
   zoomOut: Function
+  resetZoom: Function
 
   componentDidMount() {
     this.createPVCPlot();
@@ -149,11 +151,15 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
         .attr('transform','translate(' + margin.left + ',' + margin.top + ')')
 
     _this.zoomIn = () => {
-      svg.transition().duration(750).call(zoom.scaleBy, 2)
+      svg.transition().duration(750).call(zoom.scaleBy, 2);
     }
 
     _this.zoomOut = () => {
-      svg.transition().duration(750).call(zoom.scaleBy, 0.5)
+      svg.transition().duration(750).call(zoom.scaleBy, 0.5);
+    }
+
+    _this.resetZoom = () => {
+      svg.transition().duration(750).call(zoom.transform, d3.zoomIdentity);
     }
 
     // X-axis
@@ -201,6 +207,23 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
         .attr("font-size", "20px")
         .attr("fill", "black");
 
+    var h1AccuracyLine = plot.append("line")
+      .attr("x1", xScale(d3.min(allValues) - 0.005))
+      .attr("y1", yScale(this.props.h1Performance))
+      .attr("x2", xScale(d3.max(allValues)))
+      .attr("y2", yScale(this.props.h1Performance))
+      .attr("stroke", "#6f27db")
+      .attr("stroke-width", "1px")
+      .attr("stroke-dasharray", "5,5");
+    var h1AccuracyText = plot.append('text')
+      .attr("x", xScale(d3.min(allValues) - 0.057))
+      .attr("y", yScale(this.props.h1Performance))
+      .text(this.props.h1Performance.toFixed(3).toString())
+      .attr("font-family", "sans-serif")
+      .attr("font-size", "10px")
+      .attr("fill", "#6f27db");
+
+    // Make points outside the plotted area invisible
     var clipId = `clip${this.props.compatibilityScoreType}`;
     var clip = plot.append("defs")
         .append("svg:clipPath")
@@ -214,15 +237,6 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
     var plot = plot.append('g')
         .attr("id", "scatterplot")
         .attr("clip-path", `url(#${clipId})`);
-
-    var h1AccuracyLine = plot.append("line")
-      .attr("x1", xScale(d3.min(allValues) - 0.005))
-      .attr("y1", yScale(this.props.h1Performance))
-      .attr("x2", xScale(d3.max(allValues)))
-      .attr("y2", yScale(this.props.h1Performance))
-      .attr("stroke", "#6f27db")
-      .attr("stroke-width", "1px")
-      .attr("stroke-dasharray", "5,5");
 
     function drawNewError() {
       const newErrorData = allDataPoints.filter(d =>  d["new-error"]);
@@ -416,7 +430,8 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
       });
 
       h1AccuracyLine.attr("y1", yScaleNew(_this.props.h1Performance))
-      .attr("y2", yScaleNew(_this.props.h1Performance))
+        .attr("y2", yScaleNew(_this.props.h1Performance))
+      h1AccuracyText.attr("y", yScaleNew(_this.props.h1Performance))
     }
   }
 
@@ -436,8 +451,9 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
           <h3 style={{fontFamily: "'Segoe UI', sans-serif", fontSize: "20px", fontWeight: "normal", marginRight: "8px"}}>Model accuracy - {title}</h3>
           <InfoTooltip message={message} direction={DirectionalHint.bottomCenter} />
           <div style={{marginLeft: "auto"}}>
-            <DefaultButton iconProps={{iconName: "ZoomIn"}} onClick={() => this.zoomIn()} styles={{root: {marginRight: "12px"}}}/>
-            <DefaultButton iconProps={{iconName: "ZoomOut"}} onClick={() => this.zoomOut()} styles={{root: {marginRight: "12px"}}}/>
+            <button className="reset-zoom-button" onClick={() => this.resetZoom()}>reset</button>
+            <IconButton iconProps={{iconName: "ZoomIn"}} onClick={() => this.zoomIn()} styles={{root: {marginRight: "12px", border: "solid #A09C98 1px"}}}/>
+            <IconButton iconProps={{iconName: "ZoomOut"}} onClick={() => this.zoomOut()} styles={{root: {marginRight: "12px", border: "solid #A09C98 1px"}}}/>
           </div>
         </div>
         <div className="plot" ref={this.node} id={`scatterplot-${this.props.compatibilityScoreType}`}>
