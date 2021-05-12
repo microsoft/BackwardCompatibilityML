@@ -16,7 +16,8 @@ type PerformanceCompatibilityState = {
   training: boolean,
   newError: boolean,
   strictImitation: boolean,
-  selectedDataPoint: any
+  selectedDataPoint: any,
+  transform: any
 }
 
 type PerformanceCompatibilityProps = {
@@ -47,7 +48,8 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
       training: props.training,
       newError: props.newError,
       strictImitation: props.strictImitation,
-      selectedDataPoint: props.selectedDataPoint
+      selectedDataPoint: props.selectedDataPoint,
+      transform: d3.zoomIdentity
     };
 
     this.node = React.createRef<HTMLDivElement>();
@@ -61,6 +63,7 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
   zoomIn: Function
   zoomOut: Function
   resetZoom: Function
+  lastTransform: any
 
   componentDidMount() {
     this.createPVCPlot();
@@ -72,7 +75,8 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
       testing: nextProps.testing,
       training: nextProps.training,
       newError: nextProps.newError,
-      strictImitation: nextProps.strictImitation
+      strictImitation: nextProps.strictImitation,
+      transform: this.lastTransform
     });
   }
 
@@ -385,9 +389,11 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
 
     const circles = drawNewError();
     const triangles = drawStrictImitation();
+    svg.call(zoom.transform, _this.state.transform);
 
     function doZoom() {
       const transform = d3.event.transform;
+      _this.lastTransform = transform;
       const xScaleNew = transform.rescaleX(xScale);
       const yScaleNew = transform.rescaleY(yScale);
       xAxis.scale(xScaleNew);
