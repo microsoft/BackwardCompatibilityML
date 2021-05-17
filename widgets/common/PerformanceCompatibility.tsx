@@ -140,15 +140,13 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
 
     var tooltip = d3.select(`#lambdactooltip-${_this.props.compatibilityScoreType}`);
 
-    var fullHeight = h + margin.top + margin.bottom;
-    var fullWidth = w + margin.left + margin.right;
     // SVG
     d3.select(`#${this.props.compatibilityScoreType}`).remove();
     var zoom = d3.zoom().scaleExtent([1, 100]).on('zoom', doZoom);
     var svg = body.insert('svg', '.plot-title-row')
         .attr('id', this.props.compatibilityScoreType)
-        .attr('height', fullHeight)
-        .attr('width', fullWidth)
+        .attr('height', h + margin.top + margin.bottom)
+        .attr('width', w + margin.left + margin.right)
         .call(zoom)
         .on("wheel.zoom", null);
     var plot = svg.append('g')
