@@ -7,6 +7,7 @@ const rawInitialState = {
    selectedDataPoint: null,
    selectedRegion: null,
    selectedClass: null,
+   selectedModelAccuracyClass: null,
    filterInstances: null,
    training: true,
    testing: true,
@@ -33,13 +34,13 @@ function rootReducer(state = initialState, action) {
           return Object.assign({}, state, {strictImitation: !state.strictImitation});
 
         case "SELECT_DATA_POINT":
-          return Object.assign({}, state, {filterInstances: null, selectedDataPoint: action.dataPoint});
+          return Object.assign({}, state, {filterInstances: null, selectedDataPoint: action.dataPoint, selectedModelAccuracyClass: null});
 
         case "SET_SELECTED_REGION":
-          return Object.assign({}, state, {selectedClass: null, selectedRegion: action.selectedRegion});
+          return Object.assign({}, state, {selectedClass: null, selectedRegion: action.selectedRegion, selectedModelAccuracyClass: null});
 
         case "SET_SELECTED_CLASS":
-          return Object.assign({}, state, {selectedRegion: null, selectedClass: action.selectedClass});
+          return Object.assign({}, state, {selectedRegion: null, selectedClass: action.selectedClass, selectedModelAccuracyClass: null});
 
         case "REQUEST_TRAINING_AND_TESTING_DATA":
           return Object.assign({}, state, {filterInstances: null, loading: true});
@@ -55,7 +56,7 @@ function rootReducer(state = initialState, action) {
           return Object.assign({}, state, {filterInstances: null, loading: true});
 
         case "REQUEST_MODEL_EVALUATION_DATA_SUCCEEDED":
-          return Object.assign({}, state, {filterInstances: null, selectedDataPoint: action.evaluationData, selectedRegion: null, selectedClass: null, loading: false});
+          return Object.assign({}, state, {filterInstances: null, selectedDataPoint: action.evaluationData, selectedRegion: null, selectedClass: null, selectedModelAccuracyClass: null, loading: false});
 
         case "REQUEST_MODEL_EVALUATION_DATA_FAILED":
           console.log("Error: ", action.error);
@@ -70,6 +71,9 @@ function rootReducer(state = initialState, action) {
 
         case "FILTER_BY_INSTANCE_IDS":
           return Object.assign({}, state, {filterInstances: action.filterInstances});
+
+        case "SET_SELECTED_MODEL_ACCURACY_CLASS":
+          return Object.assign({}, state, {selectedRegion: null, selectedClass: null, selectedModelAccuracyClass: action.selectedModelAccuracyClass});
 
         default:
             return state
