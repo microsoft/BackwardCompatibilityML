@@ -156,6 +156,16 @@ function filterByInstanceIds(filterInstances) {
   }
 }
 
+function setSelectedModelAccuracyClass(modelName, classLabel) {
+  return {
+    type: "SET_SELECTED_MODEL_ACCURACY_CLASS",
+    selectedModelAccuracyClass: {
+      "modelName": modelName,
+      "classLabel": classLabel
+    }
+  }
+}
+
 
 export {
   toggleTraining,
@@ -171,5 +181,6 @@ export {
   getModelEvaluationData,
   getSweepStatus,
   startSweep,
-  filterByInstanceIds
+  filterByInstanceIds,
+  setSelectedModelAccuracyClass
 };
