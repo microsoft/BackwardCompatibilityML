@@ -66,7 +66,9 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
   lastTransform: any
 
   componentDidMount() {
-    this.createPVCPlot();
+    if (this.props.h1Performance != null) {
+      this.createPVCPlot();
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -391,51 +393,53 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
 
     function doZoom() {
       const transform = d3.event.transform;
-      _this.lastTransform = transform;
-      const xScaleNew = transform.rescaleX(xScale);
-      const yScaleNew = transform.rescaleY(yScale);
-      xAxis.scale(xScaleNew);
-      xAxisDraw.call(xAxis);
-      yAxis.scale(yScaleNew)
-      yAxisDraw.call(yAxis);
+      if (transform != null) {
+        _this.lastTransform = transform;
+        const xScaleNew = transform.rescaleX(xScale);
+        const yScaleNew = transform.rescaleY(yScale);
+        xAxis.scale(xScaleNew);
+        xAxisDraw.call(xAxis);
+        yAxis.scale(yScaleNew)
+        yAxisDraw.call(yAxis);
 
-      circles.attr('cx',function (d) { return xScaleNew(d[_this.props.compatibilityScoreType]) })
-          .attr('cy',function (d) { return yScaleNew(d['performance']) });
+        circles.attr('cx',function (d) { return xScaleNew(d[_this.props.compatibilityScoreType]) })
+            .attr('cy',function (d) { return yScaleNew(d['performance']) });
 
-      const getPoints = (d: any, size: number) => getTrianglePoints(d[_this.props.compatibilityScoreType], d['performance'], size, xScaleNew, yScaleNew);
-      triangles.attr('points', function(d) {
-        const datapointIndex = (_this.props.selectedDataPoint != null)? _this.props.selectedDataPoint.datapoint_index: null;
-        if (d.datapoint_index == datapointIndex) {
-          return getPoints(d, 8);
-        } else {
-          return getPoints(d, 4);
-        }
-      }).on('mouseover', function (d) {
-        d3.select(this)
-          .transition()
-          .duration(500)
-          .attr('points', d => getPoints(d, 8))
-          .attr('stroke-width',3);
-
-        tooltip.text(`lambda ${d["lambda_c"].toFixed(2)}`)
-          .style("opacity", 0.8);
-      }).on('mouseout', function (d) {
-        var datapointIndex = (_this.props.selectedDataPoint != null)? _this.props.selectedDataPoint.datapoint_index: null;
-        if (d.datapoint_index != datapointIndex) {
+        const getPoints = (d: any, size: number) => getTrianglePoints(d[_this.props.compatibilityScoreType], d['performance'], size, xScaleNew, yScaleNew);
+        triangles.attr('points', function(d) {
+          const datapointIndex = (_this.props.selectedDataPoint != null)? _this.props.selectedDataPoint.datapoint_index: null;
+          if (d.datapoint_index == datapointIndex) {
+            return getPoints(d, 8);
+          } else {
+            return getPoints(d, 4);
+          }
+        }).on('mouseover', function (d) {
           d3.select(this)
             .transition()
             .duration(500)
-            .attr('points', d => getPoints(d, 4))
-            .attr('stroke-width',1);
-         }
+            .attr('points', d => getPoints(d, 8))
+            .attr('stroke-width',3);
 
-        tooltip.style("opacity", 0);
-        tooltip.text("");
-      });
+          tooltip.text(`lambda ${d["lambda_c"].toFixed(2)}`)
+            .style("opacity", 0.8);
+        }).on('mouseout', function (d) {
+          var datapointIndex = (_this.props.selectedDataPoint != null)? _this.props.selectedDataPoint.datapoint_index: null;
+          if (d.datapoint_index != datapointIndex) {
+            d3.select(this)
+              .transition()
+              .duration(500)
+              .attr('points', d => getPoints(d, 4))
+              .attr('stroke-width',1);
+           }
 
-      h1AccuracyLine.attr("y1", yScaleNew(_this.props.h1Performance))
-        .attr("y2", yScaleNew(_this.props.h1Performance))
-      h1AccuracyText.attr("y", yScaleNew(_this.props.h1Performance))
+          tooltip.style("opacity", 0);
+          tooltip.text("");
+        });
+
+        h1AccuracyLine.attr("y1", yScaleNew(_this.props.h1Performance))
+          .attr("y2", yScaleNew(_this.props.h1Performance))
+        h1AccuracyText.attr("y", yScaleNew(_this.props.h1Performance))
+      }
     }
   }
 

@@ -91,6 +91,19 @@ function Container({
             </div>
         </div>
       );
+    } else if (sweepStatus != null && sweepStatus.running) {
+      return (
+        <div className="container">
+            <div className="row">
+              <SweepManager
+                sweepStatus={sweepStatus}
+                getSweepStatus={getSweepStatus}
+                startSweep={startSweep}
+                getTrainingAndTestingData={getTrainingAndTestingData}
+              />
+            </div>
+        </div>
+      );
     }
 
     return (
