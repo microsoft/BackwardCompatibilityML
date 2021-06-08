@@ -178,7 +178,10 @@ function Container({
             </div>
           </div>
           {(selectedDataPoint != null)? 
+          <>
+            <h2>Model Comparison</h2>
             <SelectedModelDetails btc={selectedDataPoint.btc} bec={selectedDataPoint.bec} h1Performance={data.h1_performance} h2Performance={selectedDataPoint.h2_performance} performanceMetric={data.performance_metric} lambdaC={selectedDataPoint.lambda_c} />
+          </>
             : null}
           <div className="row">
             <IntersectionBetweenModelErrors selectedDataPoint={selectedDataPoint} setSelectedRegion={setSelectedRegion} selectedRegion={selectedRegion} filterByInstanceIds={filterByInstanceIds}/>
@@ -191,6 +194,7 @@ function Container({
               filterByInstanceIds={filterByInstanceIds}
             />
           </div>
+          <h2>Error Instance View</h2>
           <div className="row">
             <ErrorInstancesTable selectedDataPoint={selectedDataPoint} filterInstances={filterInstances} />
           </div>

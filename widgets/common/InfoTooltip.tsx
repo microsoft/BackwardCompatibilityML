@@ -27,7 +27,7 @@ export const InfoTooltip: FunctionComponent<InfoTooltipProps> = ({ message, dire
       id={tooltipId}
       directionalHint={direction}
       content={message}
-      styles={{root: {width: "24px", height: "18px"}}}
+      styles={{root: {width: "24px", height: "18px", marginLeft: "8px"}}}
     >
       <IconButton iconProps={{ iconName: 'Info' }}
                   aria-describedby={tooltipId}

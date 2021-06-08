@@ -165,9 +165,9 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
     var _this = this;
     var body = d3.select(this.node.current);
 
-    var margin = { top: 5, right: 15, bottom: 50, left: 55 }
-    var h = 220 - margin.top - margin.bottom
-    var w = 461 - margin.left - margin.right
+    var margin = { top: 5, right: 25, bottom: 50, left: 25 }
+    var h = 270 - margin.top - margin.bottom
+    var w = 470 - margin.left - margin.right
 
     var tooltip = d3.select("#venntooltip");
 
@@ -178,7 +178,7 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
         .attr('height',h + margin.top + margin.bottom)
         .attr('width',w + margin.left + margin.right)
       .append('g')
-        .attr('transform',`translate(55,${margin.top})`)
+        .attr('transform',`translate(${margin.left},${margin.top})`)
 
     svg.append('text')
       .attr('id','xAxisLabel')
@@ -190,7 +190,7 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
     svg.append("rect")
       .attr("x", 0)
       .attr("y", 0)
-      .attr("width", 350)
+      .attr("width", w)
       .attr("height", h)
       .attr("fill", "rgba(255, 255, 255, 0.8)")
       .attr("stroke", "black")

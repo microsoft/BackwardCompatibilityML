@@ -59,12 +59,16 @@ label {
   line-height: 20px;
   font-weight: normal;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  margin-top: 0px;
+  margin-top: 30px;
   margin-bottom: 25px;
   padding-left: 18px;
   padding-top: 10px;
   padding-bottom: 10px;
   border-left: solid #0078D4 8px;
+}
+
+.padded-container h2:first-child {
+  margin-top: 0px;
 }
 
 .padded-container h3, .padded-container h3:first-child {
@@ -99,6 +103,8 @@ label {
 .plot {
   position: relative;
   display: inline-block;
+  background-color: white;
+  padding-top: 20px;
 }
 
 .plot-container {
@@ -115,19 +121,20 @@ label {
 }
 
 .plot-venn {
-  background-color: lightgrey;
+  background-color: white;
+  /*
   padding-left: 20px;
   padding-right:20px;
   padding-top: 20px;
   padding-bottom: 39px;
+  */
   vertical-align: top;
   line-height: 20px;
 }
 
 .plot-distribution {
-  background-color: lightgrey;
+  background-color: white;
   padding-right:20px;
-  padding-top: 20px;
   padding-bottom: 10px;
   line-height: 20px;
 }
@@ -139,7 +146,7 @@ label {
   justify-content: center;
   align-items: center;
   font-family: sans-serif;
-  font-size: 10px;
+  font-size: 16px;
   padding-left: 40px;
   padding-top: 5px;
   padding-bottom: 5px;
@@ -197,8 +204,8 @@ label {
   font-family: sans-serif;
   justify-content: center;
   align-items: center;
-  font-size: 10px;
-  padding-left: 37px;
+  font-size: 16px;
+  padding-left: 20px;
 }
 
 .venn-legend-row-block {
@@ -373,38 +380,40 @@ label {
   display: block;
 }
 
-#raw-values-table {
-  width: 1000px;
-  margin-top: 0px;
-  border-style: solid;
-  border-width: 1px;
+.model-details {
+  display: flex;
+  flex-direction: row;
+  background-color: white;
+  margin-bottom: 15px;
 }
 
-.model-details .model-details-row {
-  width: 100%;
-  display: inline-block;
-  text-align: center;
-  padding: 0.1em 0.1em;
+.model-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  padding-top: 18px;
+  padding-bottom: 18px;
+  padding-left: 40px;
+  padding-right: 40px;
+  column-gap: 40px;
+  align-items: center;
 }
 
-.model-details-row td {
-  display: inline-block;
-  text-align: center;
-  width: 180px;
-}
-
-.model-details-info-data {
-  display: inline-block;
-  font-weight: bold;
-  font-size: 10px;
-  margin-right: 4px;
+.gray-border-right {
+  border-right: 1px solid #D4D7E5;
 }
 
 .model-details-info-type {
-  display: inline-block;
-  font-style: italic;
-  font-size: 10px;
-  font-weight: normal;
+  display: block;
+  font-size: 16px;
+}
+
+.model-details-info-data {
+  display: block;
+  font-size: 20px;
+  color: #0078D4;
+  font-weight: 600;
+  padding-top: 10px;
 }
 
 .highlighted-bar {
