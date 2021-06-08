@@ -9,6 +9,6 @@ tensorflow==2.4.0
 tensorflow-datasets==4.1.0
 tensorflow-estimator==2.4.0
 tensorflow-metadata==0.25.0
-Pillow==8.1.1
+Pillow==8.2.0
 mlflow==1.12.1
 greenlet==0.4.16
