@@ -5,8 +5,8 @@ import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import * as d3 from "d3";
 import { InfoTooltip } from "./InfoTooltip.tsx"
-import { DirectionalHint } from 'office-ui-fabric-react/lib/Tooltip';
-import { PrimaryButton, DefaultButton } from 'office-ui-fabric-react/lib/Button';
+import { DirectionalHint } from '@fluentui/react';
+import { PrimaryButton, DefaultButton } from '@fluentui/react/lib/Button';
 
 
 type IncompatiblePointDistributionState = {

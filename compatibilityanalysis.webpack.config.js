@@ -55,6 +55,14 @@ module.exports = {
           !isDevelopment && MiniCssExtractPlugin.loader,
           'css-loader'
         ].filter(Boolean)
+      },
+      {
+        test: /\.(png|jpe?g|gif)$/i,
+        use: [
+          {
+            loader: 'file-loader',
+          },
+        ],
       }
     ]
   },
@@ -67,7 +75,7 @@ module.exports = {
     filename: 'widget-build.js'
   },
   devServer: {
-    contentBase: path.resolve(__dirname, "development"),
+    contentBase: path.resolve(__dirname, "development/compatibility-analysis"),
     port: 3000
   }
 };

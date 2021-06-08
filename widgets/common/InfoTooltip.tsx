@@ -3,15 +3,13 @@
 
 import React, { FunctionComponent } from "react";
 import ReactDOM from "react-dom";
-import { IconButton } from 'office-ui-fabric-react/lib/Button';
+import { IconButton } from '@fluentui/react/lib/Button';
 import {
   TooltipHost,
   TooltipDelay,
   DirectionalHint,
-  ITooltipProps,
-  ITooltipHostStyles,
-} from 'office-ui-fabric-react/lib/Tooltip';
-import { useId } from '@uifabric/react-hooks';
+} from '@fluentui/react';
+import { useId } from '@fluentui/react-hooks';
 
 type InfoTooltipProps = {
   message: string

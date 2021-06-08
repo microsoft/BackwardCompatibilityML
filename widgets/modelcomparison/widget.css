@@ -167,7 +167,7 @@ label {
 }
 
 .table {
-  width: 700px;
+  width: 1000px;
   text-align: center;
   background-color: lightblue;
 }
@@ -178,7 +178,7 @@ label {
 }
 
 .data-selector {
-  width: 700px;
+  width: 1000px;
   text-align: left;
 }
 
@@ -254,7 +254,7 @@ label {
 }
 
 #raw-values-table {
-  width: 700px;
+  width: 1000px;
   margin-top: 0px;
   border-style: solid;
   border-width: 1px;

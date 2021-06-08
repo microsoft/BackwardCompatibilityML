@@ -9,8 +9,8 @@ import {
   Selection,
   SelectionMode,
   IColumn
-} from "office-ui-fabric-react/lib/DetailsList";
-import { Fabric } from "office-ui-fabric-react/lib/Fabric";
+} from "@fluentui/react/lib/DetailsList";
+import { Fabric } from "@fluentui/react/lib/Fabric";
 import { apiBaseUrl } from "./api.ts";
 
 
@@ -95,7 +95,7 @@ class ErrorInstancesTable extends Component<ErrorInstancesTableProps, ErrorInsta
     const numPages = Math.ceil(errorInstances.length / this.props.pageSize);
 
     return (
-      <Fabric styles={{root: {width: 700}}}>
+      <Fabric styles={{root: {width: 1000}}}>
         <DetailsList
           selectionMode={SelectionMode.none}
           items={items}

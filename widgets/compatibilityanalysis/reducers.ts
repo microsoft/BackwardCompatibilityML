@@ -9,6 +9,8 @@ const rawInitialState = {
    selectedClass: null,
    selectedModelAccuracyClass: null,
    filterInstances: null,
+   lambdaLowerBound: 0.0,
+   lambdaUpperBound: 1.0,
    training: true,
    testing: true,
    newError: true,
@@ -41,6 +43,12 @@ function rootReducer(state = initialState, action) {
 
         case "SET_SELECTED_CLASS":
           return Object.assign({}, state, {selectedRegion: null, selectedClass: action.selectedClass, selectedModelAccuracyClass: null});
+
+        case "SET_LAMBDA_LOWER_BOUND":
+          return Object.assign({}, state, {lambdaLowerBound: action.lambdaLowerBound});
+
+        case "SET_LAMBDA_UPPER_BOUND":
+          return Object.assign({}, state, {lambdaUpperBound: action.lambdaUpperBound});
 
         case "REQUEST_TRAINING_AND_TESTING_DATA":
           return Object.assign({}, state, {filterInstances: null, loading: true});

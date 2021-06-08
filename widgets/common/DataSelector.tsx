@@ -2,9 +2,7 @@
 // Licensed under the MIT License.
 
 import React, { Component } from "react";
-import ReactDOM from "react-dom";
-import * as d3 from "d3";
-
+import { Checkbox } from '@fluentui/react';
 
 type DataSelectorState = {
   training: boolean,
@@ -142,42 +140,33 @@ class DataSelector extends Component<DataSelectorProps, DataSelectorState> {
   }
 
   render() {
-    let getDatasetDropdownClasses = () => {
-      if (this.state.showDatasetDropdown) {
-        return "dropdown-check-list visible";
-      } else {
-        return "dropdown-check-list";
-      }
-    }
-
-    let getDissonanceDropdownClasses = () => {
-      if (this.state.showDissonanceDropdown) {
-        return "dropdown-check-list visible";
-      } else {
-        return "dropdown-check-list";
-      }
-    }
     return (
       <div className="data-selector">
-        <div className="control-group">
-          <div className={getDatasetDropdownClasses()}>
-            <span className="anchor" onClick={this.toggleDatasetDropdown}>Dataset</span>
-            <ul className="items">
-              <li><input type="checkbox" aria-label="select all datasets" checked={this.state.training && this.state.testing} onChange={this.selectTrainingAndTesting} />(Select All)</li>
-              <li><input type="checkbox" aria-label="training" checked={this.state.training} onChange={this.selectTraining} />Training</li>
-              <li><input type="checkbox" aria-label="testing" checked={this.state.testing} onChange={this.selectTesting} />Testing</li>
-            </ul>
-          </div>
+        <div>Dataset:</div>
+        <div>
+          <Checkbox label="Training" checked={this.state.training} onChange={this.selectTraining} />
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="11" height="11" fill="#5EBBFF" fill-opacity="0.85"/>
+          </svg>
         </div>
-        <div className="control-group">
-          <div className={getDissonanceDropdownClasses()}>
-            <span className="anchor" onClick={this.toggleDissonanceDropdown}>Dissonance</span>
-            <ul className="items">
-              <li><input type="checkbox" aria-label="select all dissonance" checked={this.state.newError && this.state.strictImitation} onChange={this.selectNewErrorAndStrictImitation} />(Select All)</li>
-              <li><input type="checkbox" aria-label="new error" checked={this.state.newError} onChange={this.selectNewError} />New Error</li>
-              <li><input type="checkbox" aria-label="strict imitation" checked={this.state.strictImitation} onChange={this.selectStrictImitation} />Strict Imitation</li>
-            </ul>
-          </div>
+        <div>
+          <Checkbox label="Testing" checked={this.state.testing} onChange={this.selectTesting} />
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="11" height="11" fill="#F332A6" fill-opacity="0.85"/>
+          </svg>
+        </div>
+        <div>Dissonance:</div>
+        <div>
+          <Checkbox label="New Error" checked={this.state.newError} onChange={this.selectNewError} />
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="7" cy="7" r="6" fill="#D7D6D6" stroke="black"/>
+          </svg>
+        </div>
+        <div>
+          <Checkbox label="Strict Imitation" checked={this.state.strictImitation} onChange={this.selectStrictImitation} />
+          <svg width="14" height="12" viewBox="0 0 14 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7 1L13.0622 11.5H0.937822L7 1Z" fill="#D7D6D6" stroke="black"/>
+          </svg>
         </div>
       </div>
     );

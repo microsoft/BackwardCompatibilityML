@@ -7,7 +7,7 @@ import * as d3 from "d3";
 import { bisect } from "./optimization.tsx";
 import { InfoTooltip } from "./InfoTooltip.tsx";
 import { VennLegend } from "./VennLegend.tsx";
-import { DirectionalHint } from 'office-ui-fabric-react/lib/Tooltip';
+import { DirectionalHint } from '@fluentui/react';
 
 function calculateCircleRadiiAndDistance(a, b, ab, datasetSize) {
   let aProportion = a / datasetSize;
@@ -167,7 +167,7 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
 
     var margin = { top: 5, right: 15, bottom: 50, left: 55 }
     var h = 220 - margin.top - margin.bottom
-    var w = 320 - margin.left - margin.right
+    var w = 461 - margin.left - margin.right
 
     var tooltip = d3.select("#venntooltip");
 
@@ -190,7 +190,7 @@ class IntersectionBetweenModelErrors extends Component<IntersectionBetweenModelE
     svg.append("rect")
       .attr("x", 0)
       .attr("y", 0)
-      .attr("width", 240)
+      .attr("width", 350)
       .attr("height", h)
       .attr("fill", "rgba(255, 255, 255, 0.8)")
       .attr("stroke", "black")

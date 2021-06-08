@@ -5,7 +5,8 @@ import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import * as d3 from "d3";
 import { InfoTooltip } from "./InfoTooltip.tsx"
-import { DirectionalHint } from 'office-ui-fabric-react/lib/Tooltip';
+import { DirectionalHint } from '@fluentui/react';
+import { IconButton } from '@fluentui/react/lib/Button';
 
 
 type PerformanceCompatibilityState = {
@@ -15,7 +16,8 @@ type PerformanceCompatibilityState = {
   training: boolean,
   newError: boolean,
   strictImitation: boolean,
-  selectedDataPoint: any
+  selectedDataPoint: any,
+  transform: any
 }
 
 type PerformanceCompatibilityProps = {
@@ -26,6 +28,8 @@ type PerformanceCompatibilityProps = {
   newError: boolean,
   strictImitation: boolean,
   selectedDataPoint: any,
+  lambdaLowerBound: number,
+  lambdaUpperBound: number,
   compatibilityScoreType: string,
   performanceMetric: string,
   selectDataPoint: (d: any) => void,
@@ -44,17 +48,27 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
       training: props.training,
       newError: props.newError,
       strictImitation: props.strictImitation,
-      selectedDataPoint: props.selectedDataPoint
+      selectedDataPoint: props.selectedDataPoint,
+      transform: d3.zoomIdentity
     };
 
     this.node = React.createRef<HTMLDivElement>();
+    this.zoomIn = () => {}
+    this.zoomOut = () => {}
+    this.resetZoom = () => {}
     this.createPVCPlot = this.createPVCPlot.bind(this);
   }
 
   node: React.RefObject<HTMLDivElement>
+  zoomIn: Function
+  zoomOut: Function
+  resetZoom: Function
+  lastTransform: any
 
   componentDidMount() {
-    this.createPVCPlot();
+    if (this.props.h1Performance != null) {
+      this.createPVCPlot();
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -63,7 +77,8 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
       testing: nextProps.testing,
       training: nextProps.training,
       newError: nextProps.newError,
-      strictImitation: nextProps.strictImitation
+      strictImitation: nextProps.strictImitation,
+      transform: this.lastTransform
     });
   }
 
@@ -77,20 +92,14 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
     var data = this.state.data;
 
     var margin = { top: 15, right: 15, bottom: 20, left: 55 }
-    var h = 250 - margin.top - margin.bottom
-    var w = 320 - margin.left - margin.right
+    var h = 350 - margin.top - margin.bottom
+    var w = 425 - margin.left - margin.right
 
     var formatPercentX = d3.format('.3f');
     var formatPercentY = d3.format('.2f');
     var colorMap = {
-      "training": {
-        "new-error": "rgba(170, 170, 255, 0.8)",
-        "strict-imitation": "rgba(113, 113, 255, 0.8)"
-      },
-      "testing": {
-        "new-error": "rgba(206, 160, 205, 0.8)",
-        "strict-imitation": "rgba(226, 75, 158, 0.8)"
-      }
+      "training": "rgba(118, 197, 255, 0.30)",
+      "testing": "rgba(245, 81, 179, 0.30)"
     };
 
     var allDataPoints = [];
@@ -109,6 +118,8 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
     if (_this.state.testing && _this.state.strictImitation) {
       allDataPoints = allDataPoints.concat(data.filter(d => (d["testing"] && d["strict-imitation"])));
     }
+
+    allDataPoints = allDataPoints.filter(d => d.lambda_c >= this.props.lambdaLowerBound && d.lambda_c <= this.props.lambdaUpperBound);
 
     var btcValues = allDataPoints.map(d => d["btc"]);
     var becValues = allDataPoints.map(d => d["bec"]);
@@ -133,12 +144,28 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
 
     // SVG
     d3.select(`#${this.props.compatibilityScoreType}`).remove();
+    var zoom = d3.zoom().scaleExtent([1, 100]).on('zoom', doZoom);
     var svg = body.insert('svg', '.plot-title-row')
         .attr('id', this.props.compatibilityScoreType)
-        .attr('height',h + margin.top + margin.bottom)
-        .attr('width',w + margin.left + margin.right)
-      .append('g')
+        .attr('height', h + margin.top + margin.bottom)
+        .attr('width', w + margin.left + margin.right)
+        .call(zoom)
+        .on("wheel.zoom", null);
+    var plot = svg.append('g')
         .attr('transform','translate(' + margin.left + ',' + margin.top + ')')
+
+    _this.zoomIn = () => {
+      svg.transition().duration(750).call(zoom.scaleBy, 2);
+    }
+
+    _this.zoomOut = () => {
+      svg.transition().duration(750).call(zoom.scaleBy, 0.5);
+    }
+
+    _this.resetZoom = () => {
+      svg.transition().duration(750).call(zoom.transform, d3.zoomIdentity);
+    }
+
     // X-axis
     var xAxis = d3.axisBottom()
       .scale(xScale)
@@ -152,12 +179,12 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
       .ticks(5);
 
     // X-axis
-    svg.append('g')
+    var xAxisDraw = plot.append('g')
         .attr('class','axis')
         .attr('id','xAxis')
         .attr('transform', 'translate(0,' + h + ')')
         .call(xAxis)
-      .append('text')
+    xAxisDraw.append('text')
         .attr('id','xAxisLabel')
         .attr('y', 25)
         .attr('x',w/2)
@@ -168,11 +195,11 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
         .attr("fill", "black");
 
     // Y-axis
-    svg.append('g')
+    var yAxisDraw = plot.append('g')
         .attr('class','axis')
         .attr('id','yAxis')
         .call(yAxis)
-      .append('text')
+    yAxisDraw.append('text')
         .attr('id', 'yAxisLabel')
         .attr('transform','rotate(-90)')
         .attr('x',-h/2+2.5*this.props.performanceMetric.length)
@@ -184,19 +211,42 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
         .attr("font-size", "20px")
         .attr("fill", "black");
 
-    svg.append("line")
+    var h1AccuracyLine = plot.append("line")
       .attr("x1", xScale(d3.min(allValues) - 0.005))
       .attr("y1", yScale(this.props.h1Performance))
       .attr("x2", xScale(d3.max(allValues)))
       .attr("y2", yScale(this.props.h1Performance))
-      .attr("stroke", "black")
+      .attr("stroke", "#6f27db")
       .attr("stroke-width", "1px")
       .attr("stroke-dasharray", "5,5");
+    var h1AccuracyText = plot.append('text')
+      .attr("x", xScale(d3.min(allValues) - 0.057))
+      .attr("y", yScale(this.props.h1Performance))
+      .text(this.props.h1Performance.toFixed(3).toString())
+      .attr("font-family", "sans-serif")
+      .attr("font-size", "10px")
+      .attr("fill", "#6f27db");
 
-    function drawCircles() {
+    // Make points outside the plotted area invisible
+    var clipId = `clip${this.props.compatibilityScoreType}`;
+    var clip = plot.append("defs")
+        .append("svg:clipPath")
+        .attr("id", clipId)
+        .append("svg:rect")
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('width', w)
+        .attr('height', h);
 
-      var circles = svg.selectAll('circle')
-          .data(allDataPoints)
+    var plot = plot.append('g')
+        .attr("id", "scatterplot")
+        .attr("clip-path", `url(#${clipId})`);
+
+    function drawNewError() {
+      const newErrorData = allDataPoints.filter(d =>  d["new-error"]);
+      const radius = 8;
+      var circles = plot.selectAll('circle')
+          .data(newErrorData)
           .enter()
         .append('circle')
           .attr('cx',function (d) { return xScale(d[_this.props.compatibilityScoreType]) })
@@ -204,9 +254,9 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
           .attr('r', function(d) {
             var datapointIndex = (_this.props.selectedDataPoint != null)? _this.props.selectedDataPoint.datapoint_index: null;
             if (d.datapoint_index == datapointIndex) {
-              return 8;
+              return 1.5 * radius;
             } else {
-              return 4;
+              return radius;
             }
           })
           .attr('stroke','black')
@@ -219,21 +269,17 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
             }
           })
           .attr('fill',function (d,i) {
-            if (d["training"] && d["new-error"]) {
-              return colorMap["training"]["new-error"];
-            } else if (d["training"] && d["strict-imitation"]) {
-              return colorMap["training"]["strict-imitation"];
-            } else if (d["testing"] && d["new-error"]) {
-              return colorMap["testing"]["new-error"];
-            } else if (d["testing"] && d["strict-imitation"]) {
-              return colorMap["testing"]["strict-imitation"];
+            if (d["training"]) {
+              return colorMap["training"];
+            } else if (d["testing"]) {
+              return colorMap["testing"];
             }
           })
           .on('mouseover', function (d) {
             d3.select(this)
               .transition()
               .duration(500)
-              .attr('r',8)
+              .attr('r',1.5*radius)
               .attr('stroke-width',3);
 
             tooltip.text(`lambda ${d["lambda_c"].toFixed(2)}`)
@@ -245,7 +291,7 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
               d3.select(this)
                 .transition()
                 .duration(500)
-                .attr('r',4)
+                .attr('r',radius)
                 .attr('stroke-width',1);
              }
 
@@ -261,14 +307,143 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
           .on('click', (d, i) => {
             _this.props.getModelEvaluationData(d["datapoint_index"]);
           });
+      return circles;
     }
 
-    drawCircles();
+    // Calculates coordinates for the vertices of an equilateral triangle
+    // with centroid coordinates cx,cy and scaled by size
+    const sqrt3 = Math.sqrt(3);
+    function getTrianglePoints(cx: number, cy: number, size: number, xScale: Function, yScale: Function) {
+      const p1 = (xScale(cx) - sqrt3*size) + ',' + (yScale(cy) + size);
+      const p2 = (xScale(cx) + sqrt3*size) + ',' + (yScale(cy) + size);
+      const p3 = xScale(cx) + ',' + (yScale(cy) - 2*size);
+      // x,y points delimited by spaces
+      return p1 + ' ' + p2 + ' ' + p3 + ' ' + p1;
+    }
+
+    function drawStrictImitation() {
+      const getPoints = (d: any, size: number) => getTrianglePoints(d[_this.props.compatibilityScoreType], d['performance'], size, xScale, yScale);
+      const strictImitationData = allDataPoints.filter(d =>  d["strict-imitation"]);
+      const triangles = plot.selectAll('polyline')
+          .data(strictImitationData)
+          .enter()
+        .append('polyline')
+          .attr('points', function(d) {
+            const datapointIndex = (_this.props.selectedDataPoint != null)? _this.props.selectedDataPoint.datapoint_index: null;
+            if (d.datapoint_index == datapointIndex) {
+              return getPoints(d, 8);
+            } else {
+              return getPoints(d, 4);
+            }
+          })
+          .attr('stroke','black')
+          .attr('stroke-width', function(d) {
+            const datapointIndex = (_this.props.selectedDataPoint != null)? _this.props.selectedDataPoint.datapoint_index: null;
+            if (d.datapoint_index == datapointIndex) {
+              return 3;
+            } else {
+              return 1;
+            }
+          })
+          .attr('fill',function (d,i) {
+            if (d["training"]) {
+              return colorMap["training"];
+            } else if (d["testing"]) {
+              return colorMap["testing"];
+            }
+          })
+          .on('mouseover', function (d) {
+            d3.select(this)
+              .transition()
+              .duration(500)
+              .attr('points', d => getPoints(d, 8))
+              .attr('stroke-width',3);
+
+            tooltip.text(`lambda ${d["lambda_c"].toFixed(2)}`)
+              .style("opacity", 0.8);
+          })
+          .on('mouseout', function (d) {
+            var datapointIndex = (_this.props.selectedDataPoint != null)? _this.props.selectedDataPoint.datapoint_index: null;
+            if (d.datapoint_index != datapointIndex) {
+              d3.select(this)
+                .transition()
+                .duration(500)
+                .attr('points', d => getPoints(d, 4))
+                .attr('stroke-width',1);
+             }
+
+            tooltip.style("opacity", 0);
+            tooltip.text("");
+          })
+          .on("mousemove", function() {
+            var scatterPlot = document.getElementById(`scatterplot-${_this.props.compatibilityScoreType}`);
+            var coords = d3.mouse(scatterPlot);
+            tooltip.style("left", `${coords[0] - (margin.left + margin.right)/2 - 40}px`)
+              .style("top", `${coords[1] - (margin.top + margin.bottom)/2}px`);
+          })
+          .on('click', (d, i) => {
+            _this.props.getModelEvaluationData(d["datapoint_index"]);
+          });
+      return triangles;
+    }
+
+    const circles = drawNewError();
+    const triangles = drawStrictImitation();
+    svg.call(zoom.transform, _this.state.transform);
+
+    function doZoom() {
+      const transform = d3.event.transform;
+      if (transform != null) {
+        _this.lastTransform = transform;
+        const xScaleNew = transform.rescaleX(xScale);
+        const yScaleNew = transform.rescaleY(yScale);
+        xAxis.scale(xScaleNew);
+        xAxisDraw.call(xAxis);
+        yAxis.scale(yScaleNew)
+        yAxisDraw.call(yAxis);
+
+        circles.attr('cx',function (d) { return xScaleNew(d[_this.props.compatibilityScoreType]) })
+            .attr('cy',function (d) { return yScaleNew(d['performance']) });
+
+        const getPoints = (d: any, size: number) => getTrianglePoints(d[_this.props.compatibilityScoreType], d['performance'], size, xScaleNew, yScaleNew);
+        triangles.attr('points', function(d) {
+          const datapointIndex = (_this.props.selectedDataPoint != null)? _this.props.selectedDataPoint.datapoint_index: null;
+          if (d.datapoint_index == datapointIndex) {
+            return getPoints(d, 8);
+          } else {
+            return getPoints(d, 4);
+          }
+        }).on('mouseover', function (d) {
+          d3.select(this)
+            .transition()
+            .duration(500)
+            .attr('points', d => getPoints(d, 8))
+            .attr('stroke-width',3);
+
+          tooltip.text(`lambda ${d["lambda_c"].toFixed(2)}`)
+            .style("opacity", 0.8);
+        }).on('mouseout', function (d) {
+          var datapointIndex = (_this.props.selectedDataPoint != null)? _this.props.selectedDataPoint.datapoint_index: null;
+          if (d.datapoint_index != datapointIndex) {
+            d3.select(this)
+              .transition()
+              .duration(500)
+              .attr('points', d => getPoints(d, 4))
+              .attr('stroke-width',1);
+           }
+
+          tooltip.style("opacity", 0);
+          tooltip.text("");
+        });
+
+        h1AccuracyLine.attr("y1", yScaleNew(_this.props.h1Performance))
+          .attr("y2", yScaleNew(_this.props.h1Performance))
+        h1AccuracyText.attr("y", yScaleNew(_this.props.h1Performance))
+      }
+    }
   }
 
-
   render() {
-    let classes = `plot plot-${this.props.compatibilityScoreType}`;
     let title = this.props.compatibilityScoreType.toUpperCase();
     let message = "UNDEFINED";
 
@@ -279,15 +454,23 @@ class PerformanceCompatibility extends Component<PerformanceCompatibilityProps, 
     }
 
     return (
-      <React.Fragment>
-        <div className={classes} ref={this.node} id={`scatterplot-${this.props.compatibilityScoreType}`}>
+      <div>
+        <div style={{display: "flex", flexDirection: "row", alignItems: "center"}}>
+          <h3 style={{fontFamily: "'Segoe UI', sans-serif", fontSize: "20px", fontWeight: "normal", marginRight: "8px"}}>Model accuracy - {title}</h3>
+          <InfoTooltip message={message} direction={DirectionalHint.bottomCenter} />
+          <div style={{marginLeft: "auto"}}>
+            <button className="reset-zoom-button" onClick={() => this.resetZoom()}>reset</button>
+            <IconButton iconProps={{iconName: "ZoomIn"}} onClick={() => this.zoomIn()} styles={{root: {marginRight: "12px", border: "solid #A09C98 1px"}}}/>
+            <IconButton iconProps={{iconName: "ZoomOut"}} onClick={() => this.zoomOut()} styles={{root: {marginRight: "12px", border: "solid #A09C98 1px"}}}/>
+          </div>
+        </div>
+        <div className="plot" ref={this.node} id={`scatterplot-${this.props.compatibilityScoreType}`}>
           <div className="tooltip" id={`lambdactooltip-${this.props.compatibilityScoreType}`} />
           <div className="plot-title-row">
             {title}
-            <InfoTooltip message={message} direction={DirectionalHint.bottomCenter} />
           </div>
         </div>
-      </React.Fragment>
+      </div>
     );
   }
 

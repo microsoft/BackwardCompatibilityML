@@ -36,10 +36,64 @@
   fill: rgba(226, 75, 158, 0.8);
 }*/
  
+/*
 label {
   position: absolute;
   top: 10px;
   right: 10px;
+}
+*/
+
+.main-container {
+  display: block;
+  max-width: 1000px;
+}
+
+.padded-container {
+  padding: 30px;
+  background-color: #EFF0F5;
+}
+
+.padded-container h2, .padded-container h2:first-child {
+  font-size: 24px;
+  line-height: 20px;
+  font-weight: normal;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin-top: 0px;
+  margin-bottom: 25px;
+  padding-left: 18px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-left: solid #0078D4 8px;
+}
+
+.padded-container h3, .padded-container h3:first-child {
+  margin: 0px;
+}
+
+.start-sweep-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+.start-sweep-header > h1:first-child {
+  display: inline;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 24px;
+  line-height: 20px;
+  color: #686868;
+  font-weight: normal;
+  margin-right: 40px;
+  margin-top: 0px;
+}
+
+.start-sweep-header > .ms-Button.ms-Button--primary {
+  padding-left: 40px;
+  padding-right: 40px;
+  height: 40px;
 }
 
 .plot {
@@ -47,23 +101,17 @@ label {
   display: inline-block;
 }
 
+.plot-container {
+  background-color: white;
+  margin-top: 16px;
+  padding-left: 19px;
+  padding-right: 19px;
+  padding-top: 14px;
+  padding-bottom: 14px;
+}
+
 .plot svg {
   background-color: white
-}
-
-.plot-btc {
-  background-color: lightgrey;
-  padding-left: 20px;
-  padding-right:20px;
-  padding-top: 20px;
-  padding-bottom: 10px;
-}
-
-.plot-bec {
-  background-color: lightgrey;
-  padding-right:20px;
-  padding-top: 20px;
-  padding-bottom: 10px;
 }
 
 .plot-venn {
@@ -115,6 +163,33 @@ label {
   border: 1px solid black;
 }
 
+.point-selector {
+  background-color: #F3F4F8;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  padding-left: 22px;
+  padding-right: 22px;
+}
+
+.point-selector-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 16px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.point-legend-entry {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-right: 25px;
+}
+
+.point-legend-entry svg {
+  margin-right: 10px;
+}
+
 .venn-legend-row {
   display: flex;
   background-color: white;
@@ -157,6 +232,15 @@ label {
   margin-right: 5px;
 }
 
+.reset-zoom-button {
+  color: #0066CC;
+  background-color: white;
+  border: none;
+  margin-right: 12px;
+  padding: 0px;
+  text-decoration: underline;
+}
+
 .tooltip {
   background-color: black;
   color: white;
@@ -167,19 +251,50 @@ label {
 }
 
 .table {
-  width: 700px;
+  width: 1000px;
   text-align: center;
   background-color: lightblue;
+}
+
+.two-column-row {
+  display: grid;
+  background-color: white;
+  padding: 22px;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+}
+
+/* lambda slider customization */
+.main-container .ms-Slider-slidebox {
+  background-image: url('../images/slider-bg.png');
+  padding-left: 2px;
+  padding-right: 2px;
+  margin-left: 11px;
+  margin-right: 6px;
+}
+.main-container .ms-slider-active {
+  background: #0078D4;
+  height: 4px;
+  margin-bottom: -1px;
+}
+
+.main-container .ms-slider-inactive {
+  /* !important is necessary to override color change on mouse hover */
+  background: #686868 !important;
+  height: 2px;
+  margin-top: 1px;
+}
+
+.data-selector {
+  max-width: 500px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
 }
 
 .data-selector .control-group {
   display: inline-block;
   margin-right: 50px;
-}
-
-.data-selector {
-  width: 700px;
-  text-align: left;
 }
 
 .data-selector .control-subgroup {
@@ -188,6 +303,11 @@ label {
 }
 
 .data-selector .control {
+  display: inline-block;
+  margin-right: 5px;
+}
+
+.data-selector .ms-Checkbox {
   display: inline-block;
   margin-right: 5px;
 }
@@ -254,7 +374,7 @@ label {
 }
 
 #raw-values-table {
-  width: 700px;
+  width: 1000px;
   margin-top: 0px;
   border-style: solid;
   border-width: 1px;
