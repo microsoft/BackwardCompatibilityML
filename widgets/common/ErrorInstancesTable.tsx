@@ -95,7 +95,7 @@ class ErrorInstancesTable extends Component<ErrorInstancesTableProps, ErrorInsta
     const numPages = Math.ceil(errorInstances.length / this.props.pageSize);
 
     return (
-      <Fabric styles={{root: {width: 1000}}}>
+      <Fabric>
         <DetailsList
           selectionMode={SelectionMode.none}
           items={items}

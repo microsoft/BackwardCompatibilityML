@@ -61,9 +61,9 @@ class IncompatiblePointDistribution extends Component<IncompatiblePointDistribut
     var _this = this;
     var body = d3.select(this.node.current);
 
-    var margin = { top: 5, right: 15, bottom: 50, left: 55 }
-    var h = 200 - margin.top - margin.bottom
-    var w = 250;
+    var margin = { top: 20, right: 15, bottom: 20, left: 55 }
+    var h = 191 - margin.top - margin.bottom
+    var w = 363;
 
     // SVG
     d3.select("#incompatiblepointdistribution").remove();
@@ -290,8 +290,8 @@ class ModelAccuracyByClass extends Component<ModelAccuracyByClassProps, ModelAcc
     var body = d3.select(this.node.current);
 
     var margin = { top: 5, right: 15, bottom: 50, left: 55 }
-    var h = 186 - margin.top - margin.bottom
-    var w = 250;
+    var h = 177 - margin.top - margin.bottom
+    var w = 363;
 
     if (this.props.selectedDataPoint != null) {
       // SVG
