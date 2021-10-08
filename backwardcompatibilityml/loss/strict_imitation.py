@@ -57,6 +57,7 @@ class StrictImitationNLLLoss(nn.Module):
         return nll
 
     def forward(self, x, y, reduction="mean"):
+        batch_size = x.size(0)
         with torch.no_grad():
             h1_output_logit, h1_output_softmax, h1_output_logsoftmax = self.h1(x)
         h1_diff = (h1_output_logsoftmax.data.max(1)[1] - y).float()
@@ -68,7 +69,7 @@ class StrictImitationNLLLoss(nn.Module):
         if (h1_diff == 0.0).sum(dim=0).item() > 0:
             _, h1_support_output_softmax, _ = self.h1(x_support)
             _, h2_support_output_softmax, _ = self.h2(x_support)
-            dissonance = self.dissonance(h1_support_output_softmax, h2_support_output_softmax)
+            dissonance = (1/batch_size) * self.dissonance(h1_support_output_softmax, h2_support_output_softmax)
 
         base_loss = self.loss(h2_output_logsoftmax, y, reduction=reduction)
         strict_imitation_loss = base_loss + self.lambda_c * dissonance
