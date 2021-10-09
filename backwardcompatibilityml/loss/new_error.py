@@ -49,6 +49,7 @@ class BCNLLLoss(nn.Module):
         self.lambda_c = lambda_c
 
     def forward(self, x, y, reduction="mean"):
+        batch_size = x.size(0)
         with torch.no_grad():
             _, _, h1_output_logsoftmax = self.h1(x)
         h1_diff = (torch.argmax(h1_output_logsoftmax, 1) - y).float()
@@ -62,7 +63,8 @@ class BCNLLLoss(nn.Module):
         dissonance = 0.0
         if (h1_diff == 0.0).sum(dim=0).item() > 0:
             _, _, h2_support_output_logsoftmax = self.h2(x_support)
-            dissonance = self.loss(h2_support_output_logsoftmax, y_support)
+            support_size = x_support.size(0)
+            dissonance = (support_size / batch_size) * self.loss(h2_support_output_logsoftmax, y_support)
 
         base_loss = self.loss(h2_output_logsoftmax, y, reduction=reduction)
         new_error_loss = base_loss + self.lambda_c * dissonance
