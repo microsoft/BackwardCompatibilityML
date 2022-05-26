@@ -5,7 +5,7 @@ scikit-learn==0.23.1
 rai_core_flask==0.0.2
 tensorboard==2.5.0
 tensorboard-plugin-wit==1.7.0
-tensorflow==2.5.1
+tensorflow==2.7.2
 tensorflow-datasets==4.1.0
 tensorflow-estimator==2.5.0
 tensorflow-metadata==0.25.0
