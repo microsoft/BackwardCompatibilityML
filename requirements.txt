@@ -1,6 +1,6 @@
 torch==1.5.1
 Jinja2==2.11.3
-numpy==1.19.3
+numpy==1.22.0
 scikit-learn==0.23.1
 rai_core_flask==0.0.2
 tensorboard==2.5.0
